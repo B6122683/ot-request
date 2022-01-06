@@ -4,8 +4,8 @@ function Leave() {
   return (
     <div className='leave'>
       <h1>Leave</h1>
-      <h1>Leave</h1>
-      <h1>Leave</h1>
+      <h1>Leave 2</h1>
+      <h1>Leave 3</h1>
     </div>
   );
 }
