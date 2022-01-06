@@ -5,7 +5,7 @@ function Leave() {
     <div className='leave'>
       <h1>Leave</h1>
       <h1>Leave 2</h1>
-      <h1>Leave 5</h1>
+      <h1>Leave 6</h1>
     </div>
   );
 }
