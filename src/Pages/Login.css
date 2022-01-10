@@ -1,0 +1,18 @@
+.logincard {
+    margin-top: 50px;
+}
+
+.loginleft {
+    background: #323171;
+    border-radius: 10px 0 0 10px;
+    height: 500px;
+}
+
+.loginright {
+    padding-top: 100px;
+    padding-left: 50px;
+    padding-right: 50px;
+    background: #FBFBFB;
+    border-radius: 0 10px 10px 0;
+    height: 500px;
+}
