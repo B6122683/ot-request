@@ -9,11 +9,44 @@
 
 .home,
 .attendance,
+.otrequest,
+.leave,
 .activity {
   display: flex;
   margin-top: 20px;
   align-items: center;
   font-size: 3rem;
+}
+
+.otrequest,
+.activity {
+  display: flex;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.request {
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.list {
+  display: flex;
+  margin-top: 20px;
+  border-width: 20px;
+  justify-content: right;
+  font-size: 2rem;
+}
+
+th {
+  background-color: lightblue;
 }
 
 [class^="col"] {
@@ -24,6 +57,13 @@
 
   
 }
+.colact {
+  background: lightgray;
+  margin: 10px;
+  height: 350px;
+  border-radius: 10px;
+  justify-content: center;
+}
 
 .graphatt {
   background: lightgray;
@@ -32,4 +72,11 @@
   border-radius: 10px;
   align-items: center;
   justify-content: center;
+}
+
+.table {
+  margin-top: 20px;
+}
+.tr {
+  background-color: #DAF0BD;
 }
