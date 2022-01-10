@@ -36,14 +36,14 @@ const ReactStyle = () => (
     </tr>
   </thead>
   <tbody>
-    <tr>
+    <tr className="tbody">
       <td>07/01/2565</td>
       <td>07:59</td>
       <td>Check In</td>
       <td>มทส. นครราชสีมา</td>
       <td>14.2222, 102.5552</td>
     </tr>
-    <tr>
+    <tr className="tbody">
       <td>07/01/2565</td>
       <td>17:30</td>
       <td>Check Out</td>

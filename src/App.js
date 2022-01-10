@@ -7,6 +7,7 @@ import Attendance from './Pages/Attendance';
 import Activity from './Pages/Activity';
 import OTRequest from './Pages/OTRequest';
 import Leave from './Pages/Leave';
+import ActivityDesc from './Pages/Activity_Desc';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route exact path="/otrequest" element={<OTRequest/>}/>
           <Route exact path="/leave" element={<Leave/>}/>
           <Route exact path="/activity" element={<Activity/>}/>
+          <Route exact path="/activityDesc" element={<ActivityDesc/>}/>
         </Routes>
       </Router>
     </>
