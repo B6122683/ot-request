@@ -3,6 +3,8 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Table from "react-bootstrap/Table";
+import Image from 'react-bootstrap/Image';
+import images1 from '../images/view.png';
 import * as GrIcons from 'react-icons/gr';
 import "../App.css";
 
@@ -42,32 +44,32 @@ const ReactStyle = () => (
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>1</td>
+    <tr className="tbody">
+      <td> <Image style={{height: '20px', width: '20px', objectFit: 'cover', justifyContent: 'center'}} alt= "" src={images1} /></td>
       <td>บำรุงรักษาสินค้า</td>
       <td>การผลิต</td>
       <td>อา. 26 พ.ย. 2565 (8:30)</td>
       <td>อา. 26 พ.ย. 2565 (11:30)</td>
       <td>5</td>
-      <td>เปิดรับ</td>
+      <td style={{color: '#1FB640'}}>เปิดรับ</td>
     </tr>
-    <tr>
-      <td>2</td>
+    <tr className="tbody">
+      <td><Image style={{height: '20px', width: '20px', objectFit: 'cover', justifyContent: 'center'}} alt= "" src={images1} /></td>
       <td>ซ่อมบำรุงเครื่องจักร</td>
       <td>ซ่อมบำรุง</td>
       <td>จ. 27 พ.ย. 2565 (20:30)</td>
       <td>จ. 27 พ.ย. 2565 (00:00)</td>
       <td>7</td>
-      <td>ปิด</td>
+      <td style={{color: '#FB3131'}}>ปิด</td>
     </tr>
-    <tr>
-      <td>3</td>
+    <tr className="tbody">
+      <td><Image style={{height: '20px', width: '20px', objectFit: 'cover', justifyContent: 'center'}} alt= "" src={images1} /></td>
       <td>ปรับปรุงระบบชลประทาน</td>
       <td>วิศวกรรม</td>
       <td>พ. 29 พ.ย. 2565 (8:30)</td>
       <td>พ. 29 พ.ย. 2565 (11:30)</td>
       <td>2</td>
-      <td>เปิดรับ</td>
+      <td style={{color: '#1FB640'}}>เปิดรับ</td>
     </tr>
   </tbody>
 </Table>
