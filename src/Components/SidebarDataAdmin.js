@@ -11,21 +11,33 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'ลงชื่อเข้า-ออกงาน',
-    path: '/attendance',
+    title: 'ข้อมูลพนักงาน',
+    path: '/employee',
     icon: <FaIcons.FaMapMarkedAlt />,
     cName: 'nav-text'
   },
   {
-    title: 'แจ้งขอ OT',
-    path: '/otrequest',
+    title: 'ข้อมูลแผนก',
+    path: '/department',
     icon: <FaIcons.FaBusinessTime />,
     cName: 'nav-text'
   },
   {
-    title: 'แจ้งลา',
-    path: '/leave',
+    title: 'จัดการคำขอ OT',
+    path: '/manageotrequest',
     icon: <FaIcons.FaIdBadge />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'จัดการสิทธิ์การใช้งาน',
+    path: '/managelicense',
+    icon: <FaIcons.FaGift />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'ปฏิทินบริษัท',
+    path: '/officecalendar',
+    icon: <FaIcons.FaGift />,
     cName: 'nav-text'
   },
   {

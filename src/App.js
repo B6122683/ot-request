@@ -8,6 +8,12 @@ import Activity from './Pages/Activity';
 import OTRequest from './Pages/OTRequest';
 import Leave from './Pages/Leave';
 import ActivityDesc from './Pages/Activity_Desc';
+import Employee from './Pages/Employee';
+import Department from './Pages/Department';
+import OTManagement from './Pages/OTManagement';
+import Permission from './Pages/Permission';
+import CalendarOffice from './Pages/CalendarOffice';
+import AdminActivity from './Pages/AdminActivity';
 
 function App() {
   return (
@@ -21,6 +27,12 @@ function App() {
           <Route exact path="/leave" element={<Leave/>}/>
           <Route exact path="/activity" element={<Activity/>}/>
           <Route exact path="/activityDesc" element={<ActivityDesc/>}/>
+          <Route exact path="/employee" element={<Employee/>}/>
+          <Route exact path="/department" element={<Department/>}/>
+          <Route exact path="/otmanagement" element={<OTManagement/>}/>
+          <Route exact path="/permission" element={<Permission/>}/>
+          <Route exact path="/calendaroffice" element={<CalendarOffice/>}/>
+          <Route exact path="/adminactivity" element={<AdminActivity/>}/>
         </Routes>
       </Router>
     </>
