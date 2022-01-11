@@ -6,6 +6,7 @@ import Home from './Pages/Home';
 import Attendance from './Pages/Attendance';
 import Activity from './Pages/Activity';
 import OTRequest from './Pages/OTRequest';
+import OTRequestDesc from './Pages/OTRequestDesc';
 import Leave from './Pages/Leave';
 import ActivityDesc from './Pages/Activity_Desc';
 import Employee from './Pages/Employee';
@@ -24,6 +25,7 @@ function App() {
           <Route exact path="/" element={<Home/>}/>
           <Route exact path="/attendance" element={<Attendance/>}/>
           <Route exact path="/otrequest" element={<OTRequest/>}/>
+          <Route exact path="/otrequestdesc" element={<OTRequestDesc/>}/>
           <Route exact path="/leave" element={<Leave/>}/>
           <Route exact path="/activity" element={<Activity/>}/>
           <Route exact path="/activityDesc" element={<ActivityDesc/>}/>
