@@ -49,14 +49,14 @@ th {
   background-color: lightblue;
 }
 
-[class^="col"] {
+/* [class^="col"] {
   background: lightgray;
   margin: 10px;
   height: 150px;
   border-radius: 10px;
 
   
-}
+} */
 .colact {
   background: lightgray;
   margin: 10px;
@@ -93,4 +93,8 @@ th {
   text-align: center;
 
 }
+body {
+  background-color: #F6F5F5;
+}
+
 
