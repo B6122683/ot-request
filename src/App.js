@@ -17,6 +17,10 @@ import OTManagement from './Pages/OTManagement';
 import Permission from './Pages/Permission';
 import CalendarOffice from './Pages/CalendarOffice';
 import AdminActivity from './Pages/AdminActivity';
+import Position from './Pages/Position';
+import PositionManagement from './Pages/PositionManagement';
+import DepartmentManagement from './Pages/DepartmentManagement';
+import EmployeeManagement from './Pages/EmployeeManagement';
 
 function App() {
   return (
@@ -34,7 +38,11 @@ function App() {
           <Route exact path="/activity" element={<Activity/>}/>
           <Route exact path="/activityDesc" element={<ActivityDesc/>}/>
           <Route exact path="/employee" element={<Employee/>}/>
+          <Route exact path="/employeemanagement" element={<EmployeeManagement/>}/>
           <Route exact path="/department" element={<Department/>}/>
+          <Route exact path="/departmentmanagement" element={<DepartmentManagement/>}/>
+          <Route exact path="/position" element={<Position/>}/>
+          <Route exact path="/positionmanagement" element={<PositionManagement/>}/>
           <Route exact path="/otmanagement" element={<OTManagement/>}/>
           <Route exact path="/permission" element={<Permission/>}/>
           <Route exact path="/calendaroffice" element={<CalendarOffice/>}/>
