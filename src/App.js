@@ -21,6 +21,9 @@ import Position from './Pages/Position';
 import PositionManagement from './Pages/PositionManagement';
 import DepartmentManagement from './Pages/DepartmentManagement';
 import EmployeeManagement from './Pages/EmployeeManagement';
+import ActivityManagement from './Pages/ActivityManagement';
+import AdminOT from './Pages/AdminOT';
+import AdminOTManagement from './Pages/AdminOTManagement';
 
 function App() {
   return (
@@ -47,6 +50,9 @@ function App() {
           <Route exact path="/permission" element={<Permission/>}/>
           <Route exact path="/calendaroffice" element={<CalendarOffice/>}/>
           <Route exact path="/adminactivity" element={<AdminActivity/>}/>
+          <Route exact path="/activitymanagement" element={<ActivityManagement/>}/>
+          <Route exact path="/adminot" element={<AdminOT/>}/>
+          <Route exact path="/adminotmanagement" element={<AdminOTManagement/>}/>
         </Routes>
       </Router>
     </>
