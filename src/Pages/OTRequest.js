@@ -9,6 +9,7 @@ import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Axios from "axios";
 import { style } from "@mui/system";
+import {Link }from "react-router-dom";
 
 function OTRequest() {
   const [otassignList, setOtassignList] = useState([]);
@@ -16,7 +17,7 @@ function OTRequest() {
   const [dep_id, setDep_id] = useState("");
 
   const otassign = () => {
-    Axios.get("http://localhost:3333/otassignment").then((response) => {
+    Axios.get("http://localhost:3333/otassignview").then((response) => {
       setOtassignList(response.data);
     });
   };
@@ -69,6 +70,7 @@ function OTRequest() {
             <tbody>
               <tr className="tbody">
                 <td>
+                <Link to={`/otrequestdesc/${val.ot_id}`}>
                   <Image
                     style={{
                       height: "20px",
@@ -78,12 +80,10 @@ function OTRequest() {
                     }}
                     alt=""
                     src={images1}
-                  />
+                  /></Link>
                 </td>
                 <td>{val.ot_name}</td>
-                <td  value={dep_id}
-                  onChange={(e) => {
-                    setDep_id(e.target.value); }}>{val.dep_name}</td>
+                <td>{val.dep_name}</td>
                 <td>{val.ot_starttime}</td>
                 <td>{val.ot_finishtime}</td>
                 <td>{val.ot_apply}</td>
