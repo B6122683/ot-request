@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -12,64 +12,58 @@ import Axios from "axios";
 
 function AdminOTManagement() {
 
-    const [asm_id, setAsm_id] = useState("");
+
     const [ot_name, setOt_name] = useState("");
     const [ot_rate, setOt_rate] = useState("");
     const [dep_id, setDep_id] = useState("");
     const [ot_desc, setOt_desc] = useState("");
     const [ot_starttime, setOt_starttime] = useState("");
     const [ot_finishtime, setOt_finishtime] = useState("");
-    const [summary, setSummary] = useState("");
     const [ot_apply, setOt_apply] = useState("");
-    const [ot_request, setOt_request] = useState("");
-    const [ot_stump, setOt_stump] = useState("");
-    const [ot_status, setOt_status] = useState("");
-    const [create_at, setCreate_at] = useState("");
-    const [update_at, setUpdate_at] = useState("");
-    const [record_status, setRecord_status] = useState("");
+
+
 
     const [OTAssignmentList, setOTAssignmentList] = useState([]);
+    const [departmentList, setDepartmentList] = useState([]);
 
   const Addotmng = () => {
-    Axios.post("http://localhost:3333/ot_assignment", {
-        asm_id: asm_id,
+    Axios.post("http://localhost:3333/otassignment", {
+
         ot_name: ot_name,
         ot_rate: ot_rate,
         dep_id: dep_id,
         ot_desc: ot_desc,
         ot_starttime: ot_starttime,
         ot_finishtime: ot_finishtime,
-        summary: summary,
         ot_apply: ot_apply,
-        ot_request: ot_request,
-        ot_stump: ot_stump,
-        ot_status: ot_status,
-        create_at: create_at,
-        update_at: update_at,
-        record_status: record_status,
+
 
     }).then(() => {
         setOTAssignmentList({
             ...OTAssignmentList,
             
-            asm_id: asm_id,
             ot_name: ot_name,
             ot_rate: ot_rate,
             dep_id: dep_id,
             ot_desc: ot_desc,
             ot_starttime: ot_starttime,
             ot_finishtime: ot_finishtime,
-            summary: summary,
             ot_apply: ot_apply,
-            ot_request: ot_request,
-            ot_stump: ot_stump,
-            ot_status: ot_status,
-            create_at: create_at,
-            update_at: update_at,
-            record_status: record_status,
+
         });
     });
   };
+
+  const dataepartment = () => {
+    Axios.get("http://localhost:3333/department").then((response) => {
+      setDepartmentList(response.data);
+    });
+  };
+
+  useEffect(() => {
+    
+    dataepartment();
+  }, []);
 
 
   return (
@@ -80,23 +74,8 @@ function AdminOTManagement() {
         </Row>
         <Row>
           <Form className="adminot">
-            <Row className="col-md-12" style={{ marginTop: '30px' }}>
-              <Col className="col-12" >
-                <Form.Group controlId="formBasicTextInput">
-                  <Form.Label>รหัสงาน</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="กรอกรหัสงาน"
-                    name="asm_id"
-                     onChange={(e) => {
-                         setAsm_id(e.target.value)
-                        }}
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
 
-            <Row className="col-md-12">
+            <Row className="col-md-12" style={{ marginTop: '30px' }}>
                 <Col className="col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ชื่องาน</Form.Label>
@@ -118,8 +97,15 @@ function AdminOTManagement() {
               <Col className="col-md-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ชื่อแผนก</Form.Label>
-                  <Form.Select id="disabledSelect">
-                    <option>เจ้าหน้าที่</option>
+                  <Form.Select 
+                  value={dep_id}
+                  onChange={(e) => {
+                    setDep_id(e.target.value); }} >
+                     {departmentList.map((department) => (
+                      <option value={department.dep_id}>
+                        {department.dep_name}
+                      </option>
+                    ))}
                     </Form.Select>
                 </Form.Group>
               </Col>
@@ -169,20 +155,7 @@ function AdminOTManagement() {
             </Row>
 
             <Row className="col-md-12 ">
-              <Col className="col-md-6 col-12">
-              <Form.Group controlId="formBasicTextInput">
-                  <Form.Label>รวมเวลา</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="กรอกรวมเวลา"
-                    name="summary"
-                    onChange={(e) => {
-                        setSummary(e.target.value)
-                       }}
-                  />
-                </Form.Group>
-              </Col>
-
+             
               <Col className="col-md-6 col-12">
               <Form.Group controlId="formBasicTextInput">
                   <Form.Label>จำนวนที่รับ</Form.Label>
@@ -196,9 +169,7 @@ function AdminOTManagement() {
                   />
                 </Form.Group>
               </Col>
-            </Row>
 
-            <Row className="col-md-12 ">
               <Col className="col-md-6 col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ค่าตอบแทน</Form.Label>
@@ -214,6 +185,8 @@ function AdminOTManagement() {
               </Col>
             </Row>
 
+
+
             <Row className="col-md-12 ">
               <div
                 style={{
@@ -226,7 +199,7 @@ function AdminOTManagement() {
                   ยกเลิก
                 </Button>
                 <Button
-                  variant="primary"
+                  variant="primary" onClick={Addotmng}
                   type="submit"
                   style={{ margin: "10px" }}
                 >
