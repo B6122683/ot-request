@@ -32,7 +32,7 @@ function Department() {
       <div style={{ display: "flex", justifyContent: "center" }}></div>
       <Row>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button variant="secondary" style={{ margin: "0px" }}>
+          <Button variant="secondary" style={{ margin: "0px" }} onClick={() => (window.location = "/departmentmanagement")}>
             {" "}
             เพิ่ม{" "}
           </Button>{" "}

@@ -14,24 +14,9 @@ import ActivityDesc from './Activity_Desc';
 function Activity() {
   return (
     <Container>
-      <h1 className='activity'>กิจกรรม</h1>
+      <h1 className='titleact'>กิจกรรม</h1>
       <h4>นอกเหนือจากการดำเนินธุรกิจที่แข็งแกร่งแล้ว บริษัทฯได้มีส่วนร่วมรับผิดชอบต่อสังคมไทยในการเพิ่มคุณภาพชีวิต โดยการให้ความช่วยเหลือผู้ด้อยโอกาสทางการศึกษา </h4>
-      <ReactStyle />
-    </Container>
-      
-    
-  );
-}
-
-function next(){
-  return(
-    alert("A")
-  );
-}
-
-const ReactStyle = () => (
-  <Container>
-    <Row>
+      <Row>
       <Col className='colact' sm>
       <Image style={{height: 200, width: '100%', objectFit: 'cover', marginBlock: '13px'}} alt= "" src={images1} />
       <h5 ><a href="./activityDesc">กิจกรรมทำบุญ บริษัท ประจำปี 2565</a></h5> 
@@ -59,8 +44,18 @@ const ReactStyle = () => (
         <h5>กิจกรรมทาสีโรงเรียนในฝัน</h5>
         </Col>
     </Row>
-  </Container>
-);
+    </Container>
+      
+    
+  );
+}
+
+function next(){
+  return(
+    alert("A")
+  );
+}
+
 
 
 export default Activity;
