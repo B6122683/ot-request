@@ -15,16 +15,7 @@ function OTManagement() {
   return (
     <Container>
       <h1 className="attendance">จัดการคำขอ OT</h1>
-      <ReactStyle />
-    </Container>
-      
-  
-  );
-}
-
-const ReactStyle = () => (
-  <Container>
-    <div style={{ display: "flex", justifyContent: "center" }}>
+      <div style={{ display: "flex", justifyContent: "center" }}>
       </div>
     <Row>
     <Table striped bordered hover>
@@ -63,8 +54,13 @@ const ReactStyle = () => (
   </tbody>
 </Table>
     </Row>
-  </Container>
-);
+    </Container>
+      
+  
+  );
+}
+
+
 
 
 export default OTManagement;

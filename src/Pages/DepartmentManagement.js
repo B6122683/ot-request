@@ -39,7 +39,7 @@ function DepartmentManagement() {
               />
             </Form.Group>
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button variant="danger" style={{ margin: "10px" }}>
+              <Button variant="danger" style={{ margin: "10px" }} onClick={() => (window.location = "/department")}>
                 ยกเลิก
               </Button>
               <Button

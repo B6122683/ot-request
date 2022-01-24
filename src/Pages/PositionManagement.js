@@ -26,7 +26,7 @@ function PositionManagement() {
               <Form.Control type="text" placeholder="กรอกชื่อตำแหน่ง" />
             </Form.Group>
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button variant="danger" style={{ margin: "10px" }}>
+              <Button variant="danger" style={{ margin: "10px" }} onClick={() => (window.location = "/position")}>
                 ยกเลิก
               </Button>
               <Button

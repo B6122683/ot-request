@@ -16,7 +16,7 @@ function AdminOT() {
   const [otassignList, setOtassignList] = useState([]);
 
   const otassign = () => {
-    Axios.get("http://localhost:3333/otassignment").then((response) => {
+    Axios.get("http://localhost:3333/otassignview").then((response) => {
       setOtassignList(response.data);
     });
   };
@@ -30,7 +30,7 @@ function AdminOT() {
       <h1 className="attendance">จัดการข้อมูล OT</h1>
       <Row>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button variant="secondary" style={{ margin: "0px" }}>
+          <Button variant="secondary" style={{ margin: "0px" }} onClick={() => (window.location = "/adminotmanagement")}>
             {" "}
             เพิ่ม{" "}
           </Button>{" "}
@@ -47,7 +47,7 @@ function AdminOT() {
               <th>วัน/เวลา สิ้นสุด</th>
               <th>จำนวนที่รับ</th>
               <th>ค่าตอบแทน</th>
-              <th>จัดการ</th>
+              <th style={{width:'100px'}}>จัดการ</th>
             </tr>
           </thead>
           {otassignList.map((val) => {
@@ -56,7 +56,7 @@ function AdminOT() {
                 <tr className="tbody">
                   <td>{val.ot_id}</td>
                   <td>{val.ot_name}</td>
-                  <td>{val.dep_id}</td>
+                  <td>{val.dep_name}</td>
                   <td>{val.ot_desc}</td>
                   <td>{val.ot_starttime}</td>
                   <td>{val.ot_finishtime}</td>

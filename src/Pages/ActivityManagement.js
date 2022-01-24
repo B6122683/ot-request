@@ -134,7 +134,8 @@ function ActivityManagement() {
                   padding: "20px",
                 }}
               >
-                <Button variant="danger" style={{ margin: "10px" }}>
+                <Button variant="danger" style={{ margin: "10px" }}
+                 onClick={() => (window.location.href = "/adminactivity")} >
                   ยกเลิก
                 </Button>
                 <Button

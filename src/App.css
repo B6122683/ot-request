@@ -57,14 +57,6 @@ th {
 
   
 } */
-.colact {
-  background: lightgray;
-  margin: 10px;
-  height: 350px;
-  border-radius: 10px;
-  justify-content: center;
-  box-shadow: 0 8px 6px -6px black;
-}
 
 .graphatt {
   background: lightgray;
