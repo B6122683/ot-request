@@ -21,6 +21,24 @@ function Employee() {
     });
   };
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+
+    Axios.get("http://localhost:3333/authen", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      console.log(response);
+      if (response.data.status == "ok") {
+        // console.log(response.data.decoded.user);
+        // alert("authen success");
+      } else {
+        window.location = "/login";
+      }
+    });
+  };
+
   const deleteEmployee = (id) => {
     Axios.delete(`http://localhost:3333/employees/${id}`).then((response) => {
       setEmployeeList(
@@ -31,8 +49,14 @@ function Employee() {
     });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location = "/login";
+  };
+
   useEffect(() => {
     empList();
+    getAuth();
   }, []);
 
   return (
@@ -59,6 +83,16 @@ function Employee() {
         </form>
       </div>
       <Row>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="danger"
+            style={{ margin: "0px" }}
+            onClick={handleLogout}
+          >
+            {" "}
+            ออกจากระบบ{" "}
+          </Button>{" "}
+        </div>
         <div style={{ display: "flex", justifyContent: "right" }}>
           <Button
             variant="secondary"

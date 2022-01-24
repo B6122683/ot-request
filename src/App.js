@@ -24,6 +24,7 @@ import EmployeeManagement from './Pages/EmployeeManagement';
 import ActivityManagement from './Pages/ActivityManagement';
 import AdminOT from './Pages/AdminOT';
 import AdminOTManagement from './Pages/AdminOTManagement';
+import Upload from './Pages/upload';
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route exact path="/adminactivity" element={<AdminActivity/>}/>
           <Route exact path="/activitymanagement" element={<ActivityManagement/>}/>
           <Route exact path="/adminot" element={<AdminOT/>}/>
+          <Route exact path="/upload" element={<Upload/>}/>
           <Route exact path="/adminotmanagement" element={<AdminOTManagement/>}/>
         </Routes>
       </Router>

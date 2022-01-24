@@ -4,62 +4,60 @@ import Axios from "axios";
 import "./Login.css";
 
 function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [emp_username, setUsername] = useState("");
+  const [emp_password, setPassword] = useState("");
 
   const [loginStatus, setLoginStatus] = useState("");
 
   // Axios.defaults.withCredentials = true;
 
-  // const loginadmin = () => {
-  //   Axios.post("http://localhost:3333/login", {
-  //     username: username,
-  //     password: password,
-  //   }).then((response) => {
-  //     if (response.data.message) {
-  //       setLoginStatus(response.data.message);
-  //     } else {
-  //       setLoginStatus(response.data[0].username);
-  //     }
-  //   });
-  // };
-
-  // useEffect(() => {
-  //   Axios.get("http://localhost:3333/login").then((response) => {
-  //     if (response.data.loggedIn === true) {
-  //       setLoginStatus(response.data.user[0].username);
-  //     }
-  //   });
-  // }, []);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
-    const jsonData = {
-      emp_username: data.get("username"),
-      emp_password: data.get("password"),
-    };
-
-    fetch("http://localhost:3333/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(jsonData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status == "ok") {
-          window.location = "/employee";
-        } else {
-          alert("login failed");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  const loginadmin = () => {
+    Axios.post("http://localhost:3333/login", {
+      emp_username: emp_username,
+      emp_password: emp_password,
+    }).then((response) => {
+      if (response.data.status == "ok") {
+        localStorage.setItem("token", response.data.token);
+        window.location = "/";
+      } else {
+        alert("login failed");
+      }
+      // if (response.data.message) {
+      //   alert(response.data.message);
+      // } else {
+      //   window.location = "/";
+      // }
+    });
   };
+
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   const data = new FormData(event.currentTarget);
+
+  //   const jsonData = {
+  //     emp_username: data.get("username"),
+  //     emp_password: data.get("password"),
+  //   };
+
+  //   fetch("http://localhost:3333/login", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(jsonData),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       if (data.status == "ok") {
+  //         window.location = "/employee";
+  //       } else {
+  //         alert("login failed");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
   return (
     <>
       <Container>
@@ -67,13 +65,13 @@ function Login() {
           <Col className="loginleft col-md-6 d-md-block d-none"></Col>
           <Col className="loginright col-md-6">
             <h2 style={{ textAlign: "center" }}>Login</h2>
-            <Form onSubmit={handleSubmit}>
-              <Form.Group className="mb-3" controlId="formBasicUsername" >
+            <Form>
+              <Form.Group className="mb-3" controlId="formBasicUsername">
                 <Form.Label>User Name</Form.Label>
                 <Form.Control
                   type="text"
                   placeholder="Username"
-                  name="username"
+                  name="emp_username"
                   onChange={(e) => {
                     setUsername(e.target.value);
                   }}
@@ -84,20 +82,19 @@ function Login() {
                 <Form.Control
                   type="password"
                   placeholder="Password"
-                  name="password"
+                  name="emp_password"
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
                 />
               </Form.Group>
-              <Button variant="primary" type="submit">
+              <Button variant="primary" onClick={loginadmin}>
                 LOGIN
               </Button>
             </Form>
           </Col>
         </Row>
       </Container>
-      <h1>{loginStatus}</h1>
     </>
   );
 }
