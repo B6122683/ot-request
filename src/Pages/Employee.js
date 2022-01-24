@@ -16,7 +16,7 @@ function Employee() {
   const [employeeList, setEmployeeList] = useState([]);
 
   const empList = () => {
-    Axios.get("http://localhost:3333/employee").then((response) => {
+    Axios.get("http://localhost:3333/employeesview").then((response) => {
       setEmployeeList(response.data);
     });
   };
@@ -89,8 +89,8 @@ function Employee() {
                   <td>
                     {val.emp_firstname} {val.emp_surname}
                   </td>
-                  <td>{val.dep_id}</td>
-                  <td>{val.position_id}</td>
+                  <td>{val.dep_name}</td>
+                  <td>{val.position_name}</td>
                   <td>
                     <Image
                       style={{

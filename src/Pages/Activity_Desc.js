@@ -13,7 +13,7 @@ function ActivityDesc() {
     return (
       <Container>
     <div style={{ display: "flex", justifyContent: "left" }}>
-        <Button variant="secondary" style={{margin: "20px"}} >ย้อนกลับ</Button>{" "}
+        <Button variant="secondary" style={{margin: "20px"}}  onClick={() => (window.location.href = "/activity")} >ย้อนกลับ</Button>{" "}
       </div>
         <h1 className='activity'>กิจกรรมทำบุญ บริษัท ประจำปี 2565</h1>
         <h4 style={{ display: "flex", justifyContent: "center" }}>ร่วมทำบุญบริษัท ประจำปี 2565 <br/> ในวันที่ 30 ธันวาคม พ.ศ.2565 <br/>เวลา 8:00 น. เป็นต้นไป </h4>
