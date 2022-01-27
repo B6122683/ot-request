@@ -1,0 +1,55 @@
+ .box {
+
+    color:rgb(255, 255, 255);
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Titillium Web', sans-serif;
+ }
+ .pagetitle {
+    font-weight: 700;
+    font-size: 25vh;
+    margin: 0;
+    line-height: 1;
+    animation: light 4s steps(1) infinite;
+ }
+ .pagetitle + p {
+    font-size: 3vh;
+ }
+ @keyframes light {
+    33% {
+       text-shadow: 0 0 20px #e900fe;
+    }
+    66% {
+       text-shadow: 0 0 20px #6de33c;
+    }
+ }
+
+ #container {
+     position: absolute;
+     top: 20%;
+     left: 10%;
+     right: 10%;
+     bottom: 10%;
+     border-radius: 10px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     background: #151729;
+     box-shadow: 0 15px 30px rgba(0, 0, 0, .5);
+ }
+
+ #container .content p {
+     font-size: 1.2em;
+ }
+ #container .content a {
+     position: relative;
+     display: inline-block;
+     padding: 10px 25px;
+     background: #ff0562;
+     color: #fff;
+     text-decoration: none;
+     margin-top: 25px;
+     border-radius: 25px;
+ }
