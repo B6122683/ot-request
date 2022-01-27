@@ -13,7 +13,10 @@ const saltRounds = 10;
 var jwt = require("jsonwebtoken");
 const secret = "ot-request";
 
-const fileUpload = require('express-fileupload');
+const fileUpload = require("express-fileupload");
+
+const multer = require("multer");
+const path = require("path");
 
 var app = express();
 //app.use(cors());
@@ -27,6 +30,7 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use("/images", express.static("./src/images"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
@@ -113,10 +117,14 @@ app.get("/login", jsonParser, (req, res) => {
 });
 
 app.post("/login", jsonParser, function (req, res, next) {
+  const emp_username = req.body.emp_username;
+  const emp_password = req.body.emp_password;
+
   db.execute(
     "SELECT * FROM employees WHERE emp_username= ?",
-    [req.body.emp_username],
+    [emp_username],
     (err, users) => {
+    
       if (err) {
         res.json({ status: "error", message: err });
         return;
@@ -127,7 +135,7 @@ app.post("/login", jsonParser, function (req, res, next) {
       // }
       if (users.length > 0) {
         bcrypt.compare(
-          req.body.emp_password,
+          emp_password,
           users[0].emp_password,
           function (err, result) {
             if (result) {
@@ -149,7 +157,7 @@ app.post("/login", jsonParser, function (req, res, next) {
           }
         );
       } else {
-        res.send({ message: "User Not Found!" });
+        res.send({ status: "usernotfound", message: "User Not Found!" });
       }
     }
   );
@@ -161,7 +169,7 @@ app.get("/authen", jsonParser, function (req, res, next) {
     var decoded = jwt.verify(token, secret);
     //console.log(decoded.users);
     res.json({ status: "ok", decoded });
-  } catch(err) {
+  } catch (err) {
     res.json({ status: "error", message: err.message });
   }
 });
@@ -513,21 +521,67 @@ app.get("/positionsview", jsonParser, function (req, res) {
 });
 
 //------------------UPLOAD IMAGES-------------------------
-app.post('/upload', (req, res) => {
+app.post("/upload", (req, res) => {
   if (req.files === null) {
-    return res.status(400).json({ msg: 'No file uploaded' });
+    return res.status(400).json({ msg: "No file uploaded" });
   }
 
   const file = req.files.file;
 
-  file.mv(`${__dirname}/public/uploads/${file.name}`, err => {
+  file.mv(`${__dirname}/src/images/${file.name}`, (err) => {
     if (err) {
       console.error(err);
       return res.status(500).send(err);
     }
 
-    res.json({ fileName: file.name, filePath: `/uploads/${file.name}` });
+    res.json({ fileName: file.name, filePath: `/images/${file.name}` });
   });
+});
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/uploads");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + path.extname(file.originalname));
+//   },
+// });
+
+// const uploads = multer({
+//   storage: storage,
+//   limits: { fileSize: "1000000" },
+//   fileFilter: (req, file, cb) => {
+//     const fileTypes = /jpeg|jpg|png|gif/;
+//     const mimeType = fileTypes.test(file.mimetype);
+//     const extname = fileTypes.test(path.extname(file.originalname));
+
+//     if (mimeType && extname) {
+//       return cb(null, true);
+//     }
+//     cb("Give proper files format to upload");
+//   },
+// });
+
+//Add Activity with Photo
+app.post("/addactivity", jsonParser, function (req, res) {
+  db.execute(
+    "INSERT INTO activity (act_name, act_place, act_date, act_time, act_image, act_desc) VALUES (?, ?, ?, ?, ?, ?)",
+    [
+      req.body.act_name,
+      req.body.act_place,
+      req.body.act_date,
+      req.body.act_time,
+      req.body.act_image,
+      req.body.act_desc,
+    ],
+    function (err, results, fields) {
+      if (err) {
+        res.json({ status: "error", message: err });
+        return;
+      }
+      res.json({ status: "ok" });
+    }
+  );
 });
 
 app.listen(3333, () => {

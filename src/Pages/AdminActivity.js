@@ -33,7 +33,11 @@ function AdminActivity() {
       <div style={{ display: "flex", justifyContent: "center" }}></div>
       <Row>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button variant="secondary" style={{ margin: "0px" }} onClick={() => (window.location = "/activitymanagement")}>
+          <Button
+            variant="secondary"
+            style={{ margin: "0px" }}
+            onClick={() => (window.location = "/activitymanagement")}
+          >
             {" "}
             เพิ่ม{" "}
           </Button>{" "}
@@ -54,7 +58,15 @@ function AdminActivity() {
                 <tr className="tbody">
                   <td>{val.act_id}</td>
                   <td>
-                   {val.act_image}
+                    <Image
+                      style={{
+                        height: 100,
+                        width: 100,
+                        display: "block",
+                      }}
+                     alt=""
+                      scr={`localhost:3333/${val.act_image}`}
+                    />
                   </td>
                   <td>{val.act_name}</td>
                   <td>{val.act_desc}</td>

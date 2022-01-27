@@ -35,6 +35,11 @@ function EmployeeManagement() {
   const [roleList, setRoleList] = useState([]);
   const [positionsList, setPositionsList] = useState([]);
 
+  const [previewImg, setPreviewImg] = useState(null);
+  const [previewImgError, setPreviewImgError] = useState("");
+
+  const [displayImg, setDisplaayImg] = useState(null);
+
   const Addemployees = () => {
     Axios.post("http://localhost:3333/employees", {
       emp_firstname: emp_firstname,
@@ -73,14 +78,34 @@ function EmployeeManagement() {
     });
   };
 
+
+  const imgType = ["image/png", "image/jpeg"];
+  const handleImgChange = (e) => {
+    let selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (selectedFile && imgType.includes(selectedFile.type)) {
+        setPreviewImg(URL.createObjectURL(selectedFile));
+        setPreviewImgError("");
+        setEmp_images(selectedFile.name);
+      } else {
+        setPreviewImg(null);
+        setPreviewImgError("please select vlid image type jpeg or png");
+      }
+    } else {
+      console.log("select your file");
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setDisplaayImg(previewImg);
+  };
+
   const dataepartment = () => {
     Axios.get("http://localhost:3333/department").then((response) => {
       setDepartmentList(response.data);
     });
   };
-
-
-
 
   const role = () => {
     Axios.get("http://localhost:3333/role").then((response) => {
@@ -88,14 +113,12 @@ function EmployeeManagement() {
     });
   };
 
-
   const positions = () => {
     Axios.get("http://localhost:3333/positions").then((response) => {
       setPositionsList(response.data);
       console.log(response.data);
     });
   };
-
 
   useEffect(() => {
     
@@ -121,6 +144,15 @@ function EmployeeManagement() {
                 padding: "20px",
               }}
             >
+          <br></br>
+          <input
+            type="file"
+            className="form-control"
+            onChange={handleImgChange}
+          />
+          <button type="submit" className="btn btn-success btn-md" onClick={handleSubmit}>
+            Upload
+          </button>
               <Image
                 style={{
                   height: 100,
