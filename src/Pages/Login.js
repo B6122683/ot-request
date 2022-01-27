@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Axios from "axios";
 import "./Login.css";
+import Swal from "sweetalert2";
 
 function Login() {
   const [emp_username, setUsername] = useState("");
   const [emp_password, setPassword] = useState("");
 
   const [loginStatus, setLoginStatus] = useState("");
+  var username = document.getElementById("username");
+  var password = document.getElementById("password");
 
   // Axios.defaults.withCredentials = true;
 
@@ -19,8 +22,32 @@ function Login() {
       if (response.data.status == "ok") {
         localStorage.setItem("token", response.data.token);
         window.location = "/";
-      } else {
-        alert("login failed");
+      } else if (!emp_username && !emp_password){
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          text: "กรุณากรอกชื่อผู้ใช้!",
+          icon: "error",
+
+        });
+      } else if (!emp_username && emp_password){
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          text: "กรุณากรอกชื่อผู้ใช้!",
+          icon: "error",
+        });
+      } else if (emp_username && !emp_password){
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          text: "กรุณากรอกรหัสผ่าน!",
+          icon: "error",
+        });
+      }
+       else { 
+        Swal.fire({
+          title: "เข้าสู่ระบบไม่สำเร็จ!",
+          text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!",
+          icon: "error",
+        });
       }
       // if (response.data.message) {
       //   alert(response.data.message);
@@ -70,6 +97,7 @@ function Login() {
                 <Form.Label>User Name</Form.Label>
                 <Form.Control
                   type="text"
+                  id="username"
                   placeholder="Username"
                   name="emp_username"
                   onChange={(e) => {
@@ -81,6 +109,7 @@ function Login() {
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
+                  id="password"
                   placeholder="Password"
                   name="emp_password"
                   onChange={(e) => {

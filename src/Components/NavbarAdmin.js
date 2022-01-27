@@ -31,7 +31,7 @@ function NavbarAdmin() {
                   <li key={index} className={item.cName}>
                     <Link to={item.path}>
                       {item.icon}
-                      <span>{item.title}</span>
+                      <span className='spantitle'>{item.title}</span>
                     </Link>
                   </li>
                 );
