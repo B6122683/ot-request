@@ -1,0 +1,20 @@
+
+.addpos {
+    display: flex;
+    align-items: center;
+    font-size: 3rem;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.position {
+
+    padding: 50px 30px 30px 30px  ;
+    background: rgb(255, 255, 255);
+    margin-top: 20px;
+    margin-bottom: 100px;
+    border-radius: 10px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    justify-content: center;
+
+}
