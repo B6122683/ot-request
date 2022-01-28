@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
-import "../App.css";
+import "./OTRequest.css";
 import Axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 
@@ -35,7 +35,7 @@ function OTRequestDesc() {
   return (
     <Container>
       <h1 className="otrequest">รายละเอียดการทำงาน​</h1>
-      <Card>
+      <Card className="bord">
         <Card.Body>
           <Card.Text>
             {otassignList.map((val) => {
@@ -87,21 +87,21 @@ function OTRequestDesc() {
                     <Col className="col-md-4 col-12">
                       <Form.Group controlId="formBasicTextInput">
                         <Form.Label>จำนวนที่รับ :</Form.Label>
-                        {val.ot_apply}คน
+                        {val.ot_apply} คน
                       </Form.Group>
                     </Col>
 
                     <Col className="col-md-4 col-12">
                       <Form.Group controlId="formBasicTextInput">
                         <Form.Label>ยื่นคำขอ :</Form.Label>
-                        {val.ot_request}คน
+                        {val.ot_request} คน
                       </Form.Group>
                     </Col>
 
                     <Col className="col-md-4 col-12">
                       <Form.Group controlId="formBasicTextInput">
                         <Form.Label>เหลือ :</Form.Label>
-                        {val.ot_stump}คน
+                        {val.ot_stump} คน
                       </Form.Group>
                     </Col>
                   </Row>
