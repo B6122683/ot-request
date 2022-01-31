@@ -4,16 +4,18 @@ import * as AiIcons from "react-icons/ai";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
+import { SidebarAdminData } from "./SidebarDataAdmin";
 import "./Navbar.css";
 import { IconContext } from "react-icons";
 import Axios from "axios";
 
-function Navbar() {
+function NavbarUser() {
   const [sidebar, setSidebar] = useState(false);
 
   const showSidebar = () => setSidebar(!sidebar);
   const [emp_id, setEmpId] = useState("");
   const [emp_name, setEmpName] = useState("");
+  const [emp_role, setEmpRole] = useState("");
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
@@ -31,6 +33,7 @@ function Navbar() {
             " " +
             response.data.decoded.user.emp_surname
         );
+        setEmpRole(response.data.decoded.user.role_id);
       }
     });
   };
@@ -56,7 +59,13 @@ function Navbar() {
           <div className="d-flex" style={{ justifyContent: "flex-end" }}>
             {emp_id != "" ? (
               <>
-                <p style={{ color: "white", margin: "auto 30px", fontSize: "18px"}}>
+                <p
+                  style={{
+                    color: "white",
+                    margin: "auto 30px",
+                    fontSize: "18px",
+                  }}
+                >
                   {emp_name}
                 </p>
                 <Button
@@ -87,16 +96,34 @@ function Navbar() {
                 <AiIcons.AiOutlineClose />
               </Link>
             </li>
-            {SidebarData.map((item, index) => {
-              return (
-                <li key={index} className={item.cName}>
-                  <Link to={item.path}>
-                    {item.icon}
-                    <span className="spantitle">{item.title}</span>
-                  </Link>
-                </li>
-              );
-            })}
+            {emp_role == 1 && (
+              <>
+                {SidebarAdminData.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <Link to={item.path}>
+                        {item.icon}
+                        <span className="spantitle">{item.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </>
+            )}
+            {emp_role == 2 && (
+              <>
+                {SidebarData.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <Link to={item.path}>
+                        {item.icon}
+                        <span className="spantitle">{item.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </>
+            )}
           </ul>
         </nav>
       </IconContext.Provider>
@@ -104,4 +131,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default NavbarUser;

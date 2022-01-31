@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
+import {
+  Container,
+  Row,
+  Col,
+  Table,
+  Button,
+  Image,
+  Form,
+} from "react-bootstrap";
 import * as GrIcons from "react-icons/gr";
 import "../App.css";
-import Image from "react-bootstrap/Image";
 import images1 from "../images/edit.png";
 import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
@@ -14,6 +17,9 @@ import Axios from "axios";
 
 function Employee() {
   const [employeeList, setEmployeeList] = useState([]);
+  const [dep_name, setDepName] = useState("");
+  const [position_name, setPositionName] = useState("");
+
 
   const empList = () => {
     Axios.get("http://localhost:3333/employeesview").then((response) => {
@@ -49,9 +55,14 @@ function Employee() {
     });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location = "/login";
+  const searchByDepAndPos = (dep, pos) => {
+    // Axios.post(`http://localhost:3333/employees/${id}`).then((response) => {
+    //   setEmployeeList(
+    //     employeeList.filter((val) => {
+    //       return val.emp_id != id;
+    //     })
+    //   );
+    // });
   };
 
   useEffect(() => {
@@ -62,37 +73,43 @@ function Employee() {
   return (
     <Container>
       <h1 className="attendance">ข้อมูลพนักงาน</h1>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <form>
-          <label style={{ margin: "10px" }}>
-            ค้นหาจาก แผนก
-            <input
-              style={{ margin: "10px", borderRadius: "5px" }}
-              type="text"
-              name="department"
-            />
-          </label>
-          <label style={{ margin: "10px" }}>
-            ตำแหน่ง
-            <input
-              style={{ margin: "10px", borderRadius: "5px" }}
-              type="text"
-              name="position"
-            />
-          </label>
-        </form>
+      <div style={{ justifyContent: "center" }}>
+        <Row className="col-md-12 col-12" aria-colspan={2}>
+          <Col className="col-md-6 col-12">
+            <Form.Group className="mb-3">
+              <Form.Label>ค้นหาจาก แผนก</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="กรอกแผนก"
+                name="dep_name"
+                onChange={(e) => {
+                  setDepName(e.target.value);
+                }}
+              />
+            </Form.Group>
+          </Col>
+          <Col className="col-md-6 col-12">
+            <Form.Group className="mb-3">
+              <Form.Label>ค้นหาจาก ตำแหน่ง</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="กรอกตำแหน่ง"
+                name="position_name"
+                onChange={(e) => {
+                  setPositionName(e.target.value);
+                }}
+              />
+            </Form.Group>
+          </Col>
+          <Col className="col-md-12 col-12" style={{ display: "flex", justifyContent: "center" }}>
+            <Button variant="primary" onClick={(dep, pos) => searchByDepAndPos}>
+              {" "}
+              ค้นหา{" "}
+            </Button>{" "}
+          </Col>
+        </Row>
       </div>
       <Row>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button
-            variant="danger"
-            style={{ margin: "0px" }}
-            onClick={handleLogout}
-          >
-            {" "}
-            ออกจากระบบ{" "}
-          </Button>{" "}
-        </div>
         <div style={{ display: "flex", justifyContent: "right" }}>
           <Button
             variant="secondary"
@@ -119,7 +136,17 @@ function Employee() {
               <tbody>
                 <tr className="tbody">
                   <td>{val.emp_id}</td>
-                  <td></td>
+                  <td>
+                  <Image
+                      style={{
+                        height: "100px",
+                        width: "60%",
+                        objectFit: "cover",
+                        margin: "5px",
+                      }}
+                      alt=""
+                      src={val.emp_images}
+                    /></td>
                   <td>
                     {val.emp_firstname} {val.emp_surname}
                   </td>

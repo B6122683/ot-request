@@ -14,6 +14,7 @@ import Axios from "axios";
 
 function AdminOT() {
   const [otassignList, setOtassignList] = useState([]);
+  const [role_id, setRole] = useState("");
 
   const otassign = () => {
     Axios.get("http://localhost:3333/otassignview").then((response) => {
@@ -21,8 +22,24 @@ function AdminOT() {
     });
   };
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+
+    Axios.get("/authen", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      console.log(response);
+      if (response.data.decoded.user.role_id != 1) {
+        window.location = "/";
+      }
+    });
+  };
+
   useEffect(() => {
     otassign();
+    getAuth();
   }, []);
 
   return (

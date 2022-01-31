@@ -22,27 +22,25 @@ function Login() {
       if (response.data.status == "ok") {
         localStorage.setItem("token", response.data.token);
         window.location = "/";
-      } else if (!emp_username && !emp_password){
-        Swal.fire({
-          title: "เกิดข้อผิดพลาด!",
-          text: "กรุณากรอกชื่อผู้ใช้!",
-          icon: "error",
-
-        });
-      } else if (!emp_username && emp_password){
+      } else if (!emp_username && !emp_password) {
         Swal.fire({
           title: "เกิดข้อผิดพลาด!",
           text: "กรุณากรอกชื่อผู้ใช้!",
           icon: "error",
         });
-      } else if (emp_username && !emp_password){
+      } else if (!emp_username && emp_password) {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          text: "กรุณากรอกชื่อผู้ใช้!",
+          icon: "error",
+        });
+      } else if (emp_username && !emp_password) {
         Swal.fire({
           title: "เกิดข้อผิดพลาด!",
           text: "กรุณากรอกรหัสผ่าน!",
           icon: "error",
         });
-      }
-       else { 
+      } else {
         Swal.fire({
           title: "เข้าสู่ระบบไม่สำเร็จ!",
           text: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!",
@@ -88,38 +86,44 @@ function Login() {
   return (
     <>
       <Container>
-        <Row className="logincard">
+        <Row className="logincard p-3 p-md-3 col-md-10 col-10">
           <Col className="loginleft col-md-6 d-md-block d-none"></Col>
-          <Col className="loginright col-md-6">
-            <h2 style={{ textAlign: "center" }}>Login</h2>
+          <Col className="loginright col-md-6 py-5 px-4 p-md-5">
+            <h2 style={{ textAlign: "center" }}>เข้าสู่ระบบ</h2>
             <Form>
-              <Form.Group className="mb-3" controlId="formBasicUsername">
-                <Form.Label>User Name</Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label>ชื่อผู้ใช้</Form.Label>
                 <Form.Control
                   type="text"
                   id="username"
-                  placeholder="Username"
+                  placeholder="กรอกชื่อผู้ใช้"
                   name="emp_username"
                   onChange={(e) => {
                     setUsername(e.target.value);
                   }}
                 />
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicPassword">
-                <Form.Label>Password</Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label>รหัสผ่าน</Form.Label>
                 <Form.Control
                   type="password"
                   id="password"
-                  placeholder="Password"
+                  placeholder="กรอกรหัสผ่าน"
                   name="emp_password"
                   onChange={(e) => {
                     setPassword(e.target.value);
                   }}
                 />
               </Form.Group>
-              <Button variant="primary" onClick={loginadmin}>
-                LOGIN
-              </Button>
+              <Form.Group className="my-4">
+                <Button
+                  variant="primary"
+                  style={{ width: "100%" }}
+                  onClick={loginadmin}
+                >
+                  เข้าสู่ระบบ
+                </Button>
+              </Form.Group>
             </Form>
           </Col>
         </Row>

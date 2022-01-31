@@ -23,6 +23,16 @@
     margin-left: 5px;
 }
 
+.preview-box{
+    background-image: url('http://cdn.onlinewebfonts.com/svg/img_24787.png');
+    background-size: 100%;
+    width: 120px;
+    height: 120px;
+    background-color: #ffffff !important;
+    background-repeat: no-repeat;
+
+}
+
 .wrapper .display-and-preview-box{
     width: 100%;
     display: flex;

@@ -14,6 +14,8 @@ import act1 from "../images/act1.jpg";
 import act2 from "../images/act2.jpg";
 import Axios from "axios";
 
+
+
 function AdminActivity() {
   const [activityList, setActivityList] = useState([]);
 
@@ -33,7 +35,11 @@ function AdminActivity() {
       <div style={{ display: "flex", justifyContent: "center" }}></div>
       <Row>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button variant="secondary" style={{ margin: "0px" }} onClick={() => (window.location = "/activitymanagement")}>
+          <Button
+            variant="secondary"
+            style={{ margin: "0px" }}
+            onClick={() => (window.location = "/activitymanagement")}
+          >
             {" "}
             เพิ่ม{" "}
           </Button>{" "}
@@ -54,7 +60,16 @@ function AdminActivity() {
                 <tr className="tbody">
                   <td>{val.act_id}</td>
                   <td>
-                   {val.act_image}
+                  <Image
+                      style={{
+                        height: 30,
+                        width: 30,
+                        objectFit: "cover",
+                        margin: "5px",
+                      }}
+                      alt="file"
+                      src={val.act_image}
+                    />
                   </td>
                   <td>{val.act_name}</td>
                   <td>{val.act_desc}</td>

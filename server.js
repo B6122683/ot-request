@@ -13,7 +13,10 @@ const saltRounds = 10;
 var jwt = require("jsonwebtoken");
 const secret = "ot-request";
 
-const fileUpload = require('express-fileupload');
+const fileUpload = require("express-fileupload");
+
+const multer = require("multer");
+const path = require("path");
 
 var app = express();
 //app.use(cors());
@@ -27,6 +30,7 @@ app.use(
   })
 );
 app.use(cookieParser());
+app.use("/images", express.static("./src/images"));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(
@@ -76,7 +80,7 @@ app.get("/employee/:emp_id", jsonParser, function (req, res) {
   );
 });
 
-//Add Employees (Register)
+//Add Employees (Register) AND PHOTO
 app.post("/register", jsonParser, function (req, res) {
   bcrypt.hash(req.body.emp_password, saltRounds, function (err, hash) {
     db.execute(
@@ -113,10 +117,14 @@ app.get("/login", jsonParser, (req, res) => {
 });
 
 app.post("/login", jsonParser, function (req, res, next) {
+  const emp_username = req.body.emp_username;
+  const emp_password = req.body.emp_password;
+
   db.execute(
     "SELECT * FROM employees WHERE emp_username= ?",
-    [req.body.emp_username],
+    [emp_username],
     (err, users) => {
+    
       if (err) {
         res.json({ status: "error", message: err });
         return;
@@ -127,7 +135,7 @@ app.post("/login", jsonParser, function (req, res, next) {
       // }
       if (users.length > 0) {
         bcrypt.compare(
-          req.body.emp_password,
+          emp_password,
           users[0].emp_password,
           function (err, result) {
             if (result) {
@@ -149,7 +157,7 @@ app.post("/login", jsonParser, function (req, res, next) {
           }
         );
       } else {
-        res.send({ message: "User Not Found!" });
+        res.send({ status: "usernotfound", message: "User Not Found!" });
       }
     }
   );
@@ -161,7 +169,7 @@ app.get("/authen", jsonParser, function (req, res, next) {
     var decoded = jwt.verify(token, secret);
     //console.log(decoded.users);
     res.json({ status: "ok", decoded });
-  } catch(err) {
+  } catch (err) {
     res.json({ status: "error", message: err.message });
   }
 });
@@ -280,11 +288,11 @@ app.get("/activity", jsonParser, function (req, res) {
   });
 });
 
-//ADD EMPLOYEES
+//ADD EMPLOYEES WITH PHOTO
 app.post("/employees", jsonParser, function (req, res) {
   bcrypt.hash(req.body.emp_password, saltRounds, function (err, hash) {
     db.execute(
-      "INSERT INTO employees (emp_firstname, emp_surname, emp_address, emp_tel, emp_email, emp_username, emp_password, dep_id, role_id, emp_card_id, emp_dob, emp_images, position_id, create_at, update_at, record_status, emp_gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, NOW(), NOW(), '1', ?)",
+      "INSERT INTO employees (emp_firstname, emp_surname, emp_address, emp_tel, emp_email, emp_username, emp_password, dep_id, role_id, emp_card_id, emp_dob, emp_images, position_id, create_at, update_at, record_status, emp_gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), '1', ?)",
       [
         req.body.emp_firstname,
         req.body.emp_surname,
@@ -297,6 +305,7 @@ app.post("/employees", jsonParser, function (req, res) {
         req.body.role_id,
         req.body.emp_card_id,
         req.body.emp_dob,
+        req.body.emp_images,
         req.body.position_id,
         req.body.emp_gender,
       ],
@@ -329,7 +338,7 @@ app.delete("/employees/:emp_id", jsonParser, function (req, res) {
 //SELECT DATA IN EMPLOYEES
 app.get("/employeesview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,department.dep_name,positions.position_name FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
+    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,department.dep_name,positions.position_name,employees.emp_images FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -392,7 +401,7 @@ app.post("/otassignment", jsonParser, function (req, res) {
 //SELECT DATA IN OT_ASSIGNMENT
 app.get("/otassignview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.ot_id = department.dep_id",
+    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -513,21 +522,82 @@ app.get("/positionsview", jsonParser, function (req, res) {
 });
 
 //------------------UPLOAD IMAGES-------------------------
-app.post('/upload', (req, res) => {
+app.post("/upload", (req, res) => {
   if (req.files === null) {
-    return res.status(400).json({ msg: 'No file uploaded' });
+    return res.status(400).json({ msg: "No file uploaded" });
   }
 
   const file = req.files.file;
 
-  file.mv(`${__dirname}/public/uploads/${file.name}`, err => {
+  file.mv(`${__dirname}/src/images/${file.name}`, (err) => {
     if (err) {
       console.error(err);
       return res.status(500).send(err);
     }
 
-    res.json({ fileName: file.name, filePath: `/uploads/${file.name}` });
+    res.json({ fileName: file.name, filePath: `/images/${file.name}` });
   });
+});
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "./public/uploads");
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, Date.now() + path.extname(file.originalname));
+//   },
+// });
+
+// const uploads = multer({
+//   storage: storage,
+//   limits: { fileSize: "1000000" },
+//   fileFilter: (req, file, cb) => {
+//     const fileTypes = /jpeg|jpg|png|gif/;
+//     const mimeType = fileTypes.test(file.mimetype);
+//     const extname = fileTypes.test(path.extname(file.originalname));
+
+//     if (mimeType && extname) {
+//       return cb(null, true);
+//     }
+//     cb("Give proper files format to upload");
+//   },
+// });
+
+//Add Activity with Photo
+app.post("/addactivity", jsonParser, function (req, res) {
+  db.execute(
+    "INSERT INTO activity (act_name, act_place, act_date, act_time, act_image, act_desc) VALUES (?, ?, ?, ?, ?, ?)",
+    [
+      req.body.act_name,
+      req.body.act_place,
+      req.body.act_date,
+      req.body.act_time,
+      req.body.act_image,
+      req.body.act_desc,
+    ],
+    function (err, results, fields) {
+      if (err) {
+        res.json({ status: "error", message: err });
+        return;
+      }
+      res.json({ status: "ok" });
+    }
+  );
+});
+
+//GET ACT BY ID
+app.get("/activity/:act_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT activity.act_id,activity.act_name,activity.act_desc,activity.act_image,activity.act_date,activity.act_time,activity.act_place FROM activity WHERE act_id = ?",
+    [req.params.act_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.listen(3333, () => {

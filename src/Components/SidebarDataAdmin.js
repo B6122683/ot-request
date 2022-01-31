@@ -3,7 +3,7 @@ import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 
 
-export const SidebarData = [
+export const SidebarAdminData = [
   {
     title: 'หน้าหลัก',
     path: '/',
@@ -23,7 +23,7 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'จัดการคำขอ OT',
+    title: 'จัดการคำขอทำงานล่วงเวลา',
     path: '/manageotrequest',
     icon: <FaIcons.FaIdBadge />,
     cName: 'nav-text'
@@ -41,8 +41,8 @@ export const SidebarData = [
     cName: 'nav-text'
   },
   {
-    title: 'กิจกรรม',
-    path: '/activity',
+    title: 'จัดการกิจกรรม',
+    path: '/adminactivity',
     icon: <FaIcons.FaGift />,
     cName: 'nav-text'
   },

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
-import "../App.css";
+import "./OTRequest.css";
 import Axios from "axios";
-import { useHistory, useParams } from 'react-router-dom';
-
+import { useHistory, useParams } from "react-router-dom";
+import moment from "moment/min/moment-with-locales";
 
 function OTRequestDesc() {
   const [modalShow, setModalShow] = useState(false);
@@ -14,10 +14,12 @@ function OTRequestDesc() {
   const { ot_id } = useParams();
 
   const otassign = () => {
-    Axios.get(`http://localhost:3333/otassignment/${ot_id}`).then((response) => {
-      setOtassignList(response.data);
-      console.log(response.data);
-    });
+    Axios.get(`http://localhost:3333/otassignment/${ot_id}`).then(
+      (response) => {
+        setOtassignList(response.data);
+        console.log(response.data);
+      }
+    );
   };
 
   useEffect(() => {
@@ -34,81 +36,79 @@ function OTRequestDesc() {
   return (
     <Container>
       <h1 className="otrequest">รายละเอียดการทำงาน​</h1>
-      <Card>
+      <Card className="bord">
         <Card.Body>
           <Card.Text>
             {otassignList.map((val) => {
-          return (
-          <Row className="col-md-12" style={{ marginTop: '30px' }}>
-                <Col className="col-12">
-                <Form.Group controlId="formBasicTextInput">
-                  <Form.Label>ชื่องาน : </Form.Label>
-                  {val.ot_name}
-                </Form.Group>
-              </Col>
+              return (
+                <Row className="col-md-12" style={{ marginTop: "30px" }}>
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>ชื่องาน : </Form.Label>
+                      {val.ot_name}
+                    </Form.Group>
+                  </Col>
 
-              <Col className="col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>แผนก : </Form.Label>
-                {val.dep_name}
-              </Form.Group>
-              </Col>
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>แผนก : </Form.Label>
+                      {val.dep_name}
+                    </Form.Group>
+                  </Col>
 
-              <Col className="col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>รายละเอียด : </Form.Label>
-                {val.ot_desc}
-              </Form.Group>
-              </Col>
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>รายละเอียด : </Form.Label>
+                      {val.ot_desc}
+                    </Form.Group>
+                  </Col>
 
-              <Col className="col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>วัน/เวลา เริ่ม : </Form.Label>
-                {val.ot_starttime}
-              </Form.Group>
-              </Col>
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>วัน/เวลา เริ่ม : </Form.Label>
+                      {moment(val.ot_starttime).locale('th').format('LLLL')} น.
+                    </Form.Group>
+                  </Col>
 
-              <Col className="col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>วัน/เวลา เสร็จสิ้น : </Form.Label>
-                {val.ot_finishtime}
-              </Form.Group>
-              </Col>
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>วัน/เวลา เสร็จสิ้น : </Form.Label>
+                      {moment(val.ot_finishtime).locale('th').format('LLLL')} น.
+                    </Form.Group>
+                  </Col>
 
-              <Col className="col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>รวมเวลา OT : </Form.Label>
-                {val.summary}
-              </Form.Group>
-              </Col>
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>รวมเวลา OT : </Form.Label>
+                      {val.summary}
+                    </Form.Group>
+                  </Col>
 
-              <Row className="col-md-12 ">
-            <Col className="col-md-4 col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>จำนวนที่รับ :</Form.Label>
-                {val.ot_apply}คน
-              </Form.Group>
-            </Col>
+                  <Row className="col-md-12 ">
+                    <Col className="col-md-4 col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>จำนวนที่รับ :</Form.Label>
+                        {val.ot_apply} คน
+                      </Form.Group>
+                    </Col>
 
-            <Col className="col-md-4 col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>ยื่นคำขอ :</Form.Label>
-                {val.ot_request}คน
-              </Form.Group>
-            </Col>
+                    <Col className="col-md-4 col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>ยื่นคำขอ :</Form.Label>
+                        {val.ot_request} คน
+                      </Form.Group>
+                    </Col>
 
-            <Col className="col-md-4 col-12">
-              <Form.Group controlId="formBasicTextInput">
-                <Form.Label>เหลือ :</Form.Label>
-                {val.ot_stump}คน
-              </Form.Group>
-            </Col>
-            </Row>
-
-            </Row>
-
-               );
-              })}
+                    <Col className="col-md-4 col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>เหลือ :</Form.Label>
+                        {val.ot_stump} คน
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                </Row>
+              );
+            })}
           </Card.Text>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button
