@@ -23,7 +23,7 @@ export const SidebarAdminData = [
     cName: 'nav-text'
   },
   {
-    title: 'จัดการคำขอ OT',
+    title: 'จัดการคำขอทำงานล่วงเวลา',
     path: '/manageotrequest',
     icon: <FaIcons.FaIdBadge />,
     cName: 'nav-text'
@@ -41,8 +41,8 @@ export const SidebarAdminData = [
     cName: 'nav-text'
   },
   {
-    title: 'กิจกรรม',
-    path: '/activity',
+    title: 'จัดการกิจกรรม',
+    path: '/adminactivity',
     icon: <FaIcons.FaGift />,
     cName: 'nav-text'
   },

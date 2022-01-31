@@ -34,11 +34,6 @@ function Home() {
     });
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location = "/login";
-  };
-
   useEffect(() => {
     getAuth();
   }, []);
@@ -49,16 +44,6 @@ function Home() {
       <Container>
         <h1 className="home">สวัสดี คุณ {emp_name}</h1>
       </Container>
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button
-          variant="danger"
-          style={{ margin: "0px" }}
-          onClick={handleLogout}
-        >
-          {" "}
-          ออกจากระบบ{" "}
-        </Button>{" "}
-      </div>
       {role_id === 1 && <ReactStyle />}
     </>
   );

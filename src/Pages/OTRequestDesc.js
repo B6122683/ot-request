@@ -4,6 +4,7 @@ import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
 import "./OTRequest.css";
 import Axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
+import moment from "moment/min/moment-with-locales";
 
 function OTRequestDesc() {
   const [modalShow, setModalShow] = useState(false);
@@ -65,14 +66,14 @@ function OTRequestDesc() {
                   <Col className="col-12">
                     <Form.Group controlId="formBasicTextInput">
                       <Form.Label>วัน/เวลา เริ่ม : </Form.Label>
-                      {val.ot_starttime}
+                      {moment(val.ot_starttime).locale('th').format('LLLL')} น.
                     </Form.Group>
                   </Col>
 
                   <Col className="col-12">
                     <Form.Group controlId="formBasicTextInput">
                       <Form.Label>วัน/เวลา เสร็จสิ้น : </Form.Label>
-                      {val.ot_finishtime}
+                      {moment(val.ot_finishtime).locale('th').format('LLLL')} น.
                     </Form.Group>
                   </Col>
 

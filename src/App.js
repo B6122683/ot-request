@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Navbar from './Components/Navbar';
+import NavbarUser from './Components/NavbarUser';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home';
 import Attendance from './Pages/Attendance';
@@ -30,7 +31,8 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar />
+      {window.location.pathname !== '/login' && <NavbarUser />}
+        
         <Routes>
           <Route exact path="/" element={<Home/>}/>
           <Route exact path="/attendance" element={<Attendance/>}/>
@@ -49,7 +51,7 @@ function App() {
           <Route exact path="/positionmanagement" element={<PositionManagement/>}/>
           <Route exact path="/otmanagement" element={<OTManagement/>}/>
           <Route exact path="/permission" element={<Permission/>}/>
-          <Route exact path="/calendaroffice" element={<CalendarOffice/>}/>
+          <Route exact path="/officecalendar" element={<CalendarOffice/>}/>
           <Route exact path="/adminactivity" element={<AdminActivity/>}/>
           <Route exact path="/activitymanagement" element={<ActivityManagement/>}/>
           <Route exact path="/adminot" element={<AdminOT/>}/>
