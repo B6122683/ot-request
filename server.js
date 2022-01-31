@@ -80,7 +80,7 @@ app.get("/employee/:emp_id", jsonParser, function (req, res) {
   );
 });
 
-//Add Employees (Register)
+//Add Employees (Register) AND PHOTO
 app.post("/register", jsonParser, function (req, res) {
   bcrypt.hash(req.body.emp_password, saltRounds, function (err, hash) {
     db.execute(
@@ -288,11 +288,11 @@ app.get("/activity", jsonParser, function (req, res) {
   });
 });
 
-//ADD EMPLOYEES
+//ADD EMPLOYEES WITH PHOTO
 app.post("/employees", jsonParser, function (req, res) {
   bcrypt.hash(req.body.emp_password, saltRounds, function (err, hash) {
     db.execute(
-      "INSERT INTO employees (emp_firstname, emp_surname, emp_address, emp_tel, emp_email, emp_username, emp_password, dep_id, role_id, emp_card_id, emp_dob, emp_images, position_id, create_at, update_at, record_status, emp_gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', ?, NOW(), NOW(), '1', ?)",
+      "INSERT INTO employees (emp_firstname, emp_surname, emp_address, emp_tel, emp_email, emp_username, emp_password, dep_id, role_id, emp_card_id, emp_dob, emp_images, position_id, create_at, update_at, record_status, emp_gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), '1', ?)",
       [
         req.body.emp_firstname,
         req.body.emp_surname,
@@ -305,6 +305,7 @@ app.post("/employees", jsonParser, function (req, res) {
         req.body.role_id,
         req.body.emp_card_id,
         req.body.emp_dob,
+        req.body.emp_images,
         req.body.position_id,
         req.body.emp_gender,
       ],
@@ -337,7 +338,7 @@ app.delete("/employees/:emp_id", jsonParser, function (req, res) {
 //SELECT DATA IN EMPLOYEES
 app.get("/employeesview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,department.dep_name,positions.position_name FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
+    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,department.dep_name,positions.position_name,employees.emp_images FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -400,7 +401,7 @@ app.post("/otassignment", jsonParser, function (req, res) {
 //SELECT DATA IN OT_ASSIGNMENT
 app.get("/otassignview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.ot_id = department.dep_id",
+    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -580,6 +581,21 @@ app.post("/addactivity", jsonParser, function (req, res) {
         return;
       }
       res.json({ status: "ok" });
+    }
+  );
+});
+
+//GET ACT BY ID
+app.get("/activity/:act_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT activity.act_id,activity.act_name,activity.act_desc,activity.act_image,activity.act_date,activity.act_time,activity.act_place FROM activity WHERE act_id = ?",
+    [req.params.act_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
     }
   );
 });
