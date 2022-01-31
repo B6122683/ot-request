@@ -26,6 +26,7 @@ import ActivityManagement from './Pages/ActivityManagement';
 import AdminOT from './Pages/AdminOT';
 import AdminOTManagement from './Pages/AdminOTManagement';
 import Upload from './Pages/upload';
+import Pagenotfound from './Pages/Pagenotfound';
 
 function App() {
   return (
@@ -42,7 +43,7 @@ function App() {
           <Route exact path="/login" element={<Login/>}/>
           <Route exact path="/logintest" element={<LoginTest/>}/>
           <Route exact path="/activity" element={<Activity/>}/>
-          <Route exact path="/activityDesc" element={<ActivityDesc/>}/>
+          <Route exact path="/activityDesc/:act_id" element={<ActivityDesc/>}/>
           <Route exact path="/employee" element={<Employee/>}/>
           <Route exact path="/employeemanagement" element={<EmployeeManagement/>}/>
           <Route exact path="/department" element={<Department/>}/>
@@ -57,6 +58,7 @@ function App() {
           <Route exact path="/adminot" element={<AdminOT/>}/>
           <Route exact path="/upload" element={<Upload/>}/>
           <Route exact path="/adminotmanagement" element={<AdminOTManagement/>}/>
+          <Route path='*' exact={true}  element={<Pagenotfound/>}/>
         </Routes>
       </Router>
     </>

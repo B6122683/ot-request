@@ -20,6 +20,8 @@ function ActivityManagement() {
   const [file, setFile] = useState("");
   const [filename, setFilename] = useState("Choose File");
   const [uploadedFile, setUploadedFile] = useState({});
+  const [previewImg, setPreviewImg] = useState(null);
+  const [displayImg, setDisplaayImg] = useState(null);
 
   const [activity, setActivity] = useState("");
   const [ActivityList, setActivityList] = useState([]);
@@ -29,6 +31,7 @@ function ActivityManagement() {
     setFile(e.target.files[0]);
     setFilename(e.target.files[0].name);
     setAct_image(e.target.files[0].name);
+    setPreviewImg(URL.createObjectURL(e.target.files[0]));
   };
 
   // const Addactivity = () => {
@@ -86,7 +89,7 @@ function ActivityManagement() {
         <Container>
           <Row className="activity">
             <Form encType="multipart/form-data" onSubmit={Addactivity}>
-              {/* <div
+              <div
                 style={{
                   display: "flex",
                   justifyContent: "center",
@@ -100,33 +103,40 @@ function ActivityManagement() {
                     marginBlock: "13px",
                   }}
                   alt=""
-                  src={act_image == "" ? addimage : act_image}
+                  src={act_image == "" ? addimage : previewImg}
                 />
-              </div> */}
-
-              <Form.Group controlId="fileName" className="mb-3">
-                <Form.Label>Upload Image</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="act_image"
-                  onChange={onChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="col-mb-12" controlId="formBasicTextInput">
-                <Form.Label>ชื่อกิจกรรม</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="กรอกชื่อกิจกรรม"
-                  name="act_name"
-                  onChange={(e) => {
-                    setAct_name(e.target.value);
-                  }}
-                />
-              </Form.Group>
+              </div>
 
               <Row className="col-mb-12 ">
-                <Form.Group className="col-md-6 col-12">
+                <Form.Group controlId="fileName" className="mb-3">
+                  <Form.Label>Upload Image</Form.Label>
+                  <Form.Control
+                    type="file"
+                    name="act_image"
+                    onChange={onChange}
+                  />
+                </Form.Group>
+              </Row>
+
+              <Row className="col-mb-12 ">
+                <Form.Group
+                  className="col-mb-12"
+                  controlId="formBasicTextInput"
+                >
+                  <Form.Label>ชื่อกิจกรรม</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="กรอกชื่อกิจกรรม"
+                    name="act_name"
+                    onChange={(e) => {
+                      setAct_name(e.target.value);
+                    }}
+                  />
+                </Form.Group>
+              </Row>
+
+              <Row className="col-mb-12 ">
+                <Form.Group className="col-md-6">
                   <Form.Label>วันที่</Form.Label>
                   <Form.Control
                     type="date"
@@ -138,7 +148,7 @@ function ActivityManagement() {
                   />
                 </Form.Group>
 
-                <Form.Group className="col-md-6 col-12">
+                <Form.Group className="col-md-6">
                   <Form.Label>เวลา</Form.Label>
                   <Form.Control
                     type="time"
@@ -151,29 +161,39 @@ function ActivityManagement() {
                 </Form.Group>
               </Row>
 
-              <Form.Group className="col-mb-12" controlId="formBasicTextInput">
-                <Form.Label>สถานที่</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="กรอกสถานที่"
-                  name="act_place"
-                  onChange={(e) => {
-                    setAct_place(e.target.value);
-                  }}
-                />
-              </Form.Group>
+              <Row className="col-mb-12 ">
+                <Form.Group
+                  className="col-mb-12"
+                  controlId="formBasicTextInput"
+                >
+                  <Form.Label>สถานที่</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="กรอกสถานที่"
+                    name="act_place"
+                    onChange={(e) => {
+                      setAct_place(e.target.value);
+                    }}
+                  />
+                </Form.Group>
+              </Row>
 
-              <Form.Group className="col-mb-12" controlId="formBasicTextInput">
-                <Form.Label>รายละเอียด</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="กรอกรายละเอียด"
-                  name="act_desc"
-                  onChange={(e) => {
-                    setAct_desc(e.target.value);
-                  }}
-                />
-              </Form.Group>
+              <Row className="col-mb-12 ">
+                <Form.Group
+                  className="col-mb-12"
+                  controlId="formBasicTextInput"
+                >
+                  <Form.Label>รายละเอียด</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="กรอกรายละเอียด"
+                    name="act_desc"
+                    onChange={(e) => {
+                      setAct_desc(e.target.value);
+                    }}
+                  />
+                </Form.Group>
+              </Row>
 
               <div
                 style={{

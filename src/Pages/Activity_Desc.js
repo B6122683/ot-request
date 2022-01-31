@@ -1,40 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Image from 'react-bootstrap/Image'
-import "../App.css";
-import images1 from '../images/act1.jpg';
-import images2 from '../images/act2.jpg';
-import images3 from '../images/act3.jpg';
-import Button from "react-bootstrap/Button";
+import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
+import Image from "react-bootstrap/Image";
+import "./Activity.css";
+import Axios from "axios";
+import { useHistory, useParams } from "react-router-dom";
 
 function ActivityDesc() {
-    return (
-      <Container>
-    <div style={{ display: "flex", justifyContent: "left" }}>
-        <Button variant="secondary" style={{margin: "20px"}}  onClick={() => (window.location.href = "/activity")} >ย้อนกลับ</Button>{" "}
-      </div>
-        <h1 className='activity'>กิจกรรมทำบุญ บริษัท ประจำปี 2565</h1>
-        <h4 style={{ display: "flex", justifyContent: "center" }}>ร่วมทำบุญบริษัท ประจำปี 2565 <br/> ในวันที่ 30 ธันวาคม พ.ศ.2565 <br/>เวลา 8:00 น. เป็นต้นไป </h4>
-        <ReactStyle />
-      </Container>
-        
-      
-    );
-  }
+  const [activityList, setActivityList] = useState([]);
+  const { act_id } = useParams();
 
-  const ReactStyle = () => (
+  const activity = () => {
+    Axios.get(`http://localhost:3333/activity/${act_id}`).then((response) => {
+      setActivityList(response.data);
+      console.log(response.data);
+    });
+  };
+
+  useEffect(() => {
+    activity();
+  }, []);
+
+  return (
     <Container>
-      <Row>
+      {activityList.map((val) => {
+        return (
+          <div className="actpadding">
+            <h1 className="desctitle">{val.act_name}</h1>
+            <Card className="bord">
+                  <Row className="col-md-12" >
+                  <Col className="col-12">
+                    <Form.Group controlId="formBasicTextInput" >
+                    <Form.Group controlId="formBasicTextInput" style={{display: "flex", justifyContent: "center"}}>
+                      <Form.Label>สถานที่ : </Form.Label>
+                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_place}</p>
+                      <Form.Label>ในวันที่ : </Form.Label>
+                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_date}</p>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicTextInput" style={{display: "flex", justifyContent: "center"}}>
+                      <Form.Label>เวลา : </Form.Label>
+                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_time}</p>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicTextInput" style={{display: "flex", justifyContent: "center"}}>
+                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_desc}</p>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicTextInput" style={{ marginTop: "30px", display: "flex", justifyContent: "center" }} >
+                    <Image 
+                          style={{width: "50%", height: "100%"}}
+                          class="desc_image"
+                          src={`http://localhost:3333/${val.act_image}`}
+                        />
+                        </Form.Group>
+                  </Form.Group>
+                
 
-        <Image style={{height: '100%', width: '100%', objectFit: 'cover', margin: '5px'}} alt= "" src={images1} />
-       
-        
-        </Row>
-        </Container>
-);
-
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <Button
+                        variant="danger"
+                        onClick={() => (window.location.href = "/activity")}
+                        style={{ margin: "10px" }}
+                      >
+                        ย้อนกลับ
+                      </Button>
+                    </div>
+                    
+                    </Col>
+                  </Row>
+            </Card>
+          </div>
+        );
+      })}
+    </Container>
+  );
+}
 
 export default ActivityDesc;
-  

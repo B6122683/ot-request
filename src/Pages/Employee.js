@@ -136,7 +136,17 @@ function Employee() {
               <tbody>
                 <tr className="tbody">
                   <td>{val.emp_id}</td>
-                  <td></td>
+                  <td>
+                  <Image
+                      style={{
+                        height: "100px",
+                        width: "60%",
+                        objectFit: "cover",
+                        margin: "5px",
+                      }}
+                      alt=""
+                      src={val.emp_images}
+                    /></td>
                   <td>
                     {val.emp_firstname} {val.emp_surname}
                   </td>

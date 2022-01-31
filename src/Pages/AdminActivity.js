@@ -14,6 +14,8 @@ import act1 from "../images/act1.jpg";
 import act2 from "../images/act2.jpg";
 import Axios from "axios";
 
+
+
 function AdminActivity() {
   const [activityList, setActivityList] = useState([]);
 
@@ -58,14 +60,15 @@ function AdminActivity() {
                 <tr className="tbody">
                   <td>{val.act_id}</td>
                   <td>
-                    <Image
+                  <Image
                       style={{
-                        height: 100,
-                        width: 100,
-                        display: "block",
+                        height: 30,
+                        width: 30,
+                        objectFit: "cover",
+                        margin: "5px",
                       }}
-                     alt=""
-                      scr={`localhost:3333/${val.act_image}`}
+                      alt="file"
+                      src={val.act_image}
                     />
                   </td>
                   <td>{val.act_name}</td>

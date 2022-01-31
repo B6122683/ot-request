@@ -29,6 +29,7 @@ function EmployeeManagement() {
   const [update_at, setUpdate_at] = useState("");
   const [record_status, setRecord_status] = useState("");
   const [emp_gender, setEmp_gender] = useState("");
+  const [uploadedFile, setUploadedFile] = useState({});
 
   const [EmployeesList, setEmployeesList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
@@ -37,47 +38,56 @@ function EmployeeManagement() {
 
   const [previewImg, setPreviewImg] = useState(null);
   const [previewImgError, setPreviewImgError] = useState("");
+  const [file, setFile] = useState("");
+  const [filename, setFilename] = useState("Choose File");
+  const [message, setMessage] = useState("");
 
   const [displayImg, setDisplaayImg] = useState(null);
 
-  const Addemployees = () => {
-    Axios.post("http://localhost:3333/employees", {
-      emp_firstname: emp_firstname,
-      emp_surname: emp_surname,
-      emp_address: emp_address,
-      emp_tel: emp_tel,
-      emp_email: emp_email,
-      emp_username: emp_username,
-      emp_password: emp_password,
-      dep_id: dep_id,
-      role_id: role_id,
-      emp_card_id: emp_card_id,
-      emp_dob: emp_dob,
-      position_id: position_id,
-      emp_gender: emp_gender,
-
-    }).then(() => {
-      setEmployeesList({
-        ...EmployeesList,
-
-        emp_firstname: emp_firstname,
-        emp_surname: emp_surname,
-        emp_address: emp_address,
-        emp_tel: emp_tel,
-        emp_email: emp_email,
-        emp_username: emp_username,
-        emp_password: emp_password,
-        dep_id: dep_id,
-        role_id: role_id,
-        emp_card_id: emp_card_id,
-        emp_dob: emp_dob,
-        position_id: position_id,
-        emp_geder: emp_gender,
-
-      });
-    });
+  const onChange = (e) => {
+    setFile(e.target.files[0]);
+    setFilename(e.target.files[0].name);
+    setEmp_images(e.target.files[0].name);
+    setPreviewImg(URL.createObjectURL(e.target.files[0]));
   };
 
+  // const Addemployees = () => {
+  //   Axios.post("http://localhost:3333/employees", {
+  //     emp_firstname: emp_firstname,
+  //     emp_surname: emp_surname,
+  //     emp_address: emp_address,
+  //     emp_tel: emp_tel,
+  //     emp_email: emp_email,
+  //     emp_username: emp_username,
+  //     emp_password: emp_password,
+  //     dep_id: dep_id,
+  //     role_id: role_id,
+  //     emp_card_id: emp_card_id,
+  //     emp_dob: emp_dob,
+  //     position_id: position_id,
+  //     emp_gender: emp_gender,
+
+  //   }).then(() => {
+  //     setEmployeesList({
+  //       ...EmployeesList,
+
+  //       emp_firstname: emp_firstname,
+  //       emp_surname: emp_surname,
+  //       emp_address: emp_address,
+  //       emp_tel: emp_tel,
+  //       emp_email: emp_email,
+  //       emp_username: emp_username,
+  //       emp_password: emp_password,
+  //       dep_id: dep_id,
+  //       role_id: role_id,
+  //       emp_card_id: emp_card_id,
+  //       emp_dob: emp_dob,
+  //       position_id: position_id,
+  //       emp_geder: emp_gender,
+
+  //     });
+  //   });
+  // };
 
   const imgType = ["image/png", "image/jpeg"];
   const handleImgChange = (e) => {
@@ -121,13 +131,42 @@ function EmployeeManagement() {
   };
 
   useEffect(() => {
-    
     dataepartment();
     role();
     positions();
-
   }, []);
 
+  const Addemployees = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("emp_firstname", emp_firstname);
+    formData.append("emp_surname", emp_surname);
+    formData.append("emp_tel", emp_tel);
+    formData.append("emp_address", emp_address);
+    formData.append("emp_email", emp_email);
+    formData.append("emp_images", "images\\" + emp_images);
+    formData.append("emp_username", emp_username);
+    formData.append("emp_password", emp_password);
+    formData.append("dep_id", dep_id);
+    formData.append("role_id", role_id);
+    formData.append("emp_card_id", emp_card_id);
+    formData.append("emp_dob", emp_dob);
+    formData.append("position_id", position_id);
+    formData.append("emp_gender", emp_gender);
+
+    try {
+      await Axios.post("/upload", formData);
+      await Axios.post("/employees", formData);
+      window.location = "/employee";
+    } catch (err) {
+      if (err.response.status === 500) {
+        setMessage("There was a problem with the server");
+      } else {
+        setMessage(err.response.data.msg);
+      }
+    }
+  };
 
   return (
     <>
@@ -136,7 +175,11 @@ function EmployeeManagement() {
           <h1 className="addemp">เพิ่มข้อมูลพนักงาน</h1>
         </Row>
         <Row>
-          <Form className="employee" >
+          <Form
+            className="employee"
+            encType="multipart/form-data"
+            onSubmit={Addemployees}
+          >
             <div
               style={{
                 display: "flex",
@@ -144,25 +187,30 @@ function EmployeeManagement() {
                 padding: "20px",
               }}
             >
-          <br></br>
-          <input
-            type="file"
-            className="form-control"
-            onChange={handleImgChange}
-          />
-          <button type="submit" className="btn btn-success btn-md" onClick={handleSubmit}>
-            Upload
-          </button>
               <Image
                 style={{
-                  height: 100,
+                  height: 150,
                   objectFit: "cover",
                   marginBlock: "13px",
                 }}
                 alt=""
-                src={account}
+                src={emp_images == "" ? account : previewImg}
               />
             </div>
+            <Row className="col-md-12 ">
+              <Col className="col-md-12">
+              <Form.Group controlId="formBasicTextInput">
+              <Form.Group controlId="fileName" className="mb-3">
+                <Form.Label>Upload Image</Form.Label>
+                <Form.Control
+                  type="file"
+                  name="emp_images"
+                  onChange={onChange}
+                />
+              </Form.Group>
+              </Form.Group>
+              </Col>
+            </Row>
 
             <Row className="col-md-12 ">
               <Col className="col-md-6 col-12">
@@ -227,21 +275,15 @@ function EmployeeManagement() {
               <Col className="col-md-6 col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>เพศ</Form.Label>
-                  <Form.Select 
-                  value={emp_gender}
-                  onChange={(e) => {
-                    setEmp_gender(e.target.value); }}>
-                      <option value="0">
-                        กรุณาเลือก
-                      </option>
-                      <option value="1">
-                        ชาย
-                      </option>
-                      <option value="2">
-                        หญิง
-                      </option>
-
-
+                  <Form.Select
+                    value={emp_gender}
+                    onChange={(e) => {
+                      setEmp_gender(e.target.value);
+                    }}
+                  >
+                    <option value="0">กรุณาเลือก</option>
+                    <option value="1">ชาย</option>
+                    <option value="2">หญิง</option>
                   </Form.Select>
                 </Form.Group>
               </Col>
@@ -296,10 +338,12 @@ function EmployeeManagement() {
               <Col className="col-md-6 col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ประเภทพนักงาน</Form.Label>
-                  <Form.Select 
-                  value={role_id}
-                  onChange={(e) => {
-                    setRole_id(e.target.value); }}>
+                  <Form.Select
+                    value={role_id}
+                    onChange={(e) => {
+                      setRole_id(e.target.value);
+                    }}
+                  >
                     {roleList.map((role) => (
                       <option value={role.role_id}>{role.role_name}</option>
                     ))}
@@ -310,14 +354,16 @@ function EmployeeManagement() {
               <Col className="col-md-6 col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ตำแหน่ง</Form.Label>
-                  <Form.Select 
-                  value={position_id}
-                  onChange={(e) => {
-                    setPosition_id(e.target.value); }}>
+                  <Form.Select
+                    value={position_id}
+                    onChange={(e) => {
+                      setPosition_id(e.target.value);
+                    }}
+                  >
                     {positionsList.map((positions) => (
-                    <option value={positions.position_id}>
-                      {positions.position_name}
-                    </option>
+                      <option value={positions.position_id}>
+                        {positions.position_name}
+                      </option>
                     ))}
                   </Form.Select>
                 </Form.Group>
@@ -328,10 +374,12 @@ function EmployeeManagement() {
               <Col className="col-md-6 col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>แผนก</Form.Label>
-                  <Form.Select 
-                  value={dep_id}
-                  onChange={(e) => {
-                    setDep_id(e.target.value); }}>
+                  <Form.Select
+                    value={dep_id}
+                    onChange={(e) => {
+                      setDep_id(e.target.value);
+                    }}
+                  >
                     {departmentList.map((department) => (
                       <option value={department.dep_id}>
                         {department.dep_name}
@@ -384,7 +432,7 @@ function EmployeeManagement() {
                 </Button>
                 <Button
                   variant="primary"
-                  type="submit" onClick={Addemployees}
+                  type="submit"
                   style={{ margin: "10px" }}
                 >
                   ยืนยัน
