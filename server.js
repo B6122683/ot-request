@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
@@ -106,7 +106,9 @@ app.post("/register", jsonParser, function (req, res) {
     );
   });
 });
+//--------------------------EMPLOYEE API------------------------------
 
+//--------------------------LOGIN API------------------------------
 //LOGIN
 app.get("/login", jsonParser, (req, res) => {
   if (req.session.user) {
@@ -173,6 +175,8 @@ app.get("/authen", jsonParser, function (req, res, next) {
     res.json({ status: "error", message: err.message });
   }
 });
+
+//--------------------------LOGIN API------------------------------
 
 // app.post("/login", jsonParser, (req, res) => {
 //   const email = req.body.email;
@@ -254,7 +258,10 @@ app.delete("/department/:dep_id", jsonParser, function (req, res) {
     }
   );
 });
+//--------------------------DEPARTMENT API--------------------------
 
+
+//--------------------------ACTIVITY API--------------------------
 //ADD ACTIVITY
 app.post("/activity", jsonParser, function (req, res) {
   db.execute(
@@ -288,6 +295,61 @@ app.get("/activity", jsonParser, function (req, res) {
   });
 });
 
+//Add Activity with Photo
+app.post("/addactivity", jsonParser, function (req, res) {
+  db.execute(
+    "INSERT INTO activity (act_name, act_place, act_date, act_time, act_image, act_desc) VALUES (?, ?, ?, ?, ?, ?)",
+    [
+      req.body.act_name,
+      req.body.act_place,
+      req.body.act_date,
+      req.body.act_time,
+      req.body.act_image,
+      req.body.act_desc,
+    ],
+    function (err, results, fields) {
+      if (err) {
+        res.json({ status: "error", message: err });
+        return;
+      }
+      res.json({ status: "ok" });
+    }
+  );
+});
+
+//GET ACT BY ID
+app.get("/activity/:act_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT activity.act_id,activity.act_name,activity.act_desc,activity.act_image,activity.act_date,activity.act_time,activity.act_place FROM activity WHERE act_id = ?",
+    [req.params.act_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//DELETE ACTIVITY DATA FORM DB
+app.delete("/activity/:act_id", jsonParser, function (req, res) {
+  db.execute(
+    "DELETE FROM activity WHERE act_id = ?",
+    [req.params.act_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+//--------------------------ACTIVITY API--------------------------
+
+
+//--------------------------EMPLOYEE API--------------------------
 //ADD EMPLOYEES WITH PHOTO
 app.post("/employees", jsonParser, function (req, res) {
   bcrypt.hash(req.body.emp_password, saltRounds, function (err, hash) {
@@ -320,7 +382,7 @@ app.post("/employees", jsonParser, function (req, res) {
   });
 });
 
-//DELETE DEPARTMENT DATA FORM DB
+//DELETE EMPLOYEE DATA FORM DB
 app.delete("/employees/:emp_id", jsonParser, function (req, res) {
   db.execute(
     "DELETE FROM employees WHERE emp_id = ?",
@@ -348,7 +410,10 @@ app.get("/employeesview", jsonParser, function (req, res) {
     }
   );
 });
+//--------------------------EMPLOYEE API--------------------------
 
+
+//--------------------------OT_ASSIGNMENT API--------------------------
 //GET OT_ASSIGNMENT DATA FORM DB
 app.get("/otassignment", jsonParser, function (req, res) {
   db.execute("SELECT * FROM ot_assignment", (err, result) => {
@@ -411,7 +476,10 @@ app.get("/otassignview", jsonParser, function (req, res) {
     }
   );
 });
+//--------------------------OT_ASSIGNMENT API--------------------------
 
+
+//-----------------------------ROLE------------------------------
 //GET ROLE DATA FORM DB
 app.get("/role", jsonParser, function (req, res) {
   db.execute("SELECT * FROM role", (err, result) => {
@@ -438,6 +506,23 @@ app.post("/role", jsonParser, function (req, res) {
   );
 });
 
+//DELETE ROLE DATA FORM DB
+app.delete("/role/:role_id", jsonParser, function (req, res) {
+  db.execute(
+    "DELETE FROM role WHERE role_id = ?",
+    [req.params.role_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+//-----------------------------ROLE------------------------------
+
+//-----------------------------POSITION------------------------------
 //GET POSITION DATA FORM DB
 app.get("/positions", jsonParser, function (req, res) {
   db.execute("SELECT * FROM positions", (err, result) => {
@@ -463,6 +548,37 @@ app.post("/positions", jsonParser, function (req, res) {
     }
   );
 });
+
+//DELETE POSITION DATA FORM DB
+app.delete("/positions/:position_id", jsonParser, function (req, res) {
+  db.execute(
+    "DELETE FROM positions WHERE position_id = ?",
+    [req.params.position_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//SELECT DATA IN POSITIONS
+app.get("/positionsview", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT positions.position_id,positions.position_name,department.dep_name FROM positions LEFT JOIN department ON positions.dep_id = department.dep_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//-----------------------------POSITION------------------------------
 
 //-----------------------------test------------------------------
 app.get("/logintest", (req, res) => {
@@ -506,20 +622,8 @@ app.post("/logintest", (req, res) => {
     }
   );
 });
+//-----------------------------test------------------------------
 
-//SELECT DATA IN POSITIONS
-app.get("/positionsview", jsonParser, function (req, res) {
-  db.execute(
-    "SELECT positions.position_id,positions.position_name,department.dep_name FROM positions LEFT JOIN department ON positions.dep_id = department.dep_id",
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.send(result);
-      }
-    }
-  );
-});
 
 //------------------UPLOAD IMAGES-------------------------
 app.post("/upload", (req, res) => {
@@ -538,7 +642,9 @@ app.post("/upload", (req, res) => {
     res.json({ fileName: file.name, filePath: `/images/${file.name}` });
   });
 });
+//------------------UPLOAD IMAGES-------------------------
 
+//------------------MULTER UPLOAD IMAGES-------------------------
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {
 //     cb(null, "./public/uploads");
@@ -562,43 +668,7 @@ app.post("/upload", (req, res) => {
 //     cb("Give proper files format to upload");
 //   },
 // });
-
-//Add Activity with Photo
-app.post("/addactivity", jsonParser, function (req, res) {
-  db.execute(
-    "INSERT INTO activity (act_name, act_place, act_date, act_time, act_image, act_desc) VALUES (?, ?, ?, ?, ?, ?)",
-    [
-      req.body.act_name,
-      req.body.act_place,
-      req.body.act_date,
-      req.body.act_time,
-      req.body.act_image,
-      req.body.act_desc,
-    ],
-    function (err, results, fields) {
-      if (err) {
-        res.json({ status: "error", message: err });
-        return;
-      }
-      res.json({ status: "ok" });
-    }
-  );
-});
-
-//GET ACT BY ID
-app.get("/activity/:act_id", jsonParser, function (req, res) {
-  db.execute(
-    "SELECT activity.act_id,activity.act_name,activity.act_desc,activity.act_image,activity.act_date,activity.act_time,activity.act_place FROM activity WHERE act_id = ?",
-    [req.params.act_id],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.send(result);
-      }
-    }
-  );
-});
+//------------------MULTER UPLOAD IMAGES-------------------------
 
 app.listen(3333, () => {
   console.log("running server port 3333");
