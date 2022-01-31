@@ -51,6 +51,7 @@ function AdminOTManagement() {
             ot_apply: ot_apply,
 
         });
+        window.location = "/adminot";
     });
   };
 

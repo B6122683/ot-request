@@ -16,6 +16,7 @@ function DepartmentManagement() {
           dep_name: depname
         }
       ])
+      window.location = "/department";
     });
   };
 
