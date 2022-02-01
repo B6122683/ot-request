@@ -1,6 +1,7 @@
 import React from 'react';
 import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
+import * as BsIcons from 'react-icons/bs';
 
 
 export const SidebarAdminData = [
@@ -13,31 +14,43 @@ export const SidebarAdminData = [
   {
     title: 'ข้อมูลพนักงาน',
     path: '/employee',
-    icon: <FaIcons.FaMapMarkedAlt />,
+    icon: <FaIcons.FaUsersCog />,
     cName: 'nav-text'
   },
   {
     title: 'ข้อมูลแผนก',
     path: '/department',
-    icon: <FaIcons.FaBusinessTime />,
+    icon: <FaIcons.FaBuilding />,
     cName: 'nav-text'
   },
   {
-    title: 'จัดการคำขอทำงานล่วงเวลา',
-    path: '/manageotrequest',
-    icon: <FaIcons.FaIdBadge />,
+    title: 'ข้อมูลตำแหน่ง',
+    path: '/position',
+    icon: <BsIcons.BsFillPersonLinesFill />,
     cName: 'nav-text'
   },
   {
-    title: 'จัดการสิทธิ์การใช้งาน',
-    path: '/managelicense',
-    icon: <FaIcons.FaGift />,
+    title: 'จัดการคำขอ OT',
+    path: '/otmanagement',
+    icon: <AiIcons.AiTwotoneSchedule/>,
+    cName: 'nav-text'
+  },
+  {
+    title: 'จัดการข้อมูล OT',
+    path: '/adminot',
+    icon: <AiIcons.AiTwotoneSnippets />,
     cName: 'nav-text'
   },
   {
     title: 'ปฏิทินบริษัท',
     path: '/officecalendar',
-    icon: <FaIcons.FaGift />,
+    icon: <FaIcons.FaCalendar />,
+    cName: 'nav-text'
+  },
+  {
+    title: 'จัดการคำขอลางาน',
+    path: '/leavemanagement',
+    icon: <BsIcons.BsCalendar3WeekFill />,
     cName: 'nav-text'
   },
   {
