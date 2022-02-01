@@ -68,7 +68,7 @@ function OTRequestDesc() {
 
   return (
     <Container>
-      <h1 className="otrequest">รายละเอียดการทำงาน​</h1>
+      <h1 className="otrequest">รายละเอียดการขอทำงานล่วงเวลา​</h1>
       <Card className="bord">
         <Card.Body>
           <Card.Text>

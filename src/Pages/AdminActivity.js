@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Table from "react-bootstrap/Table";
-import Button from "react-bootstrap/Button";
 import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Image from "react-bootstrap/Image";
@@ -13,15 +9,35 @@ import images3 from "../images/delete.png";
 import act1 from "../images/act1.jpg";
 import act2 from "../images/act2.jpg";
 import Axios from "axios";
-
-
+import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
+import moment from "moment/min/moment-with-locales";
+import { Link, useParams } from "react-router-dom";
+const format = "hh:mm:ss";
 
 function AdminActivity() {
   const [activityList, setActivityList] = useState([]);
+  const [modalShow, setModalShow] = useState(false);
+  
 
   const activity = () => {
     Axios.get("http://localhost:3333/activity").then((response) => {
       setActivityList(response.data);
+    });
+  };
+
+  
+
+  const hideModal = () => {
+    setModalShow(false);
+  };
+
+  const deleteActivity = (id) => {
+    Axios.delete(`http://localhost:3333/activity/${id}`).then((response) => {
+      setActivityList(
+        activityList.filter((val) => {
+          return val.act_id != id;
+        })
+      );
     });
   };
 
@@ -60,16 +76,18 @@ function AdminActivity() {
                 <tr className="tbody">
                   <td>{val.act_id}</td>
                   <td>
-                  <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt="file"
-                      src={val.act_image}
-                    />
+                    <div>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt="file"
+                        src={val.act_image}
+                      />
+                    </div>
                   </td>
                   <td>{val.act_name}</td>
                   <td>{val.act_desc}</td>
@@ -83,6 +101,8 @@ function AdminActivity() {
                       }}
                       alt=""
                       src={images2}
+                      key={val.act_id}
+                      onClick={() => setModalShow(true)}
                     />
                     <Image
                       style={{
@@ -109,10 +129,119 @@ function AdminActivity() {
               </tbody>
             );
           })}
+          <Modal show={modalShow} centered>
+          <Modal.Body className="show-grid">
+            <Container>
+              <Row>
+                <h2 className="leaveform" style={{ textAlign: "center" }}>
+                  แบบฟอร์มแจ้งลางาน
+                </h2>
+              </Row>
+              {activityList.map((val) => {
+                    return (
+                      <Row>
+                        <Form>
+                          <Form.Group
+                            className="mb-3 col-12"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>รูปภาพ</Form.Label>
+                            <div>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt="file"
+                        src={val.act_image}
+                      />
+                    </div>
+                          </Form.Group>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ชื่อกิจกรรม</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกตำแหน่ง"
+                              value={val.act_name}
+                              disabled
+                            />
+                          </Form.Group>
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>สถานที่</Form.Label>
+                            <Form.Control type="text" 
+                            placeholder="กรอกแผนก"
+                            value={val.act_place}
+                            disabled />
+                          </Form.Group>
+
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>วันที่</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่องาน"
+                              value={moment(val.act_date).locale("th").format('LL')}
+                              disabled
+                            />
+                          </Form.Group>
+                          <Form.Group className="mb-3">
+                            <Form.Label>เวลา</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกวัน/เวลา เริ่ม"
+                              // value={val.act_time}
+                              value={moment(val.act_time).locale("th").format('LT') + " น."}
+                              disabled
+                            />
+                          </Form.Group>
+                          <Form.Group className="mb-3">
+                            <Form.Label>รายละเอียด</Form.Label>
+                            <textarea class="form-control"
+                              type="text-area"
+                              value={val.act_desc}
+                              disabled
+                            />
+                          </Form.Group>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Button
+                              variant="danger"
+                              onClick={hideModal}
+                              style={{ margin: "10px" }}
+                            >
+                              ปิด
+                            </Button>
+                          </div>
+                        </Form>
+                      </Row>
+                    );
+                  })}
+            </Container>
+          </Modal.Body>
+        </Modal>
         </Table>
       </Row>
     </Container>
   );
+}
+
+function Activityview(){
+
 }
 
 export default AdminActivity;

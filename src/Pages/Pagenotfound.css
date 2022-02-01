@@ -40,16 +40,21 @@
      box-shadow: 0 15px 30px rgba(0, 0, 0, .5);
  }
 
- #container .content p {
-     font-size: 1.2em;
+ #container p {
+     font-size: 2em;
+     margin-top: 30px;
  }
- #container .content a {
+ #container a {
      position: relative;
      display: inline-block;
      padding: 10px 25px;
      background: #ff0562;
      color: #fff;
      text-decoration: none;
-     margin-top: 25px;
+     margin-top: 30px;
      border-radius: 25px;
+ }
+ .p-content {
+    padding: 5px;
+    position: absolute;
  }
