@@ -22,6 +22,16 @@ function Position() {
     });
   };
 
+  const deletePosition = (id) => {
+    Axios.delete(`http://localhost:3333/positions/${id}`).then((response) => {
+      setPositionList(
+        positionList.filter((val) => {
+          return val.position_id != id;
+        })
+      );
+    });
+  };
+
   useEffect(() => {
     position();
   }, []);
@@ -76,6 +86,9 @@ function Position() {
                   }}
                   alt=""
                   src={images3}
+                  onClick={() => {
+                    deletePosition(val.position_id);
+                  }}
                 />
               </td>
             </tr>

@@ -22,6 +22,16 @@ function Department() {
     });
   };
 
+  const deleteDepartment = (id) => {
+    Axios.delete(`http://localhost:3333/department/${id}`).then((response) => {
+      setDepartmentList(
+        departmentList.filter((val) => {
+          return val.dep_id != id;
+        })
+      );
+    });
+  };
+
   useEffect(() => {
     dataepartment();
   }, []);
@@ -71,6 +81,9 @@ function Department() {
                       }}
                       alt=""
                       src={images3}
+                      onClick={() => {
+                        deleteDepartment(val.dep_id);
+                      }}
                     />
                   </td>
                 </tr>
