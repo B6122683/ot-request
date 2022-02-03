@@ -27,6 +27,7 @@ import AdminOT from './Pages/AdminOT';
 import AdminOTManagement from './Pages/AdminOTManagement';
 import Upload from './Pages/upload';
 import Pagenotfound from './Pages/Pagenotfound';
+import LeaveManagement from './Pages/LeaveManagement';
 
 function App() {
   return (
@@ -59,6 +60,7 @@ function App() {
           <Route exact path="/upload" element={<Upload/>}/>
           <Route exact path="/adminotmanagement" element={<AdminOTManagement/>}/>
           <Route path='*' exact={true}  element={<Pagenotfound/>}/>
+          <Route exact path="/leavemanagement" element={<LeaveManagement/>}/>
         </Routes>
       </Router>
     </>
