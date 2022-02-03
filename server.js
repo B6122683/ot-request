@@ -123,7 +123,7 @@ app.post("/login", jsonParser, function (req, res, next) {
   const emp_password = req.body.emp_password;
 
   db.execute(
-    "SELECT * FROM employees WHERE emp_username= ?",
+    "SELECT e.emp_id, e.emp_firstname, e.emp_surname, e.emp_address, e.emp_tel, e.emp_email, e.emp_username, e.emp_password, e.dep_id, d.dep_name, e.position_id, p.position_name, e.emp_card_id, e.emp_dob, e.emp_images, e.emp_gender, e.role_id FROM employees AS e LEFT JOIN positions AS p ON e.position_id = p.position_id LEFT JOIN department AS d ON e.dep_id = d.dep_id WHERE e.emp_username = ?",
     [emp_username],
     (err, users) => {
     
@@ -477,6 +477,24 @@ app.get("/otassignview", jsonParser, function (req, res) {
   );
 });
 //--------------------------OT_ASSIGNMENT API--------------------------
+
+
+//--------------------------OT_REQUEST API--------------------------
+//GET OT_REQUEST DATA FORM DB
+app.post("/otrequest", jsonParser, function (req, res) {
+  db.execute("INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",[
+    req.body.emp_id,
+    req.body.dep_id,
+    req.body.ot_id,
+  ], (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+//--------------------------OT_REQUEST API--------------------------
 
 
 //-----------------------------ROLE------------------------------
