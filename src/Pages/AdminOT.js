@@ -11,6 +11,7 @@ import images1 from "../images/edit.png";
 import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
 import Axios from "axios";
+import moment from "moment/min/moment-with-locales";
 
 function AdminOT() {
   const [otassignList, setOtassignList] = useState([]);
@@ -75,8 +76,8 @@ function AdminOT() {
                   <td>{val.ot_name}</td>
                   <td>{val.dep_name}</td>
                   <td>{val.ot_desc}</td>
-                  <td>{val.ot_starttime}</td>
-                  <td>{val.ot_finishtime}</td>
+                  <td>{moment(val.ot_starttime).locale("th").format("LLL") + " น."}</td>
+                  <td>{moment(val.ot_finishtime).locale("th").format("LLL") + " น."}</td>
                   <td>{val.ot_apply}</td>
                   <td>{val.ot_rate}</td>
                   <td >
