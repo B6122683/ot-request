@@ -578,6 +578,42 @@ app.get("/positionsview", jsonParser, function (req, res) {
   );
 });
 
+//ADD LEAVE WORK
+app.post("/leavework", jsonParser, function (req, res) {
+  db.execute(
+    "INSERT INTO leavework (emp_id, dep_id, type_leave, leave_desc, start_leave, end_leave, summary, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 2, 1)",
+    [
+      req.body.emp_id, 
+      req.body.dep_id, 
+      req.body.type_leave,
+      req.body.leave_desc,
+      req.body.start_leave,
+      req.body.end_leave,
+
+
+    ],
+    function (err, results, fields) {
+      if (err) {
+        res.json({ status: "error", message: err });
+        return;
+      }
+      res.json({ status: "ok" });
+    }
+  );
+});
+
+///GET LEAVE WORK FROM DB
+app.get("/leavework", jsonParser, function (req, res) {
+  db.execute("SELECT * FROM leavework", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
 //-----------------------------POSITION------------------------------
 
 //-----------------------------test------------------------------
