@@ -642,11 +642,11 @@ app.get("/positionsview", jsonParser, function (req, res) {
 //ADD LEAVE WORK
 app.post("/leavework", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO leavework (emp_id, dep_id, type_leave, leave_desc, start_leave, end_leave, summary, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 2, 1)",
+    "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc, start_leave, end_leave, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 0)",
     [
       req.body.emp_id, 
       req.body.dep_id, 
-      req.body.type_leave,
+      req.body.leave_type,
       req.body.leave_desc,
       req.body.start_leave,
       req.body.end_leave,
@@ -663,9 +663,24 @@ app.post("/leavework", jsonParser, function (req, res) {
   );
 });
 
-///GET LEAVE WORK FROM DB
-app.get("/leavework", jsonParser, function (req, res) {
-  db.execute("SELECT * FROM leavework", (err, result) => {
+
+//SELECT DATA IN LEAVE WORK
+app.get("/leaveworkview", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT leavework.leave_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//GET LEAVE_TYPE DATA FORM DB
+app.get("/leave_type", jsonParser, function (req, res) {
+  db.execute("SELECT * FROM leave_type", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -673,6 +688,37 @@ app.get("/leavework", jsonParser, function (req, res) {
     }
   });
 });
+
+
+//UPDATE LEAVE WORK DATA FORM DB
+app.put("/approveleavework", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE leavework SET leave_accept = ? WHERE leave_id = ?",
+    [req.body.leave_accept, req.body.leave_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/leavework/:leave_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT * FROM leavework WHERE leave_id = ?",
+    [req.params.leave_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 
 
 //-----------------------------POSITION------------------------------

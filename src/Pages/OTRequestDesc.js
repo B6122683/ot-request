@@ -12,7 +12,6 @@ function OTRequestDesc() {
   const [otrequestList, setOtRequestList] = useState([]);
   const { ot_id } = useParams();
   const [role_id, setRole] = useState("");
-  const [ota_id, setOTaId] = useState("");
   const [dep_id, setDepId] = useState("");
   const [emp_id, setEmpId] = useState("");
   const [emp_name, setEmpName] = useState("");
@@ -23,7 +22,6 @@ function OTRequestDesc() {
     Axios.get(`http://localhost:3333/otassignment/${ot_id}`).then(
       (response) => {
         setOtassignList(response.data);
-        setOTaId(response.data.ot_id);
         console.log(response.data);
       }
     );
