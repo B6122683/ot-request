@@ -9,16 +9,21 @@ import moment from "moment/min/moment-with-locales";
 function OTRequestDesc() {
   const [modalShow, setModalShow] = useState(false);
   const [otassignList, setOtassignList] = useState([]);
-  const [departmentList, setDepartmentList] = useState([]);
-  const [dep_id, setDep_id] = useState("");
+  const [otrequestList, setOtRequestList] = useState([]);
   const { ot_id } = useParams();
   const [role_id, setRole] = useState("");
+  const [ota_id, setOTaId] = useState("");
+  const [dep_id, setDepId] = useState("");
+  const [emp_id, setEmpId] = useState("");
   const [emp_name, setEmpName] = useState("");
+  const [emp_depname, setEmpDepName] = useState("");
+  const [emp_posname, setEmpPosName] = useState("");
 
   const otassign = () => {
     Axios.get(`http://localhost:3333/otassignment/${ot_id}`).then(
       (response) => {
         setOtassignList(response.data);
+        setOTaId(response.data.ot_id);
         console.log(response.data);
       }
     );
@@ -40,16 +45,35 @@ function OTRequestDesc() {
             " " +
             response.data.decoded.user.emp_surname
         );
+        setEmpDepName(response.data.decoded.user.dep_name);
+        setEmpPosName(response.data.decoded.user.position_name);
+        setEmpId(response.data.decoded.user.emp_id);
+        setDepId(response.data.decoded.user.dep_id);
       } else {
         window.location = "/login";
       }
     });
   };
 
+  const sendOTRequest = () => {
+    Axios.post("http://localhost:3333/otrequest", {
+      emp_id: emp_id,
+      dep_id: dep_id,
+      ot_id: ot_id,
+    }).then(() => {
+      setOtRequestList({
+        ...otrequestList,
+        emp_id: emp_id,
+        dep_id: dep_id,
+        ot_id: ot_id,
+      });
+      window.location = "/otrequest";
+    });
+  };
+
   useEffect(() => {
     getAuth();
     otassign();
-    dataepartment();
   }, []);
 
   const showModal = () => {
@@ -58,12 +82,6 @@ function OTRequestDesc() {
 
   const hideModal = () => {
     setModalShow(false);
-  };
-
-  const dataepartment = () => {
-    Axios.get("http://localhost:3333/department").then((response) => {
-      setDepartmentList(response.data);
-    });
   };
 
   return (
@@ -191,6 +209,8 @@ function OTRequestDesc() {
                             <Form.Control
                               type="text"
                               placeholder="กรอกตำแหน่ง"
+                              value={emp_posname}
+                              disabled
                             />
                           </Form.Group>
                           <Form.Group
@@ -198,7 +218,12 @@ function OTRequestDesc() {
                             controlId="formBasicTextInput"
                           >
                             <Form.Label>แผนก</Form.Label>
-                            <Form.Control type="text" placeholder="กรอกแผนก" />
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกแผนก"
+                              value={emp_depname}
+                              disabled
+                            />
                           </Form.Group>
 
                           <Form.Group
@@ -218,7 +243,11 @@ function OTRequestDesc() {
                             <Form.Control
                               type="text"
                               placeholder="กรอกวัน/เวลา เริ่ม"
-                              value={moment(val.ot_starttime).locale("th").format("LLLL") + " น."}
+                              value={
+                                moment(val.ot_starttime)
+                                  .locale("th")
+                                  .format("LLLL") + " น."
+                              }
                               disabled
                             />
                           </Form.Group>
@@ -227,7 +256,11 @@ function OTRequestDesc() {
                             <Form.Control
                               type="text"
                               placeholder="กรอกวัน/เวลา เสร็จสิ้น"
-                              value={moment(val.ot_finishtime).locale("th").format("LLLL") + " น."}
+                              value={
+                                moment(val.ot_finishtime)
+                                  .locale("th")
+                                  .format("LLLL") + " น."
+                              }
                               disabled
                             />
                           </Form.Group>
@@ -249,6 +282,7 @@ function OTRequestDesc() {
                               variant="primary"
                               type="submit"
                               style={{ margin: "10px" }}
+                              onClick={sendOTRequest}
                             >
                               ยืนยัน
                             </Button>

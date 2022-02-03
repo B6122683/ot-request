@@ -16,8 +16,8 @@ const format = "hh:mm:ss";
 
 function AdminActivity() {
   const [activityList, setActivityList] = useState([]);
+  const [activityListbyId, setActivityListbyId] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  
 
   const activity = () => {
     Axios.get("http://localhost:3333/activity").then((response) => {
@@ -25,7 +25,9 @@ function AdminActivity() {
     });
   };
 
-  
+  const showModal = () => {
+    setModalShow(true);
+  };
 
   const hideModal = () => {
     setModalShow(false);
@@ -38,6 +40,18 @@ function AdminActivity() {
           return val.act_id != id;
         })
       );
+    });
+  };
+
+  const activitybyid = (act_id) => {
+    Axios.get(`http://localhost:3333/activity/${act_id}`).then((response) => {
+      setActivityListbyId(response.data);
+      console.log(response.data[0]);
+      if (!response.data) {
+        setModalShow(false);
+      } else {
+        setModalShow(true);
+      }
     });
   };
 
@@ -63,18 +77,18 @@ function AdminActivity() {
         <Table striped bordered hover>
           <thead>
             <tr className="trAdmin">
-              <th>รหัสกิจกรรม</th>
+              <th>ลำดับกิจกรรม</th>
               <th>รูปภาพ</th>
               <th>ชื่อกิจกรรม</th>
               <th>รายละเอียด</th>
               <th>จัดการ</th>
             </tr>
           </thead>
-          {activityList.map((val) => {
+          {activityList.map((val, index) => {
             return (
               <tbody>
                 <tr className="tbody">
-                  <td>{val.act_id}</td>
+                  <td>{index + 1}</td>
                   <td>
                     <div>
                       <Image
@@ -101,8 +115,7 @@ function AdminActivity() {
                       }}
                       alt=""
                       src={images2}
-                      key={val.act_id}
-                      onClick={() => setModalShow(true)}
+                      onClick={() => activitybyid(val.act_id)}
                     />
                     <Image
                       style={{
@@ -123,6 +136,7 @@ function AdminActivity() {
                       }}
                       alt=""
                       src={images3}
+                      onClick={() => deleteActivity(val.act_id)}
                     />
                   </td>
                 </tr>
@@ -130,118 +144,124 @@ function AdminActivity() {
             );
           })}
           <Modal show={modalShow} centered>
-          <Modal.Body className="show-grid">
-            <Container>
-              <Row>
-                <h2 className="leaveform" style={{ textAlign: "center" }}>
-                  แบบฟอร์มแจ้งลางาน
-                </h2>
-              </Row>
-              {activityList.map((val) => {
-                    return (
-                      <Row>
-                        <Form>
-                          <Form.Group
-                            className="mb-3 col-12"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>รูปภาพ</Form.Label>
-                            <div>
-                      <Image
-                        style={{
-                          height: 30,
-                          width: 30,
-                          objectFit: "cover",
-                          margin: "5px",
-                        }}
-                        alt="file"
-                        src={val.act_image}
-                      />
-                    </div>
-                          </Form.Group>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>ชื่อกิจกรรม</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกตำแหน่ง"
-                              value={val.act_name}
-                              disabled
+            <Modal.Body className="show-grid">
+              <Container>
+                <Row>
+                  <h2 className="leaveform" style={{ textAlign: "center" }}>
+                    แบบฟอร์มแจ้งลางาน
+                  </h2>
+                </Row>
+                {activityListbyId.map((val) => {
+                  return (
+                    <Row>
+                      <Form>
+                        <Form.Group
+                          className="mb-3 col-12"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>รูปภาพ</Form.Label>
+                          <div>
+                            <Image
+                              style={{
+                                height: 30,
+                                width: 30,
+                                objectFit: "cover",
+                                margin: "5px",
+                              }}
+                              alt="file"
+                              src={val.act_image}
                             />
-                          </Form.Group>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>สถานที่</Form.Label>
-                            <Form.Control type="text" 
+                          </div>
+                        </Form.Group>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>ชื่อกิจกรรม</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกตำแหน่ง"
+                            value={val.act_name}
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>สถานที่</Form.Label>
+                          <Form.Control
+                            type="text"
                             placeholder="กรอกแผนก"
                             value={val.act_place}
-                            disabled />
-                          </Form.Group>
+                            disabled
+                          />
+                        </Form.Group>
 
-                          <Form.Group
-                            className="mb-3"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>วันที่</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกชื่องาน"
-                              value={moment(val.act_date).locale("th").format('LL')}
-                              disabled
-                            />
-                          </Form.Group>
-                          <Form.Group className="mb-3">
-                            <Form.Label>เวลา</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกวัน/เวลา เริ่ม"
-                              // value={val.act_time}
-                              value={moment(val.act_time).locale("th").format('LT') + " น."}
-                              disabled
-                            />
-                          </Form.Group>
-                          <Form.Group className="mb-3">
-                            <Form.Label>รายละเอียด</Form.Label>
-                            <textarea class="form-control"
-                              type="text-area"
-                              value={val.act_desc}
-                              disabled
-                            />
-                          </Form.Group>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>วันที่</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกชื่องาน"
+                            value={moment(val.act_date)
+                              .locale("th")
+                              .format("LL")}
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>เวลา</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกวัน/เวลา เริ่ม"
+                            // value={val.act_time}
+                            value={
+                              moment(val.act_time).locale("th").format("LT") +
+                              " น."
+                            }
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>รายละเอียด</Form.Label>
+                          <textarea
+                            class="form-control"
+                            type="text-area"
+                            value={val.act_desc}
+                            disabled
+                          />
+                        </Form.Group>
 
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Button
+                            variant="danger"
+                            onClick={hideModal}
+                            style={{ margin: "10px" }}
                           >
-                            <Button
-                              variant="danger"
-                              onClick={hideModal}
-                              style={{ margin: "10px" }}
-                            >
-                              ปิด
-                            </Button>
-                          </div>
-                        </Form>
-                      </Row>
-                    );
-                  })}
-            </Container>
-          </Modal.Body>
-        </Modal>
+                            ปิด
+                          </Button>
+                        </div>
+                      </Form>
+                    </Row>
+                  );
+                })}
+              </Container>
+            </Modal.Body>
+          </Modal>
         </Table>
       </Row>
     </Container>
   );
 }
 
-function Activityview(){
-
-}
+function Activityview() {}
 
 export default AdminActivity;
