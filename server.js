@@ -480,7 +480,7 @@ app.get("/otassignview", jsonParser, function (req, res) {
 
 
 //--------------------------OT_REQUEST API--------------------------
-//GET OT_REQUEST DATA FORM DB
+//POST OT_REQUEST DATA FORM DB
 app.post("/otrequest", jsonParser, function (req, res) {
   db.execute("INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",[
     req.body.emp_id,
@@ -493,6 +493,49 @@ app.post("/otrequest", jsonParser, function (req, res) {
       res.send(result);
     }
   });
+});
+
+//SELECT DATA IN OT_ASSIGNMENT
+app.get("/otrequestview", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT otr.otr_id, otr.emp_id, e.emp_firstname, e.emp_surname, otr.dep_id, d.dep_name, otr.ot_id, ota.ot_name, otr.otr_status, otr.otr_date FROM ot_request AS otr LEFT JOIN employees AS e ON otr.emp_id = e.emp_id LEFT JOIN department AS d ON otr.dep_id = d.dep_id LEFT JOIN ot_assignment AS ota ON otr.ot_id = ota.ot_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//UPDATE OT_ASSIGNMENT DATA FORM DB
+app.put("/approveotrequest", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE ot_request SET otr_status = ? WHERE otr_id = ?",
+    [req.body.otr_status, req.body.otr_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/otrequest/:otr_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT * FROM ot_request WHERE otr_id = ?",
+    [req.params.otr_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 //--------------------------OT_REQUEST API--------------------------
 
