@@ -84,7 +84,7 @@ function OTManagement() {
               <th>ลำดับ</th>
               <th>ชื่อ-สกุล</th>
               <th>ชื่องาน</th>
-              <th>วันที่ทำ OT</th>
+              <th>วันที่แจ้งขอทำ OT</th>
               <th>สถานะ</th>
             </tr>
           </thead>
