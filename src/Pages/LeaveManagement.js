@@ -22,12 +22,8 @@ import { useHistory, useParams } from "react-router-dom";
 function LeaveManagement() {
   const [modalShow, setModalShow] = useState(false);
   const [LeaveList, setLeaveList] = useState([]);
-  const [departmentList, setDepartmentList] = useState([]);
-  const [leavetypeList, setLeaveTypeList] = useState([]);
   const [role_id, setRole] = useState("");
   const [dep_id, setDepId] = useState("");
-  const [dep_name, setDepName] = useState("");
-  const [ltype_name, setLTypename] = useState("");
   const [emp_id, setEmpId] = useState("");
   const [emp_name, setEmpName] = useState("");
   const [emp_depname, setEmpDepName] = useState("");
@@ -84,7 +80,6 @@ function LeaveManagement() {
       }
     });
   };
-
 
   useEffect(() => {
     leaveList();
@@ -163,35 +158,35 @@ function LeaveManagement() {
               </tbody>
             );
           })}
-          </Table>
+        </Table>
 
-          <Modal show={modalShow} centered>
+        <Modal show={modalShow} centered>
           <Modal.Body className="show-grid">
             <Container>
-            
               <Row>
                 <h2 className="leaveform" style={{ textAlign: "center" }}>
-                การอนุมัติคำขอลางาน
+                  การอนุมัติคำขอลางาน
                 </h2>
               </Row>
               {leaveworkListbyId.map((val) => {
                 return (
-              <Row>
-                  <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Row className="col-md-12 " style={{ margin: "5px" }}>
-                    <Col className="col-md-2 col-12">
-                      <Form.Group controlId="formBasicTextInput">
-                        <Form.Label style={{ display: "flex" }}>
-                          เลือก
-                        </Form.Label>
-                      </Form.Group>
-                    </Col>
-                    <Col className="col-md-10 col-12">
+                  <Row>
+                    <Form>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Row className="col-md-12 " style={{ margin: "5px" }}>
+                        <Col className="col-md-2 col-12">
+                          <Form.Group controlId="formBasicTextInput">
+                            <Form.Label style={{ display: "flex" }}>
+                              เลือก
+                            </Form.Label>
+                          </Form.Group>
+                        </Col>
+                        <Col className="col-md-10 col-12">
                           <Form.Group controlId="formBasicTextInput">
                             <Form.Select
                               name="leave_accept"
@@ -203,42 +198,40 @@ function LeaveManagement() {
                               <option value="1">อนุมัติ</option>
                               <option value="2">ไม่อนุมัติ</option>
                             </Form.Select>
-                            </Form.Group>
+                          </Form.Group>
                         </Col>
                       </Row>
                     </div>
 
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Button
+                        variant="danger"
+                        onClick={hideModal}
+                        style={{ margin: "10px" }}
                       >
-                        <Button
-                          variant="danger"
-                          onClick={hideModal}
-                          style={{ margin: "10px" }}
-                        >
-                          ยกเลิก
-                        </Button>
-                        <Button
-                          variant="primary"
-                          type="submit"
-                          style={{ margin: "10px" }}
-                          onClick={approveleavework(val.leave_id)}
-                        >
-                          ยืนยัน
-                        </Button>
-                      </div>
-                      </Row>
-                    );
-                  })}
+                        ยกเลิก
+                      </Button>
+                      <Button
+                        variant="primary"
+                        type="submit"
+                        style={{ margin: "10px" }}
+                        onClick={approveleavework(val.leave_id)}
+                      >
+                        ยืนยัน
+                      </Button>
+                    </div>
+                    </Form>
+                  </Row>
+                );
+              })}
             </Container>
           </Modal.Body>
         </Modal>
-     
-        
       </Row>
     </Container>
   );

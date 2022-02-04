@@ -6,11 +6,19 @@ import "../App.css";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import moment from "moment/min/moment-with-locales";
+import { useHistory, useParams } from "react-router-dom";
 
 function OTRequest() {
   const [otassignList, setOtassignList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
-  const [dep_id, setDep_id] = useState("");
+  const [otrequestcountList, setOtrequestcountList] = useState([]);
+  const [emp_name, setEmpName] = useState("");
+  const [dep_id, setDepId] = useState("");
+  const { ot_id } = useParams();
+  const [role_id, setRole] = useState("");
+  const [emp_id, setEmpId] = useState("");
+  const [emp_depname, setEmpDepName] = useState("");
+  const [emp_posname, setEmpPosName] = useState("");
 
   const otassign = () => {
     Axios.get("http://localhost:3333/otassignview").then((response) => {
@@ -18,9 +26,45 @@ function OTRequest() {
     });
   };
 
+  const otrequestcount = () => {
+    Axios.get(`http://localhost:3333/otrequestcount/${emp_id}`).then(
+      (response) => {
+        setOtrequestcountList(response.data);
+        console.log(response.data);
+      }
+    );
+  };
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+
+    Axios.get("/authen", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      console.log(response);
+      if (response.data.status == "ok") {
+        setRole(response.data.decoded.user.role_id);
+        setEmpName(
+          response.data.decoded.user.emp_firstname +
+            " " +
+            response.data.decoded.user.emp_surname
+        );
+        setEmpDepName(response.data.decoded.user.dep_name);
+        setEmpPosName(response.data.decoded.user.position_name);
+        setEmpId(response.data.decoded.user.emp_id);
+        setDepId(response.data.decoded.user.dep_id);
+      } else {
+        window.location = "/login";
+      }
+    });
+  };
+
   useEffect(() => {
     otassign();
-    dataepartment();
+    getAuth();
+    otrequestcount();
   }, []);
 
   const dataepartment = () => {
@@ -32,20 +76,36 @@ function OTRequest() {
   return (
     <Container>
       <h1 className="otrequest">แจ้งคำขอทำงานล่วงเวลา​</h1>
-      <Row>
-        <Col sm>
-          รออนุมัติ
-          <h1 className="request">
-            1 <h3 className="list"> รายการ</h3>
-          </h1>
-        </Col>
-        <Col sm>
-          เสร็จสิ้น
-          <h1 className="request">
-            1 <h3 className="list"> รายการ</h3>
-          </h1>
-        </Col>
-      </Row>
+      {otrequestcountList.map((val) => {
+        return (
+          <Row>
+            <Col className="request">
+              <Col>
+                <p style={{ display: "flex", fontSize: "1.5rem" }}>รออนุมัติ</p>
+                <Col
+                  className="col"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <h1>{val.otr_count + " รายการ"}</h1>
+                </Col>
+              </Col>
+            </Col>
+            <Col sm className="request">
+              <Col>
+                <p style={{ display: "flex", fontSize: "1.5rem" }}>
+                  อนุมัติแล้ว
+                </p>
+                <Col
+                  className="col"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <h1>{val.otr_count + " รายการ"}</h1>
+                </Col>
+              </Col>
+            </Col>
+          </Row>
+        );
+      })}
       <Row>
         <Table striped bordered hover>
           <thead>
@@ -79,8 +139,12 @@ function OTRequest() {
                   </td>
                   <td>{val.ot_name}</td>
                   <td>{val.dep_name}</td>
-                  <td>{moment(val.ot_starttime).locale('th').format('LLLL')} น.</td>
-                  <td>{moment(val.ot_finishtime).locale('th').format('LLLL')} น.</td>
+                  <td>
+                    {moment(val.ot_starttime).locale("th").format("LLLL")} น.
+                  </td>
+                  <td>
+                    {moment(val.ot_finishtime).locale("th").format("LLLL")} น.
+                  </td>
                   <td>{val.ot_apply}</td>
                   <td>
                     {val.ot_status == 1 ? (

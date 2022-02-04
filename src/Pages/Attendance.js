@@ -21,8 +21,8 @@ function Attendance() {
   return (
     <Container>
       <h1 className="attendance">บันทึกเวลาเข้า-ออกงาน</h1>
-      <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
-      {imgSrc && <img src={imgSrc} />}
+      {/* <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
+      {imgSrc && <img src={imgSrc} />} */}
 
       <div style={{ display: "flex", justifyContent: "center" }}>
         <Button variant="primary" onClick={capture} style={{ margin: "20px" }}>

@@ -4,7 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import "../App.css";
+import "./Leave.css";
 import Button from "react-bootstrap/Button";
 import FullCal from "../Components/FullCalendar";
 import Axios from "axios";
@@ -19,11 +19,11 @@ function Leave() {
         <Row>
           <h1 className="leave">แจ้งลา</h1>
         </Row>
-        <Row>
-          <Col sm>จำนวนวันลาพักร้อน</Col>
-          <Col sm>จำนวนวันที่ลา</Col>
-          <Col sm>ร้องขอการแจ้งลางาน</Col>
-        </Row>
+        {/* <Row>
+
+          <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
+          <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
+        </Row> */}
         <Row>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button variant="primary" onClick={() => setModalShow(true)}>
@@ -36,8 +36,9 @@ function Leave() {
           </div>
         </Row>
         <Row>
-          <div style={{ marginBottom: "50px" }}>
-            <FullCal />
+          <div style={{ marginBottom: "50px",display:"flex", justifyContent: "center"}}>
+            <Col className="col-md-10" style={{ alignItems: "center", height: "100%" }}>
+            <FullCal /></Col>
           </div>
         </Row>
       </Container>
