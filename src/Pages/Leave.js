@@ -4,10 +4,11 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import "../App.css";
+import "./Leave.css";
 import Button from "react-bootstrap/Button";
 import FullCal from "../Components/FullCalendar";
 import Axios from "axios";
+import { useHistory, useParams } from "react-router-dom";
 
 function Leave() {
   const [modalShow, setModalShow] = useState(false);
@@ -18,11 +19,11 @@ function Leave() {
         <Row>
           <h1 className="leave">แจ้งลา</h1>
         </Row>
-        <Row>
-          <Col sm>จำนวนวันลาพักร้อน</Col>
-          <Col sm>จำนวนวันที่ลา</Col>
-          <Col sm>ร้องขอการแจ้งลางาน</Col>
-        </Row>
+        {/* <Row>
+
+          <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
+          <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
+        </Row> */}
         <Row>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button variant="primary" onClick={() => setModalShow(true)}>
@@ -35,8 +36,9 @@ function Leave() {
           </div>
         </Row>
         <Row>
-          <div style={{ marginBottom: "50px" }}>
-            <FullCal />
+          <div style={{ marginBottom: "50px",display:"flex", justifyContent: "center"}}>
+            <Col className="col-md-10" style={{ alignItems: "center", height: "100%" }}>
+            <FullCal /></Col>
           </div>
         </Row>
       </Container>
@@ -46,24 +48,29 @@ function Leave() {
 
 function MydModalWithGrid(props) {
   const [departmentList, setDepartmentList] = useState([]);
-  const [dep_id, setDep_id] = useState("");
-  const [role_id, setRole] = useState("");
-  const [emp_name, setEmpName] = useState("");
+  const [leavetypeList, setLeaveTypeList] = useState([]);
   const [employeeList, setEmployeeList] = useState([]);
   const [LeaveList, setLeaveList] = useState([]);
 
-  const [emp_id, setEmp_id] = useState("");
-  const [type_leave, setType_leave] = useState("");
+  const [leave_type, setLeave_type] = useState("");
   const [leave_desc, setLeave_desc] = useState("");
   const [start_leave, setStart_leave] = useState("");
   const [end_leave, setEnd_leave] = useState("");
   const [summary, setSummary] = useState("");
+  const { ot_id } = useParams();
+  const [role_id, setRole] = useState("");
+  const [dep_id, setDepId] = useState("");
+  const [emp_id, setEmpId] = useState("");
+  const [emp_name, setEmpName] = useState("");
+  const [emp_depname, setEmpDepName] = useState("");
+  const [emp_posname, setEmpPosName] = useState("");
+  const [ltype_id, setLtype_id] = useState(0);
 
   const Addleave = () => {
     Axios.post("http://localhost:3333/leavework", {
       emp_id: emp_id,
       dep_id: dep_id,
-      type_leave: type_leave,
+      leave_type: ltype_id,
       leave_desc: leave_desc,
       start_leave: start_leave,
       end_leave: end_leave,
@@ -73,7 +80,7 @@ function MydModalWithGrid(props) {
 
         emp_id: emp_id,
         dep_id: dep_id,
-        type_leave: type_leave,
+        leave_type: ltype_id,
         leave_desc: leave_desc,
         start_leave: start_leave,
         end_leave: end_leave,
@@ -110,9 +117,19 @@ function MydModalWithGrid(props) {
             " " +
             response.data.decoded.user.emp_surname
         );
+        setEmpDepName(response.data.decoded.user.dep_name);
+        setEmpPosName(response.data.decoded.user.position_name);
+        setEmpId(response.data.decoded.user.emp_id);
+        setDepId(response.data.decoded.user.dep_id);
       } else {
         window.location = "/login";
       }
+    });
+  };
+
+  const leavetype = () => {
+    Axios.get("http://localhost:3333/leave_type").then((response) => {
+      setLeaveTypeList(response.data);
     });
   };
 
@@ -120,6 +137,7 @@ function MydModalWithGrid(props) {
     getAuth();
     dataepartment();
     empList();
+    leavetype();
   }, []);
 
   return (
@@ -132,8 +150,7 @@ function MydModalWithGrid(props) {
             </h2>
           </Row>
           <Row>
-            {departmentList.map((val) => {
-              return (
+
                 <Form>
                   <Form.Group
                     className="mb-3 col-12"
@@ -144,9 +161,6 @@ function MydModalWithGrid(props) {
                       type="text"
                       placeholder="กรอกชื่อ-สกุล"
                       value={emp_name}
-                      onChange={(e) => {
-                        setEmp_id(e.target.value);
-                      }}
                       disabled
                     />
                   </Form.Group>
@@ -155,28 +169,24 @@ function MydModalWithGrid(props) {
                     <Form.Control
                       type="text"
                       placeholder="กรอกแผนก"
-                      value={val.dep_name}
-                      onChange={(e) => {
-                        setDep_id(e.target.value);
-                      }}
+                      value={emp_depname}
                       disabled
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
                     <Form.Label>ประเภทการลา</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="กรอกประเภทการลา"
-                      onChange={(e) => {
-                        setType_leave(e.target.value);
-                      }}
-                    />
-
-                    {/* <Form.Select id="disabledSelect">
-                    <option value="0">กรุณาเลือก</option>
-                    <option value="1">ชาย</option>
-                    <option value="2">หญิง</option>
-                </Form.Select> */}
+                    <Form.Select
+                    value={ltype_id}
+                    onChange={(e) => {
+                      setLtype_id(e.target.value);
+                    }}
+                  >
+                    {leavetypeList.map((leavetype) => (
+                      <option value={leavetype.ltype_id}>
+                        {leavetype.ltype_name}
+                      </option>
+                    ))}
+                  </Form.Select>
                   </Form.Group>
                   <Form.Group className="mb-3" controlId="formBasicTextInput">
                     <Form.Label>เนื่องจาก</Form.Label>
@@ -228,8 +238,7 @@ function MydModalWithGrid(props) {
                     </Button>
                   </div>
                 </Form>
-              );
-            })}
+
           </Row>
         </Container>
       </Modal.Body>

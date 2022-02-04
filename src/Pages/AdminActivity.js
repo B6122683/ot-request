@@ -12,6 +12,9 @@ import Axios from "axios";
 import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
 import moment from "moment/min/moment-with-locales";
 import { Link, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
+
+
 const format = "hh:mm:ss";
 
 function AdminActivity() {
@@ -32,15 +35,32 @@ function AdminActivity() {
   const hideModal = () => {
     setModalShow(false);
   };
-
   const deleteActivity = (id) => {
-    Axios.delete(`http://localhost:3333/activity/${id}`).then((response) => {
+    Swal.fire({
+      title: 'ต้องการลบข้อมูล?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'ยืนยัน!',
+      cancelButtonText: 'ยกเลิก',
+    }).then((result) => {
+      if (result.isConfirmed) {
+         Axios.delete(`http://localhost:3333/activity/${id}`).then((response) => {
       setActivityList(
         activityList.filter((val) => {
           return val.act_id != id;
         })
       );
     });
+        Swal.fire(
+          'ลบแล้ว!',
+          'ลบไฟล์เรียบร้อย',
+          'success'
+        )
+      }
+    })
+   
   };
 
   const activitybyid = (act_id) => {
@@ -160,13 +180,15 @@ function AdminActivity() {
                           controlId="formBasicTextInput"
                         >
                           <Form.Label>รูปภาพ</Form.Label>
-                          <div>
+                          <div style={{display: "flex",
+                                justifyContent: "center"}}>
                             <Image
                               style={{
-                                height: 30,
-                                width: 30,
+                                height: 100,
+                                width: "100%",
                                 objectFit: "cover",
                                 margin: "5px",
+                                
                               }}
                               alt="file"
                               src={val.act_image}

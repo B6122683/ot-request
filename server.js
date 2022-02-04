@@ -480,7 +480,7 @@ app.get("/otassignview", jsonParser, function (req, res) {
 
 
 //--------------------------OT_REQUEST API--------------------------
-//GET OT_REQUEST DATA FORM DB
+//POST OT_REQUEST DATA FORM DB
 app.post("/otrequest", jsonParser, function (req, res) {
   db.execute("INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",[
     req.body.emp_id,
@@ -494,6 +494,65 @@ app.post("/otrequest", jsonParser, function (req, res) {
     }
   });
 });
+
+//SELECT DATA IN OT_ASSIGNMENT
+app.get("/otrequestview", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT otr.otr_id, otr.emp_id, e.emp_firstname, e.emp_surname, otr.dep_id, d.dep_name, otr.ot_id, ota.ot_name, otr.otr_status, otr.otr_date FROM ot_request AS otr LEFT JOIN employees AS e ON otr.emp_id = e.emp_id LEFT JOIN department AS d ON otr.dep_id = d.dep_id LEFT JOIN ot_assignment AS ota ON otr.ot_id = ota.ot_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//UPDATE OT_ASSIGNMENT DATA FORM DB
+app.put("/approveotrequest", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE ot_request SET otr_status = ? WHERE otr_id = ?",
+    [req.body.otr_status, req.body.otr_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/otrequest/:otr_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT * FROM ot_request WHERE otr_id = ?",
+    [req.params.otr_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT( SELECT COUNT(*) FROM ot_request WHERE emp_id = ? && otr_status = 1 ) AS otr_count",
+    [req.params.emp_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+
 //--------------------------OT_REQUEST API--------------------------
 
 
@@ -599,11 +658,11 @@ app.get("/positionsview", jsonParser, function (req, res) {
 //ADD LEAVE WORK
 app.post("/leavework", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO leavework (emp_id, dep_id, type_leave, leave_desc, start_leave, end_leave, summary, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 2, 1)",
+    "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc, start_leave, end_leave, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 0)",
     [
       req.body.emp_id, 
       req.body.dep_id, 
-      req.body.type_leave,
+      req.body.leave_type,
       req.body.leave_desc,
       req.body.start_leave,
       req.body.end_leave,
@@ -620,9 +679,24 @@ app.post("/leavework", jsonParser, function (req, res) {
   );
 });
 
-///GET LEAVE WORK FROM DB
-app.get("/leavework", jsonParser, function (req, res) {
-  db.execute("SELECT * FROM leavework", (err, result) => {
+
+//SELECT DATA IN LEAVE WORK
+app.get("/leaveworkview", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT leavework.leave_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//GET LEAVE_TYPE DATA FORM DB
+app.get("/leave_type", jsonParser, function (req, res) {
+  db.execute("SELECT * FROM leave_type", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -630,6 +704,37 @@ app.get("/leavework", jsonParser, function (req, res) {
     }
   });
 });
+
+
+//UPDATE LEAVE WORK DATA FORM DB
+app.put("/approveleavework", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE leavework SET leave_accept = ? WHERE leave_id = ?",
+    [req.body.leave_accept, req.body.leave_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.get("/leavework/:leave_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT * FROM leavework WHERE leave_id = ?",
+    [req.params.leave_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 
 
 //-----------------------------POSITION------------------------------

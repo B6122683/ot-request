@@ -17,42 +17,77 @@ import images3 from "../images/delete.png";
 import Axios from "axios";
 import Select from "react-select";
 import moment from "moment/min/moment-with-locales";
+import { useHistory, useParams } from "react-router-dom";
 
 function LeaveManagement() {
   const [modalShow, setModalShow] = useState(false);
   const [LeaveList, setLeaveList] = useState([]);
+  const [role_id, setRole] = useState("");
+  const [dep_id, setDepId] = useState("");
+  const [emp_id, setEmpId] = useState("");
+  const [emp_name, setEmpName] = useState("");
+  const [emp_depname, setEmpDepName] = useState("");
+  const [emp_posname, setEmpPosName] = useState("");
+  const [leaveworkListbyId, setLeaveworkListbyId] = useState([]);
+  const [leaveaccept, setleaveaccept] = useState(0);
 
   const hideModal = () => {
     setModalShow(false);
   };
 
   const leaveList = () => {
-    Axios.get("http://localhost:3333/leavework").then((response) => {
+    Axios.get("http://localhost:3333/leaveworkview").then((response) => {
       setLeaveList(response.data);
     });
   };
 
-  var colors = [
-    {
-      value: 0,
-      label: "red",
-    },
-    {
-      value: 1,
-      label: "orange",
-    },
-    {
-      value: 2,
-      label: "green",
-    },
-  ];
-  var [setbtncolor, btnvalue] = useState(colors.label);
-  var btnhandle = (e) => {
-    btnvalue(e.label);
+  const getLeavework = (id) => {
+    Axios.get(`http://localhost:3333/leavework/${id}`).then((response) => {
+      setLeaveworkListbyId(response.data);
+      setModalShow(true);
+    });
+  };
+
+  const approveleavework = (id) => {
+    Axios.put("http://localhost:3333/approveleavework", {
+      leave_accept: leaveaccept,
+      leave_id: id,
+    });
+  };
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+
+    Axios.get("/authen", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      console.log(response);
+      if (response.data.status == "ok") {
+        setRole(response.data.decoded.user.role_id);
+        setEmpName(
+          response.data.decoded.user.emp_firstname +
+            " " +
+            response.data.decoded.user.emp_surname
+        );
+        setEmpDepName(response.data.decoded.user.dep_name);
+        setEmpPosName(response.data.decoded.user.position_name);
+        setEmpId(response.data.decoded.user.emp_id);
+        setDepId(response.data.decoded.user.dep_id);
+      } else {
+        window.location = "/login";
+      }
+    });
   };
 
   useEffect(() => {
     leaveList();
+    getAuth();
+    // dataepartment();
+    // leavetype();
+    // getLeavework();
+    // approveleavework();
   }, []);
 
   return (
@@ -89,39 +124,54 @@ function LeaveManagement() {
                     />
                   </td>
                   <td>{val.leave_id}</td>
-                  <td>{val.leave_name}</td>
-                  <td>{val.dep_id}</td>
-                  <td>{val.type_leave}</td>
+                  <td>
+                    {val.emp_firstname} {val.emp_surname}
+                  </td>
+                  <td>{val.dep_name}</td>
+                  <td>{val.ltype_name}</td>
                   <td>{moment(val.start_leave).locale("th").format("LL")}</td>
                   <td>
-                    <Button
-                      variant="warning"
-                      style={{ margin: "0px", backgroundColor: +setbtncolor }}
-                      onClick={() => setModalShow(true)}
-                    >
-                      {" "}
-                      รออนุมัติ{" "}
-                    </Button>{" "}
+                    {val.leave_accept == 0 && (
+                      <Button
+                        variant="warning"
+                        style={{ margin: "0px" }}
+                        onClick={() => getLeavework(val.leave_id)}
+                      >
+                        {" "}
+                        รออนุมัติ{" "}
+                      </Button>
+                    )}
+                    {val.leave_accept == 1 && (
+                      <Button variant="success" style={{ margin: "0px" }}>
+                        {" "}
+                        อนุมัติ{" "}
+                      </Button>
+                    )}
+                    {val.leave_accept == 2 && (
+                      <Button variant="danger" style={{ margin: "0px" }}>
+                        {" "}
+                        ไม่อนุมัติ{" "}
+                      </Button>
+                    )}
                   </td>
                 </tr>
               </tbody>
             );
           })}
-          <Modal show={modalShow} centered>
-            <Modal.Body className="show-grid">
-              <Container>
-                <Row>
-                  <Form>
-                    <Form.Group
-                      className="mb-3 col-12"
-                      controlId="formBasicTextInput"
-                    >
-                      <Form.Label
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <h3>การอนุมัติคำขอลางาน</h3>
-                      </Form.Label>
-                    </Form.Group>
+        </Table>
+
+        <Modal show={modalShow} centered>
+          <Modal.Body className="show-grid">
+            <Container>
+              <Row>
+                <h2 className="leaveform" style={{ textAlign: "center" }}>
+                  การอนุมัติคำขอลางาน
+                </h2>
+              </Row>
+              {leaveworkListbyId.map((val) => {
+                return (
+                  <Row>
+                    <Form>
                     <div
                       style={{
                         display: "flex",
@@ -138,16 +188,25 @@ function LeaveManagement() {
                         </Col>
                         <Col className="col-md-10 col-12">
                           <Form.Group controlId="formBasicTextInput">
-                            <Select options={colors}></Select>
+                            <Form.Select
+                              name="leave_accept"
+                              onChange={(e) => {
+                                setleaveaccept(e.target.value);
+                              }}
+                            >
+                              <option value="0">รออนุมัติ</option>
+                              <option value="1">อนุมัติ</option>
+                              <option value="2">ไม่อนุมัติ</option>
+                            </Form.Select>
                           </Form.Group>
                         </Col>
                       </Row>
                     </div>
+
                     <div
                       style={{
                         display: "flex",
                         justifyContent: "center",
-                        padding: "5px",
                       }}
                     >
                       <Button
@@ -155,25 +214,24 @@ function LeaveManagement() {
                         onClick={hideModal}
                         style={{ margin: "10px" }}
                       >
-                        {setbtncolor}
                         ยกเลิก
                       </Button>
                       <Button
                         variant="primary"
                         type="submit"
-                        onClick={btnhandle}
                         style={{ margin: "10px" }}
+                        onClick={approveleavework(val.leave_id)}
                       >
-                        {setbtncolor}
                         ยืนยัน
                       </Button>
                     </div>
-                  </Form>
-                </Row>
-              </Container>
-            </Modal.Body>
-          </Modal>
-        </Table>
+                    </Form>
+                  </Row>
+                );
+              })}
+            </Container>
+          </Modal.Body>
+        </Modal>
       </Row>
     </Container>
   );
