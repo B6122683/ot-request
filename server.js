@@ -537,6 +537,22 @@ app.get("/otrequest/:otr_id", jsonParser, function (req, res) {
     }
   );
 });
+
+app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT( SELECT COUNT(*) FROM ot_request WHERE emp_id = ? && otr_status = 1 ) AS otr_count",
+    [req.params.emp_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+
 //--------------------------OT_REQUEST API--------------------------
 
 
