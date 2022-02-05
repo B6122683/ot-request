@@ -437,6 +437,22 @@ app.get("/employeesview", jsonParser, function (req, res) {
     }
   );
 });
+
+//GET EMPLOYEE BY ID
+app.get("/employees/:emp_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,employees.emp_images,employees.emp_address,employees.emp_tel,employees.emp_email,employees.emp_username,employees.emp_card_id,department.dep_name,role.role_name,positions.position_name,employees.emp_dob,employees.emp_gender FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id LEFT JOIN role ON employees.role_id = role.role_id WHERE employees.emp_id = ?",
+    [req.params.emp_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 //--------------------------EMPLOYEE API--------------------------
 
 //--------------------------OT_ASSIGNMENT API--------------------------
@@ -576,6 +592,22 @@ app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
     }
   );
 });
+
+//GET OTR FROM ID
+app.get("/otrequestId/:otr_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT ot_request.otr_id,employees.emp_firstname,employees.emp_surname,department.dep_name,ot_assignment.ot_name,ot_request.otr_status,ot_request.otr_date FROM ot_request LEFT JOIN department ON ot_request.dep_id = department.dep_id LEFT JOIN employees ON ot_request.emp_id = employees.emp_id LEFT JOIN ot_assignment ON ot_request.ot_id = ot_assignment.ot_id WHERE ot_request.otr_id = ?",
+    [req.params.otr_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 //--------------------------OT_REQUEST API--------------------------
 
 //-----------------------------ROLE------------------------------
@@ -773,6 +805,21 @@ app.put("/approveleavework", jsonParser, function (req, res) {
 app.get("/leavework/:leave_id", jsonParser, function (req, res) {
   db.execute(
     "SELECT * FROM leavework WHERE leave_id = ?",
+    [req.params.leave_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//GET LEAVEWORK FROM ID
+app.get("/leaveworkId/:leave_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT leavework.leave_id,employees.emp_firstname,employees.emp_surname, department.dep_name, leave_type.ltype_name, leavework.leave_desc, leavework.start_leave, leavework.end_leave, leavework.leave_accept FROM leavework LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id WHERE leavework.leave_id = ?",
     [req.params.leave_id],
     (err, result) => {
       if (err) {
