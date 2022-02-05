@@ -11,6 +11,7 @@ import images1 from "../images/edit.png";
 import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
 import Axios from "axios";
+import { Link } from "react-router-dom";
 
 function Department() {
   const [depname, setDepname] = useState("");
@@ -62,6 +63,7 @@ function Department() {
                   <td>{val.dep_id}</td>
                   <td>{val.dep_name}</td>
                   <td>
+                  <Link to={`/departmentmanagement/${val.dep_id}`}>
                     <Image
                       style={{
                         height: 30,
@@ -72,6 +74,7 @@ function Department() {
                       alt=""
                       src={images1}
                     />
+                    </Link>
                     <Image
                       style={{
                         height: 30,

@@ -10,6 +10,7 @@ import Image from "react-bootstrap/Image";
 import images1 from "../images/edit.png";
 import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
+import { Link } from "react-router-dom";
 import Axios from "axios";
 
 function Position() {
@@ -67,6 +68,7 @@ function Position() {
               <td>{val.dep_name}</td>
               <td>{val.position_name}</td>
               <td>
+              <Link to={`/positionmanagement/${val.position_id}`}>
                 <Image
                   style={{
                     height: 30,
@@ -77,6 +79,7 @@ function Position() {
                   alt=""
                   src={images1}
                 />
+                </Link>
                 <Image
                   style={{
                     height: 30,
