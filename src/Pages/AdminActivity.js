@@ -14,7 +14,6 @@ import moment from "moment/min/moment-with-locales";
 import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
-
 const format = "hh:mm:ss";
 
 function AdminActivity() {
@@ -37,30 +36,27 @@ function AdminActivity() {
   };
   const deleteActivity = (id) => {
     Swal.fire({
-      title: 'ต้องการลบข้อมูล?',
-      icon: 'warning',
+      title: "ต้องการลบข้อมูล?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'ยืนยัน!',
-      cancelButtonText: 'ยกเลิก',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก",
     }).then((result) => {
       if (result.isConfirmed) {
-         Axios.delete(`http://localhost:3333/activity/${id}`).then((response) => {
-      setActivityList(
-        activityList.filter((val) => {
-          return val.act_id != id;
-        })
-      );
-    });
-        Swal.fire(
-          'ลบแล้ว!',
-          'ลบไฟล์เรียบร้อย',
-          'success'
-        )
+        Axios.delete(`http://localhost:3333/activity/${id}`).then(
+          (response) => {
+            setActivityList(
+              activityList.filter((val) => {
+                return val.act_id != id;
+              })
+            );
+          }
+        );
+        Swal.fire("ลบแล้ว!", "ลบไฟล์เรียบร้อย", "success");
       }
-    })
-   
+    });
   };
 
   const activitybyid = (act_id) => {
@@ -137,16 +133,18 @@ function AdminActivity() {
                       src={images2}
                       onClick={() => activitybyid(val.act_id)}
                     />
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images1}
-                    />
+                    <Link to={`/activitymanagement/${val.act_id}`}>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images1}
+                      />
+                    </Link>
                     <Image
                       style={{
                         height: 30,
@@ -168,7 +166,7 @@ function AdminActivity() {
               <Container>
                 <Row>
                   <h2 className="leaveform" style={{ textAlign: "center" }}>
-                    แบบฟอร์มแจ้งลางาน
+                    รายละเอียดกิจกรรม
                   </h2>
                 </Row>
                 {activityListbyId.map((val) => {
@@ -180,15 +178,18 @@ function AdminActivity() {
                           controlId="formBasicTextInput"
                         >
                           <Form.Label>รูปภาพ</Form.Label>
-                          <div style={{display: "flex",
-                                justifyContent: "center"}}>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
                             <Image
                               style={{
                                 height: 100,
                                 width: "100%",
                                 objectFit: "cover",
                                 margin: "5px",
-                                
                               }}
                               alt="file"
                               src={val.act_image}
@@ -239,11 +240,11 @@ function AdminActivity() {
                           <Form.Control
                             type="text"
                             placeholder="กรอกวัน/เวลา เริ่ม"
-                            // value={val.act_time}
-                            value={
-                              moment(val.act_time).locale("th").format("LT") +
-                              " น."
-                            }
+                            value={val.act_time + " น."}
+                            // value={
+                            //   moment(val.act_time).locale("th").format("h:mm:ss") +
+                            //   " น."
+                            // }
                             disabled
                           />
                         </Form.Group>

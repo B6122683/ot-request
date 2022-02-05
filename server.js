@@ -126,7 +126,6 @@ app.post("/login", jsonParser, function (req, res, next) {
     "SELECT e.emp_id, e.emp_firstname, e.emp_surname, e.emp_address, e.emp_tel, e.emp_email, e.emp_username, e.emp_password, e.dep_id, d.dep_name, e.position_id, p.position_name, e.emp_card_id, e.emp_dob, e.emp_images, e.emp_gender, e.role_id FROM employees AS e LEFT JOIN positions AS p ON e.position_id = p.position_id LEFT JOIN department AS d ON e.dep_id = d.dep_id WHERE e.emp_username = ?",
     [emp_username],
     (err, users) => {
-    
       if (err) {
         res.json({ status: "error", message: err });
         return;
@@ -214,6 +213,21 @@ app.get("/department", jsonParser, function (req, res) {
   });
 });
 
+//GET DEPARTMENT DATA BY ID FORM DB
+app.get("/department/:dep_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT * FROM department WHERE dep_id = ?",
+    [req.params.dep_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 //ADD DEPARTMENT
 app.post("/department", jsonParser, function (req, res) {
   db.execute(
@@ -259,7 +273,6 @@ app.delete("/department/:dep_id", jsonParser, function (req, res) {
   );
 });
 //--------------------------DEPARTMENT API--------------------------
-
 
 //--------------------------ACTIVITY API--------------------------
 //ADD ACTIVITY
@@ -346,8 +359,22 @@ app.delete("/activity/:act_id", jsonParser, function (req, res) {
     }
   );
 });
-//--------------------------ACTIVITY API--------------------------
 
+//UPDATE ACTIVITY DATA FORM DB
+app.put("/activity", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE activity SET act_name = ?, act_image = ?, act_place = ?, act_date = ?, act_time = ?,act_desc = ? WHERE act_id = ?",
+    [req.body.act_name,req.body.act_image, req.body.act_place,req.body.act_date,req.body.act_time, req.body.act_desc,req.body.act_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+//--------------------------ACTIVITY API--------------------------
 
 //--------------------------EMPLOYEE API--------------------------
 //ADD EMPLOYEES WITH PHOTO
@@ -411,7 +438,6 @@ app.get("/employeesview", jsonParser, function (req, res) {
   );
 });
 //--------------------------EMPLOYEE API--------------------------
-
 
 //--------------------------OT_ASSIGNMENT API--------------------------
 //GET OT_ASSIGNMENT DATA FORM DB
@@ -478,21 +504,20 @@ app.get("/otassignview", jsonParser, function (req, res) {
 });
 //--------------------------OT_ASSIGNMENT API--------------------------
 
-
 //--------------------------OT_REQUEST API--------------------------
 //POST OT_REQUEST DATA FORM DB
 app.post("/otrequest", jsonParser, function (req, res) {
-  db.execute("INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",[
-    req.body.emp_id,
-    req.body.dep_id,
-    req.body.ot_id,
-  ], (err, result) => {
-    if (err) {
-      console.log(err);
-    } else {
-      res.send(result);
+  db.execute(
+    "INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",
+    [req.body.emp_id, req.body.dep_id, req.body.ot_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
     }
-  });
+  );
 });
 
 //SELECT DATA IN OT_ASSIGNMENT
@@ -551,10 +576,7 @@ app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
     }
   );
 });
-
-
 //--------------------------OT_REQUEST API--------------------------
-
 
 //-----------------------------ROLE------------------------------
 //GET ROLE DATA FORM DB
@@ -655,19 +677,48 @@ app.get("/positionsview", jsonParser, function (req, res) {
   );
 });
 
+//SELECT DATA BY ID IN POSITIONS
+app.get("/positions/:position_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT positions.position_id,positions.position_name,department.dep_id,department.dep_name FROM positions LEFT JOIN department ON positions.dep_id = department.dep_id WHERE positions.position_id = ?",
+    [req.params.position_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//UPDATE POSITION DATA FORM DB
+app.put("/positions", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE positions SET position_name = ?, dep_id = ? WHERE position_id = ?",
+    [req.body.position_name, req.body.dep_id,req.body.position_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+//-----------------------------POSITION------------------------------
+
 //ADD LEAVE WORK
 app.post("/leavework", jsonParser, function (req, res) {
   db.execute(
     "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc, start_leave, end_leave, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 0)",
     [
-      req.body.emp_id, 
-      req.body.dep_id, 
+      req.body.emp_id,
+      req.body.dep_id,
       req.body.leave_type,
       req.body.leave_desc,
       req.body.start_leave,
       req.body.end_leave,
-
-
     ],
     function (err, results, fields) {
       if (err) {
@@ -678,7 +729,6 @@ app.post("/leavework", jsonParser, function (req, res) {
     }
   );
 });
-
 
 //SELECT DATA IN LEAVE WORK
 app.get("/leaveworkview", jsonParser, function (req, res) {
@@ -704,7 +754,6 @@ app.get("/leave_type", jsonParser, function (req, res) {
     }
   });
 });
-
 
 //UPDATE LEAVE WORK DATA FORM DB
 app.put("/approveleavework", jsonParser, function (req, res) {
@@ -734,8 +783,6 @@ app.get("/leavework/:leave_id", jsonParser, function (req, res) {
     }
   );
 });
-
-
 
 //-----------------------------POSITION------------------------------
 
@@ -782,7 +829,6 @@ app.post("/logintest", (req, res) => {
   );
 });
 //-----------------------------test------------------------------
-
 
 //------------------UPLOAD IMAGES-------------------------
 app.post("/upload", (req, res) => {

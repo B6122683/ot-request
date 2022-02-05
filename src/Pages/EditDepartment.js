@@ -4,20 +4,23 @@ import Axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import "./Department.css";
 
-function DepartmentManagement() {
+function EditDepartment() {
   const [depname, setDepname] = useState("");
+  const { dep_id } = useParams();
   const [departmentList, setDepartmentList] = useState([]);
 
-  const adddepartment = () => {
-    Axios.post("http://localhost:3333/department", {
+  const departmentById = () => {
+    Axios.get(`http://localhost:3333/department/${dep_id}`).then((response) => {
+      setDepartmentList(response.data[0]);
+      setDepname(response.data[0].dep_name);
+      console.log(response.data[0]);
+    });
+  };
+
+  const editdepartment = () => {
+    Axios.put("http://localhost:3333/department", {
       dep_name: depname,
-    }).then(() => {
-      setDepartmentList([
-        ...departmentList,{
-          dep_name: depname
-        }
-      ])
-      window.location = "/department";
+      dep_id: dep_id,
     });
   };
 
@@ -37,37 +40,41 @@ function DepartmentManagement() {
   };
 
   useEffect(() => {
+    departmentById();
     getAuth();
   }, []);
-
 
   return (
     <>
       <Container>
         <Row>
-          <h1 className="adddep">เพิ่มข้อมูลแผนก</h1>
+          <h1 className="adddep">แก้ไขข้อมูลแผนก</h1>
         </Row>
         <Row>
-          <Form className="dep">
+          <Form className="dep" onSubmit={editdepartment}>
             <Form.Group className="mb-3" controlId="formBasicTextInput">
               <Form.Label>ชื่อแผนก</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="กรอกชื่อแผนก"
-                name="depname"
+                name="dep_name"
+                value={depname}
                 onChange={(e) => {
                   setDepname(e.target.value);
                 }}
               />
             </Form.Group>
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Button variant="danger" style={{ margin: "10px" }} onClick={() => (window.location = "/department")}>
+              <Button
+                variant="danger"
+                style={{ margin: "10px" }}
+                onClick={() => (window.location = "/department")}
+              >
                 ยกเลิก
               </Button>
               <Button
                 variant="primary"
                 type="submit"
-                onClick={adddepartment}
                 style={{ margin: "10px" }}
               >
                 ยืนยัน
@@ -80,4 +87,4 @@ function DepartmentManagement() {
   );
 }
 
-export default DepartmentManagement;
+export default EditDepartment;

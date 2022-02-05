@@ -28,6 +28,9 @@ import AdminOTManagement from './Pages/AdminOTManagement';
 import Upload from './Pages/upload';
 import Pagenotfound from './Pages/Pagenotfound';
 import LeaveManagement from './Pages/LeaveManagement';
+import EditDepartment from './Pages/EditDepartment';
+import EditPosition from './Pages/EditPosition';
+import EditActivity from './Pages/EditActivity';
 
 function App() {
   return (
@@ -49,13 +52,16 @@ function App() {
           <Route exact path="/employeemanagement" element={<EmployeeManagement/>}/>
           <Route exact path="/department" element={<Department/>}/>
           <Route exact path="/departmentmanagement" element={<DepartmentManagement/>}/>
+          <Route exact path="/departmentmanagement/:dep_id" element={<EditDepartment/>}/>
           <Route exact path="/position" element={<Position/>}/>
           <Route exact path="/positionmanagement" element={<PositionManagement/>}/>
+          <Route exact path="/positionmanagement/:position_id" element={<EditPosition/>}/>
           <Route exact path="/otmanagement" element={<OTManagement/>}/>
           <Route exact path="/permission" element={<Permission/>}/>
           <Route exact path="/officecalendar" element={<CalendarOffice/>}/>
           <Route exact path="/adminactivity" element={<AdminActivity/>}/>
           <Route exact path="/activitymanagement" element={<ActivityManagement/>}/>
+          <Route exact path="/activitymanagement/:act_id" element={<EditActivity/>}/>
           <Route exact path="/adminot" element={<AdminOT/>}/>
           <Route exact path="/upload" element={<Upload/>}/>
           <Route exact path="/adminotmanagement" element={<AdminOTManagement/>}/>
