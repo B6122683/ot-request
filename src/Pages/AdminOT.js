@@ -12,6 +12,7 @@ import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
 import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
+import { Link } from "react-router-dom";
 
 function AdminOT() {
   const [otassignList, setOtassignList] = useState([]);
@@ -68,11 +69,11 @@ function AdminOT() {
               <th style={{width:'100px'}}>จัดการ</th>
             </tr>
           </thead>
-          {otassignList.map((val) => {
+          {otassignList.map((val,index) => {
             return (
               <tbody>
                 <tr className="tbody">
-                  <td>{val.ot_id}</td>
+                  <td>{index + 1}</td>
                   <td>{val.ot_name}</td>
                   <td>{val.dep_name}</td>
                   <td>{val.ot_desc}</td>
@@ -81,6 +82,7 @@ function AdminOT() {
                   <td>{val.ot_apply}</td>
                   <td>{val.ot_rate}</td>
                   <td >
+                  <Link to={`/adminotmanagement/${val.ot_id}`}>
                     <Image
                       style={{
                         height: 30,
@@ -91,6 +93,7 @@ function AdminOT() {
                       alt=""
                       src={images1}
                     />
+                    </Link>
                     <Image
                       style={{
                         height: 30,
