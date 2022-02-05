@@ -5,6 +5,7 @@ import Image from "react-bootstrap/Image";
 import "./Activity.css";
 import Axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
+import moment from "moment/min/moment-with-locales";
 
 function ActivityDesc() {
   const [activityList, setActivityList] = useState([]);
@@ -35,11 +36,15 @@ function ActivityDesc() {
                       <Form.Label>สถานที่ : </Form.Label>
                       <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_place}</p>
                       <Form.Label>ในวันที่ : </Form.Label>
-                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_date}</p>
+                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>
+                      {moment(val.act_date).locale("th").format("LL")}
+                      </p>
                     </Form.Group>
                     <Form.Group controlId="formBasicTextInput" style={{display: "flex", justifyContent: "center"}}>
                       <Form.Label>เวลา : </Form.Label>
-                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_time}</p>
+                      <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>
+                        {moment(val.act_time).locale("th").format("LT") + " น."}
+                        </p>
                     </Form.Group>
                     <Form.Group controlId="formBasicTextInput" style={{display: "flex", justifyContent: "center"}}>
                       <p style={{marginTop: "10px",display: "flex", justifyContent: "center"}}>{val.act_desc}</p>

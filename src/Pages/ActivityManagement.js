@@ -99,8 +99,10 @@ function ActivityManagement() {
                 <Image
                   style={{
                     height: 150,
+                    width: 150,
                     objectFit: "cover",
                     marginBlock: "13px",
+                    borderRadius: "50%"
                   }}
                   alt=""
                   src={act_image == "" ? addimage : previewImg}
