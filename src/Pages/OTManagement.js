@@ -14,12 +14,38 @@ import images2 from "../images/view.png";
 import images3 from "../images/delete.png";
 import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
+import { Link, useParams } from "react-router-dom";
 
 function OTManagement() {
   const [otrequestList, setOtrequestList] = useState([]);
   const [otrequestListbyId, setOtrequestListbyId] = useState([]);
   const [otstatus, setotStatus] = useState(0);
   const [modalShow, setModalShow] = useState(false);
+
+  const [modalShowview, setModalShowview] = useState(false);
+  const [otListbyId, setOtListbyId] = useState([]);
+  // const { otr_id } = useParams();
+
+  const otbyid = (otr_id) => {
+    Axios.get(`http://localhost:3333/otrequestId/${otr_id}`).then((response) => {
+      setOtListbyId(response.data);
+      // console.log(response.data[0]);
+      if (!response.data) {
+        setModalShowview(false);
+      }else{
+        setModalShowview(true)
+      }
+    });
+  };
+  const showModalview = () => {
+    setModalShowview(true);
+  };
+
+  const hideModalview = () => {
+    setModalShowview(false);
+  };
+
+
 
   const showModal = () => {
     setModalShow(true);
@@ -36,8 +62,8 @@ function OTManagement() {
     });
   };
 
-  const getOTrequest = (id) => {
-    Axios.get(`http://localhost:3333/otrequest/${id}`).then((response) => {
+  const getOTrequest = (otr_id) => {
+    Axios.get(`http://localhost:3333/otrequest/${otr_id}`).then((response) => {
       setOtrequestListbyId(response.data);
       setModalShow(true);
     });
@@ -70,6 +96,7 @@ function OTManagement() {
   useEffect(() => {
     getAuth();
     otrequestview();
+
   }, []);
 
   return (
@@ -103,6 +130,7 @@ function OTManagement() {
                       }}
                       alt=""
                       src={images2}
+                      onClick={() => otbyid(val.otr_id)}
                     />
                     {/* </Link> */}
                   </td>
@@ -198,9 +226,129 @@ function OTManagement() {
             </Container>
           </Modal.Body>
         </Modal>
+
+        <Modal
+      show={modalShowview}
+      centered
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+    >
+      <Modal.Body className="show-grid">
+        <Container>
+          <Row>
+            <h2 className="leaveform" style={{ textAlign: "center" }}>
+              ข้อมูลคำขอ OT
+            </h2>
+          </Row>
+
+          {otListbyId.map((val) => {
+            return (
+              <Row>
+                <Form>
+                  <Row className="col-md-12 ">
+                    <Col className="col-md-6 col-12">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicTextInput"
+                      >
+                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="กรอกชื่อ-นามสกุล"
+                          value={val.emp_firstname +"  "+ val.emp_surname}
+                          disabled
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col className="col-md-6 col-12">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicTextInput"
+                      >
+                        <Form.Label>แผนก</Form.Label>
+                        <Form.Select disabled>
+                              <option value={val.dep_id}>
+                              {val.dep_name}
+                              </option>
+                            </Form.Select>
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <Row className="col-md-12 ">
+                    <Col className="col-md-6 col-12">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicTextInput"
+                      >
+                        <Form.Label>ชื่องาน</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="กรอกชื่องาน"
+                          value={val.ot_name}
+                          disabled
+                        />
+                      </Form.Group>
+                    </Col>
+                    <Col className="col-md-6 col-12">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicTextInput"
+                      >
+                        <Form.Label>สถานะ</Form.Label>
+                        <Form.Control
+                          type="text"
+                          value={val.otr_status}
+                          disabled
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <Row className="col-md-12 ">
+                    <Col className="col-md-6 col-12">
+                      <Form.Group
+                        className="mb-3"
+                        controlId="formBasicTextInput"
+                      >
+                        <Form.Label>วันที่ขอ OT</Form.Label>
+                        <Form.Control
+                          type="text"
+                          placeholder="กรอกชื่องาน"
+                          value={moment(val.otr_date).locale("th").format("LL")}
+                          disabled
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>       
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Button
+                      variant="danger"
+                      onClick={hideModalview}
+                      style={{ margin: "10px" }}
+                    >
+                      ปิด
+                    </Button>
+                  </div>
+                </Form>
+              </Row>
+            );
+          })}
+
+          </Container>
+      </Modal.Body>
+    </Modal>
+
       </Row>
     </Container>
+
   );
 }
+
+
 
 export default OTManagement;

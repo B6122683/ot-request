@@ -190,8 +190,10 @@ function EmployeeManagement() {
               <Image
                 style={{
                   height: 150,
+                  width: 150,
                   objectFit: "cover",
                   marginBlock: "13px",
+                  borderRadius: "50%"
                 }}
                 alt=""
                 src={emp_images == "" ? account : previewImg}
@@ -427,7 +429,7 @@ function EmployeeManagement() {
                   padding: "20px",
                 }}
               >
-                <Button variant="danger" style={{ margin: "10px" }}>
+                <Button variant="danger" style={{ margin: "10px" }} onClick={() => (window.location = "/employee")}>
                   ยกเลิก
                 </Button>
                 <Button

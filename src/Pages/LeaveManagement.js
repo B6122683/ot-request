@@ -31,6 +31,31 @@ function LeaveManagement() {
   const [leaveworkListbyId, setLeaveworkListbyId] = useState([]);
   const [leaveaccept, setleaveaccept] = useState(0);
 
+  const [modalShowview, setModalShowview] = useState(false);
+  const [leaveListbyId, setLeaveListbyId] = useState([]);
+
+  const leavebyid = (leave_id) => {
+    Axios.get(`http://localhost:3333/leaveworkId/${leave_id}`).then(
+      (response) => {
+        setLeaveListbyId(response.data);
+        // console.log(response.data[0]);
+        if (!response.data) {
+          setModalShowview(false);
+        } else {
+          setModalShowview(true);
+        }
+      }
+    );
+  };
+
+  const showModalview = () => {
+    setModalShowview(true);
+  };
+
+  const hideModalview = () => {
+    setModalShowview(false);
+  };
+
   const hideModal = () => {
     setModalShow(false);
   };
@@ -121,6 +146,7 @@ function LeaveManagement() {
                       }}
                       alt=""
                       src={images2}
+                      onClick={() => leavebyid(val.leave_id)}
                     />
                   </td>
                   <td>{val.leave_id}</td>
@@ -172,59 +198,192 @@ function LeaveManagement() {
                 return (
                   <Row>
                     <Form>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Row className="col-md-12 " style={{ margin: "5px" }}>
-                        <Col className="col-md-2 col-12">
-                          <Form.Group controlId="formBasicTextInput">
-                            <Form.Label style={{ display: "flex" }}>
-                              เลือก
-                            </Form.Label>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Row className="col-md-12 " style={{ margin: "5px" }}>
+                          <Col className="col-md-2 col-12">
+                            <Form.Group controlId="formBasicTextInput">
+                              <Form.Label style={{ display: "flex" }}>
+                                เลือก
+                              </Form.Label>
+                            </Form.Group>
+                          </Col>
+                          <Col className="col-md-10 col-12">
+                            <Form.Group controlId="formBasicTextInput">
+                              <Form.Select
+                                name="leave_accept"
+                                onChange={(e) => {
+                                  setleaveaccept(e.target.value);
+                                }}
+                              >
+                                <option value="0">รออนุมัติ</option>
+                                <option value="1">อนุมัติ</option>
+                                <option value="2">ไม่อนุมัติ</option>
+                              </Form.Select>
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Button
+                          variant="danger"
+                          onClick={hideModal}
+                          style={{ margin: "10px" }}
+                        >
+                          ยกเลิก
+                        </Button>
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          style={{ margin: "10px" }}
+                          onClick={approveleavework(val.leave_id)}
+                        >
+                          ยืนยัน
+                        </Button>
+                      </div>
+                    </Form>
+                  </Row>
+                );
+              })}
+            </Container>
+          </Modal.Body>
+        </Modal>
+
+        <Modal
+          show={modalShowview}
+          centered
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Body className="show-grid">
+            <Container>
+              <Row>
+                <h2 className="leaveform" style={{ textAlign: "center" }}>
+                  ข้อมูลคำขอลางาน
+                </h2>
+              </Row>
+
+              {leaveListbyId.map((val) => {
+                return (
+                  <Row>
+                    <Form>
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่อ-นามสกุล"
+                              value={val.emp_firstname +"  "+ val.emp_surname}
+                              disabled
+                            />
                           </Form.Group>
                         </Col>
-                        <Col className="col-md-10 col-12">
-                          <Form.Group controlId="formBasicTextInput">
-                            <Form.Select
-                              name="leave_accept"
-                              onChange={(e) => {
-                                setleaveaccept(e.target.value);
-                              }}
-                            >
-                              <option value="0">รออนุมัติ</option>
-                              <option value="1">อนุมัติ</option>
-                              <option value="2">ไม่อนุมัติ</option>
-                            </Form.Select>
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>แผนก</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกแผนก"
+                              value={val.dep_name}
+                              disabled
+                            />
                           </Form.Group>
                         </Col>
                       </Row>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <Button
-                        variant="danger"
-                        onClick={hideModal}
-                        style={{ margin: "10px" }}
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ประเภทการลา</Form.Label>
+                            <Form.Select disabled>
+                              <option value={val.ltype_id}>
+                                {val.ltype_name}
+                              </option>
+                            </Form.Select>
+                          </Form.Group>
+                        </Col>
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>รายละเอียดการลา</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={val.leave_desc}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ขอลาตั้งแต่วันที่</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่องาน"
+                              value={moment(val.start_leave)
+                                .locale("th")
+                                .format("LL")}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ถึงวันที่</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่องาน"
+                              value={moment(val.end_leave)
+                                .locale("th")
+                                .format("LL")}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
                       >
-                        ยกเลิก
-                      </Button>
-                      <Button
-                        variant="primary"
-                        type="submit"
-                        style={{ margin: "10px" }}
-                        onClick={approveleavework(val.leave_id)}
-                      >
-                        ยืนยัน
-                      </Button>
-                    </div>
+                        <Button
+                          variant="danger"
+                          onClick={hideModalview}
+                          style={{ margin: "10px" }}
+                        >
+                          ปิด
+                        </Button>
+                      </div>
                     </Form>
                   </Row>
                 );

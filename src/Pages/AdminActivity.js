@@ -109,8 +109,8 @@ function AdminActivity() {
                     <div>
                       <Image
                         style={{
-                          height: 30,
-                          width: 30,
+                          height: 80,
+                          width: 80,
                           objectFit: "cover",
                           margin: "5px",
                         }}
@@ -186,7 +186,7 @@ function AdminActivity() {
                           >
                             <Image
                               style={{
-                                height: 100,
+                                height: 180,
                                 width: "100%",
                                 objectFit: "cover",
                                 margin: "5px",
