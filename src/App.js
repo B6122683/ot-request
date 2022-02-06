@@ -31,6 +31,8 @@ import LeaveManagement from './Pages/LeaveManagement';
 import EditDepartment from './Pages/EditDepartment';
 import EditPosition from './Pages/EditPosition';
 import EditActivity from './Pages/EditActivity';
+import EditAdminOT from './Pages/EditAdminOT';
+import EditEmployee from './Pages/EditEmployee';
 
 function App() {
   return (
@@ -50,6 +52,7 @@ function App() {
           <Route exact path="/activityDesc/:act_id" element={<ActivityDesc/>}/>
           <Route exact path="/employee" element={<Employee/>}/>
           <Route exact path="/employeemanagement" element={<EmployeeManagement/>}/>
+          <Route exact path="/employeemanagement/:emp_id" element={<EditEmployee/>}/>
           <Route exact path="/department" element={<Department/>}/>
           <Route exact path="/departmentmanagement" element={<DepartmentManagement/>}/>
           <Route exact path="/departmentmanagement/:dep_id" element={<EditDepartment/>}/>
@@ -65,6 +68,7 @@ function App() {
           <Route exact path="/adminot" element={<AdminOT/>}/>
           <Route exact path="/upload" element={<Upload/>}/>
           <Route exact path="/adminotmanagement" element={<AdminOTManagement/>}/>
+          <Route exact path="/adminotmanagement/:ot_id" element={<EditAdminOT/>}/>
           <Route path='*' exact={true}  element={<Pagenotfound/>}/>
           <Route exact path="/leavemanagement" element={<LeaveManagement/>}/>
         </Routes>
