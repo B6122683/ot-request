@@ -10,7 +10,7 @@ import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Image from "react-bootstrap/Image";
 import images1 from "../images/edit.png";
-import images2 from "../images/view.png";
+import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
 import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
@@ -27,15 +27,17 @@ function OTManagement() {
   // const { otr_id } = useParams();
 
   const otbyid = (otr_id) => {
-    Axios.get(`http://localhost:3333/otrequestId/${otr_id}`).then((response) => {
-      setOtListbyId(response.data);
-      // console.log(response.data[0]);
-      if (!response.data) {
-        setModalShowview(false);
-      }else{
-        setModalShowview(true)
+    Axios.get(`http://localhost:3333/otrequestId/${otr_id}`).then(
+      (response) => {
+        setOtListbyId(response.data);
+        // console.log(response.data[0]);
+        if (!response.data) {
+          setModalShowview(false);
+        } else {
+          setModalShowview(true);
+        }
       }
-    });
+    );
   };
   const showModalview = () => {
     setModalShowview(true);
@@ -44,8 +46,6 @@ function OTManagement() {
   const hideModalview = () => {
     setModalShowview(false);
   };
-
-
 
   const showModal = () => {
     setModalShow(true);
@@ -96,7 +96,6 @@ function OTManagement() {
   useEffect(() => {
     getAuth();
     otrequestview();
-
   }, []);
 
   return (
@@ -123,8 +122,8 @@ function OTManagement() {
                     {/* <Link to={`/otrequestdesc/${val.ot_id}`}> */}
                     <Image
                       style={{
-                        height: "20px",
-                        width: "20px",
+                        height: "30px",
+                        width: "30px",
                         objectFit: "cover",
                         justifyContent: "center",
                       }}
@@ -228,127 +227,124 @@ function OTManagement() {
         </Modal>
 
         <Modal
-      show={modalShowview}
-      centered
-      size="lg"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
-      <Modal.Body className="show-grid">
-        <Container>
-          <Row>
-            <h2 className="leaveform" style={{ textAlign: "center" }}>
-              ข้อมูลคำขอ OT
-            </h2>
-          </Row>
-
-          {otListbyId.map((val) => {
-            return (
+          show={modalShowview}
+          centered
+          size="lg"
+          aria-labelledby="contained-modal-title-vcenter"
+          centered
+        >
+          <Modal.Body className="show-grid">
+            <Container>
               <Row>
-                <Form>
-                  <Row className="col-md-12 ">
-                    <Col className="col-md-6 col-12">
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicTextInput"
-                      >
-                        <Form.Label>ชื่อ-นามสกุล</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="กรอกชื่อ-นามสกุล"
-                          value={val.emp_firstname +"  "+ val.emp_surname}
-                          disabled
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col className="col-md-6 col-12">
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicTextInput"
-                      >
-                        <Form.Label>แผนก</Form.Label>
-                        <Form.Select disabled>
-                              <option value={val.dep_id}>
-                              {val.dep_name}
+                <h2 className="leaveform" style={{ textAlign: "center" }}>
+                  ข้อมูลคำขอ OT
+                </h2>
+              </Row>
+
+              {otListbyId.map((val) => {
+                return (
+                  <Row>
+                    <Form>
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ชื่อ-นามสกุล</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่อ-นามสกุล"
+                              value={val.emp_firstname + "  " + val.emp_surname}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>แผนก</Form.Label>
+                            <Form.Select disabled>
+                              <option value={val.dep_id}>{val.dep_name}</option>
+                            </Form.Select>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>ชื่องาน</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่องาน"
+                              value={val.ot_name}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>สถานะ</Form.Label>
+                            <Form.Select disabled>
+                              <option value={val.otr_status}>
+                                {val.otr_status == 0 && "รออนุมัติ"}
+                                {val.otr_status == 1 && "อนุมัติ"}
+                                {val.otr_status == 2 && "ไม่อนุมัติ"}
                               </option>
                             </Form.Select>
-                      </Form.Group>
-                    </Col>
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>วันที่ขอ OT</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่องาน"
+                              value={moment(val.otr_date)
+                                .locale("th")
+                                .format("LL")}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Button
+                          variant="danger"
+                          onClick={hideModalview}
+                          style={{ margin: "10px" }}
+                        >
+                          ปิด
+                        </Button>
+                      </div>
+                    </Form>
                   </Row>
-                  <Row className="col-md-12 ">
-                    <Col className="col-md-6 col-12">
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicTextInput"
-                      >
-                        <Form.Label>ชื่องาน</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="กรอกชื่องาน"
-                          value={val.ot_name}
-                          disabled
-                        />
-                      </Form.Group>
-                    </Col>
-                    <Col className="col-md-6 col-12">
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicTextInput"
-                      >
-                        <Form.Label>สถานะ</Form.Label>
-                        <Form.Control
-                          type="text"
-                          value={val.otr_status}
-                          disabled
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                  <Row className="col-md-12 ">
-                    <Col className="col-md-6 col-12">
-                      <Form.Group
-                        className="mb-3"
-                        controlId="formBasicTextInput"
-                      >
-                        <Form.Label>วันที่ขอ OT</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="กรอกชื่องาน"
-                          value={moment(val.otr_date).locale("th").format("LL")}
-                          disabled
-                        />
-                      </Form.Group>
-                    </Col>
-                  </Row>       
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Button
-                      variant="danger"
-                      onClick={hideModalview}
-                      style={{ margin: "10px" }}
-                    >
-                      ปิด
-                    </Button>
-                  </div>
-                </Form>
-              </Row>
-            );
-          })}
-
-          </Container>
-      </Modal.Body>
-    </Modal>
-
+                );
+              })}
+            </Container>
+          </Modal.Body>
+        </Modal>
       </Row>
     </Container>
-
   );
 }
-
-
 
 export default OTManagement;

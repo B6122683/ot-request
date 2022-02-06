@@ -280,7 +280,7 @@ function Employee() {
                             <Form.Control
                               type="text"
                               placeholder="กรอกชื่อ-นามสกุล"
-                              value={val.emp_firstname +"  "+ val.emp_surname}
+                              value={val.emp_firstname + "  " + val.emp_surname}
                               disabled
                             />
                           </Form.Group>
@@ -323,7 +323,9 @@ function Employee() {
                             <Form.Label>เพศ</Form.Label>
                             <Form.Select disabled>
                               <option value={val.emp_gender}>
-                              {val.emp_gender}
+                                {val.emp_gender == 0 && "กรุณาเลือก"}
+                                {val.emp_gender == 1 && "ชาย"}
+                                {val.emp_gender == 2 && "หญิง"}
                               </option>
                             </Form.Select>
                           </Form.Group>
@@ -409,25 +411,23 @@ function Employee() {
                           >
                             <Form.Label>แผนก</Form.Label>
                             <Form.Select disabled>
-                              <option value={val.dep_id}>
-                                {val.dep_name}
-                              </option>
+                              <option value={val.dep_id}>{val.dep_name}</option>
                             </Form.Select>
                           </Form.Group>
                         </Col>
                       </Row>
                       <Row className="col-md-12 ">
                         <Col className="col-md-12 col-12">
-                      <Form.Group className="mb-3">
-                        <Form.Label>ชื่อผู้ใช้</Form.Label>
-                        <Form.Control
-                          type="text"
-                          placeholder="กรอกชื่อผู้ใช้"
-                          value={val.emp_username}
-                          disabled
-                        />
-                      </Form.Group>
-                      </Col>
+                          <Form.Group className="mb-3">
+                            <Form.Label>ชื่อผู้ใช้</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่อผู้ใช้"
+                              value={val.emp_username}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
                       </Row>
 
                       <div

@@ -581,7 +581,7 @@ app.get("/otrequest/:otr_id", jsonParser, function (req, res) {
 
 app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
   db.execute(
-    "SELECT( SELECT COUNT(*) FROM ot_request WHERE emp_id = ? && otr_status = 1 ) AS otr_count",
+    "SELECT COUNT( CASE WHEN otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN otr_status = 2 THEN 1 END ) AS reject FROM ot_request WHERE emp_id = ?",
     [req.params.emp_id],
     (err, result) => {
       if (err) {
@@ -765,7 +765,7 @@ app.post("/leavework", jsonParser, function (req, res) {
 //SELECT DATA IN LEAVE WORK
 app.get("/leaveworkview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leavework.leave_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -831,6 +831,20 @@ app.get("/leaveworkId/:leave_id", jsonParser, function (req, res) {
   );
 });
 
+//LEAVE WORK COUNT
+app.get("/leaveworkcount/:emp_id", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT COUNT( CASE WHEN leave_accept = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN leave_accept = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN leave_accept = 2 THEN 1 END ) AS reject FROM leavework WHERE emp_id = ?",
+    [req.params.emp_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
 //-----------------------------POSITION------------------------------
 
 //-----------------------------test------------------------------

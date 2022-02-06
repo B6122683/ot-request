@@ -12,13 +12,58 @@ import { useHistory, useParams } from "react-router-dom";
 
 function Leave() {
   const [modalShow, setModalShow] = useState(false);
+  const [leaveworkcountList, setLeaveWorkcountList] = useState([]);
+  const [waiting, setWaiting] = useState(0);
+  const [accept, setAccept] = useState(0);
+  const { emp_id } = useParams();
+  const [eemp_id, setEEmpId] = useState("");
 
+  const leaveworkcount = async (emp_id) => {
+    await Axios.get(`http://localhost:3333/leaveworkcount/${emp_id}`).then(
+      (response) => {
+        setLeaveWorkcountList(response.data);
+        setWaiting(response.data[0].waiting);
+        setAccept(response.data[0].accept);
+        console.log("count",response.data);
+      }
+    );
+  };
+
+  useEffect(() =>{
+    leaveworkcount();
+  }, []);
   return (
     <>
       <Container>
         <Row>
           <h1 className="leave">แจ้งลา</h1>
         </Row>
+        <Row>
+            <Col className="request">
+              <Col>
+                <p style={{ display: "flex", fontSize: "1.5rem" }}>รออนุมัติ</p>
+                <Col
+                  className="col"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <h1>{waiting +" รายการ"}</h1>
+                </Col>
+              </Col>
+            </Col>
+            <Col sm className="request">
+              <Col>
+                <p style={{ display: "flex", fontSize: "1.5rem" }}>
+                  อนุมัติแล้ว
+                </p>
+                <Col
+                  className="col"
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <h1>{accept +" รายการ"}</h1>
+                </Col>
+              </Col>
+            </Col>
+          </Row>
         {/* <Row>
 
           <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
@@ -66,6 +111,7 @@ function MydModalWithGrid(props) {
   const [emp_posname, setEmpPosName] = useState("");
   const [ltype_id, setLtype_id] = useState(0);
 
+ 
   const Addleave = () => {
     Axios.post("http://localhost:3333/leavework", {
       emp_id: emp_id,
