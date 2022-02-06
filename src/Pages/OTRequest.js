@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Table, Image } from "react-bootstrap";
-import images1 from "../images/view.png";
+import images1 from "../images/visible.png";
 import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Axios from "axios";
@@ -15,10 +15,13 @@ function OTRequest() {
   const [emp_name, setEmpName] = useState("");
   const [dep_id, setDepId] = useState("");
   const { ot_id } = useParams();
+  const { emp_iid } = useParams();
   const [role_id, setRole] = useState("");
   const [emp_id, setEmpId] = useState("");
   const [emp_depname, setEmpDepName] = useState("");
   const [emp_posname, setEmpPosName] = useState("");
+  const [waiting, setWaiting] = useState(0);
+  const [accept, setAccept] = useState(0);
 
   const otassign = () => {
     Axios.get("http://localhost:3333/otassignview").then((response) => {
@@ -26,11 +29,13 @@ function OTRequest() {
     });
   };
 
-  const otrequestcount = () => {
-    Axios.get(`http://localhost:3333/otrequestcount/${emp_id}`).then(
+  const otrequestcount = async (e) => {
+     await Axios.get(`http://localhost:3333/otrequestcount/${emp_id}`).then(
       (response) => {
         setOtrequestcountList(response.data);
-        console.log(response.data);
+        setWaiting(response.data[0].waiting);
+        setAccept(response.data[0].accept);
+        console.log("count",response.data);
       }
     );
   };
@@ -76,8 +81,6 @@ function OTRequest() {
   return (
     <Container>
       <h1 className="otrequest">แจ้งคำขอทำงานล่วงเวลา​</h1>
-      {otrequestcountList.map((val) => {
-        return (
           <Row>
             <Col className="request">
               <Col>
@@ -86,7 +89,7 @@ function OTRequest() {
                   className="col"
                   style={{ display: "flex", justifyContent: "center" }}
                 >
-                  <h1>{val.otr_count + " รายการ"}</h1>
+                  <h1>{waiting +" รายการ"}</h1>
                 </Col>
               </Col>
             </Col>
@@ -99,14 +102,14 @@ function OTRequest() {
                   className="col"
                   style={{ display: "flex", justifyContent: "center" }}
                 >
-                  <h1>{val.otr_count + " รายการ"}</h1>
+                  <h1>{accept +" รายการ"}</h1>
                 </Col>
               </Col>
             </Col>
+            
           </Row>
-        );
-      })}
       <Row>
+        
         <Table striped bordered hover>
           <thead>
             <tr className="tr">
@@ -127,8 +130,8 @@ function OTRequest() {
                     <Link to={`/otrequestdesc/${val.ot_id}`}>
                       <Image
                         style={{
-                          height: "20px",
-                          width: "20px",
+                          height: "30px",
+                          width: "30px",
                           objectFit: "cover",
                           justifyContent: "center",
                         }}

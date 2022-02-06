@@ -288,7 +288,7 @@ function LeaveManagement() {
                             <Form.Control
                               type="text"
                               placeholder="กรอกชื่อ-นามสกุล"
-                              value={val.emp_firstname +"  "+ val.emp_surname}
+                              value={val.emp_firstname + "  " + val.emp_surname}
                               disabled
                             />
                           </Form.Group>
@@ -367,6 +367,23 @@ function LeaveManagement() {
                                 .format("LL")}
                               disabled
                             />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="col-md-12 ">
+                        <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>สถานะ</Form.Label>
+                            <Form.Select disabled>
+                              <option value={val.leave_accept}>
+                                {val.leave_accept == 0 && "รออนุมัติ"}
+                                {val.leave_accept == 1 && "อนุมัติ"}
+                                {val.leave_accept == 2 && "ไม่อนุมัติ"}
+                              </option>
+                            </Form.Select>
                           </Form.Group>
                         </Col>
                       </Row>
