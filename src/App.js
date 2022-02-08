@@ -33,6 +33,7 @@ import EditPosition from './Pages/EditPosition';
 import EditActivity from './Pages/EditActivity';
 import EditAdminOT from './Pages/EditAdminOT';
 import EditEmployee from './Pages/EditEmployee';
+import Map from './Pages/Map';
 
 function App() {
   return (
@@ -71,6 +72,8 @@ function App() {
           <Route exact path="/adminotmanagement/:ot_id" element={<EditAdminOT/>}/>
           <Route path='*' exact={true}  element={<Pagenotfound/>}/>
           <Route exact path="/leavemanagement" element={<LeaveManagement/>}/>
+          <Route exact path="/map" element={<Map/>}/>
+
         </Routes>
       </Router>
     </>
