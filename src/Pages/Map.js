@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {GOOGLE_API_KEY} from '../Pages/config';
+// import {GOOGLE_API_KEY} from '../Pages/config';
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 
@@ -20,7 +20,7 @@ class Map extends React.Component {
   }
 
    reverseGeocodeCoordinates () {
-    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.state.latitude},${this.state.longitude}&sensor=false&key=AIzaSyCgpbkuZr2LYFS24pCmL3LOPMZ6iopxyJQ`)
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${this.state.latitude},${this.state.longitude}&sensor=false&key=AIzaSyB2S44xNnHEWFSd3yHhZ0TKdPv6pUwr8kg`)
     .then(response => response.json())
     .then(data => this.setState({
     //   userAddress: data.results[0].formatted_address
@@ -70,7 +70,7 @@ class Map extends React.Component {
           <p>Address: {this.state.userAddress}</p>
       {
         this.state.latitude && this.state.longitude ?
-         <Image src={`https://maps.googleapis.com/maps/api/staticmap?center=${this.state.latitude},${this.state.longitude}&zoom=14&size=400x300&sensor=false&markers=color:red%7C${this.state.latitude},${this.state.longitude}&key=AIzaSyCgpbkuZr2LYFS24pCmL3LOPMZ6iopxyJQ`} alt=''/>
+         <Image src={`https://maps.googleapis.com/maps/api/staticmap?center=${this.state.latitude},${this.state.longitude}&zoom=14&size=400x300&sensor=false&markers=color:red%7C${this.state.latitude},${this.state.longitude}&key=AIzaSyB2S44xNnHEWFSd3yHhZ0TKdPv6pUwr8kg`} alt=''/>
         :
         null
       }
