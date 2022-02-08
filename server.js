@@ -453,6 +453,21 @@ app.get("/employees/:emp_id", jsonParser, function (req, res) {
   );
 });
 
+
+//UPDATE OT_ASSIGNMENT DATA FORM DB
+app.put("/employees", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE employees SET emp_firstname = ?, emp_surname = ?, emp_address = ?, emp_tel = ?, emp_email = ?, dep_id = ?, role_id = ?, emp_card_id = ?, emp_dob = ?, emp_images = ?, position_id = ?, emp_gender = ?, update_at = NOW() WHERE emp_id = ?",
+    [req.body.emp_firstname, req.body.emp_surname, req.body.emp_address, req.body.emp_tel, req.body.emp_email, req.body.dep_id, req.body.role_id, req.body.emp_card_id, req.body.emp_dob, req.body.emp_images, req.body.position_id, req.body.emp_gender, req.body.emp_id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
 //--------------------------EMPLOYEE API--------------------------
 
 //--------------------------OT_ASSIGNMENT API--------------------------

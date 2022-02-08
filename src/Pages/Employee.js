@@ -208,16 +208,18 @@ function Employee() {
                       src={images2}
                       onClick={() => employeebyid(val.emp_id)}
                     />
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images1}
-                    />
+                    <Link to={`/employeemanagement/${val.emp_id}`}>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images1}
+                      />
+                    </Link>
                     <Image
                       style={{
                         height: 30,
