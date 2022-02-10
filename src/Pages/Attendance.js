@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button";
 import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Webcam from "react-webcam";
+import Map from "./Map";
 const WebcamComponent = () => <Webcam />;
 
 function Attendance() {
@@ -23,15 +24,12 @@ function Attendance() {
       <h1 className="attendance">บันทึกเวลาเข้า-ออกงาน</h1>
       {/* <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
       {imgSrc && <img src={imgSrc} />} */}
+      <Row style={{ display: "flex", justifyContent: "center" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Map />
+        </div>
+      </Row>
 
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Button variant="primary" onClick={capture} style={{ margin: "20px" }}>
-          Check In
-        </Button>{" "}
-        <Button variant="primary" style={{ margin: "20px" }}>
-          Check Out
-        </Button>{" "}
-      </div>
       <Row>
         <Table striped bordered hover>
           <thead>
@@ -50,13 +48,6 @@ function Attendance() {
               <td>Check In</td>
               <td>มทส. นครราชสีมา</td>
               <td>14.2222, 102.5552</td>
-            </tr>
-            <tr className="tbody">
-              <td>07/01/2565</td>
-              <td>17:30</td>
-              <td>Check Out</td>
-              <td>มทส. นครราชสีมา</td>
-              <td>14.2222, 102.5485</td>
             </tr>
           </tbody>
         </Table>

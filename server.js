@@ -904,6 +904,17 @@ app.post("/attendance", jsonParser, function (req, res) {
   );
 });
 
+//GET ATTENDANCE DATA FORM DB
+app.get("/attendance", jsonParser, function (req, res) {
+  db.execute("SELECT * FROM attendance", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 //-----------------------------POSITION------------------------------
 
 //-----------------------------test------------------------------
