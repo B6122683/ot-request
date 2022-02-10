@@ -128,7 +128,7 @@ function LeaveManagement() {
               <th>ชื่อ-สกุล</th>
               <th>แผนก</th>
               <th>ประเภทการลา</th>
-              <th>วันที่ลา</th>
+              <th>วันที่แจ้งขอลา</th>
               <th>สถานะ</th>
             </tr>
           </thead>
@@ -155,7 +155,7 @@ function LeaveManagement() {
                   </td>
                   <td>{val.dep_name}</td>
                   <td>{val.ltype_name}</td>
-                  <td>{moment(val.start_leave).locale("th").format("LL")}</td>
+                  <td>{moment(val.leave_date).locale("th").format("LL")}</td>
                   <td>
                     {val.leave_accept == 0 && (
                       <Button
@@ -371,6 +371,22 @@ function LeaveManagement() {
                         </Col>
                       </Row>
                       <Row className="col-md-12 ">
+                      <Col className="col-md-6 col-12">
+                          <Form.Group
+                            className="mb-3"
+                            controlId="formBasicTextInput"
+                          >
+                            <Form.Label>วันที่แจ้งขอลา</Form.Label>
+                            <Form.Control
+                              type="text"
+                              placeholder="กรอกชื่องาน"
+                              value={moment(val.leave_date)
+                                .locale("th")
+                                .format("LL")}
+                              disabled
+                            />
+                          </Form.Group>
+                        </Col>
                         <Col className="col-md-6 col-12">
                           <Form.Group
                             className="mb-3"

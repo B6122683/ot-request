@@ -35,6 +35,7 @@ import EditAdminOT from './Pages/EditAdminOT';
 import EditEmployee from './Pages/EditEmployee';
 import Map from './Pages/Map';
 import GGMap from './Pages/GGMap';
+import Footer from './Components/Footer';
 
 function App() {
   return (
@@ -77,6 +78,7 @@ function App() {
           <Route exact path="/ggmap" element={<GGMap/>}/>
 
         </Routes>
+      {window.location.pathname !== '/login' && <Footer />}
       </Router>
     </>
   );

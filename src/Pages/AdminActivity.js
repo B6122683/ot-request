@@ -228,7 +228,6 @@ function AdminActivity() {
                           <Form.Label>วันที่</Form.Label>
                           <Form.Control
                             type="text"
-                            placeholder="กรอกชื่องาน"
                             value={moment(val.act_date)
                               .locale("th")
                               .format("LL")}
@@ -240,11 +239,11 @@ function AdminActivity() {
                           <Form.Control
                             type="text"
                             placeholder="กรอกวัน/เวลา เริ่ม"
-                            value={val.act_time + " น."}
-                            // value={
-                            //   moment(val.act_time).locale("th").format("h:mm:ss") +
-                            //   " น."
-                            // }
+                            // value={val.act_time + " น."}
+                            value={
+                              moment(val.act_time).locale("th").format("LT") +
+                              " น."
+                            }
                             disabled
                           />
                         </Form.Group>

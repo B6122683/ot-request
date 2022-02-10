@@ -126,12 +126,20 @@ function OTRequestDesc() {
                     </Form.Group>
                   </Col>
 
-                  <Col className="col-12">
+                  <Row className="col-md-12 ">
+                  <Col className="col-md-4 col-12">
                     <Form.Group controlId="formBasicTextInput">
                       <Form.Label>รวมเวลา OT : </Form.Label>
                       {val.summary}
                     </Form.Group>
                   </Col>
+                  <Col className="col-md-4 col-12">
+                    <Form.Group controlId="formBasicTextInput">
+                      <Form.Label>ค่าตอบแทน : </Form.Label>
+                      {val.ot_rate}
+                    </Form.Group>
+                  </Col>
+                  </Row>
 
                   <Row className="col-md-12 ">
                     <Col className="col-md-4 col-12">

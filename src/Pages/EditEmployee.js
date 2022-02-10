@@ -199,7 +199,7 @@ function EditEmployee() {
     <>
       <Container>
         <Row>
-          <h1 className="addemp">เพิ่มข้อมูลพนักงาน</h1>
+          <h1 className="addemp">แก้ไขข้อมูลพนักงาน</h1>
         </Row>
         <Row>
           <Form
