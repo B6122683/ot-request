@@ -34,6 +34,7 @@ import EditActivity from './Pages/EditActivity';
 import EditAdminOT from './Pages/EditAdminOT';
 import EditEmployee from './Pages/EditEmployee';
 import Map from './Pages/Map';
+import GGMap from './Pages/GGMap';
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
           <Route path='*' exact={true}  element={<Pagenotfound/>}/>
           <Route exact path="/leavemanagement" element={<LeaveManagement/>}/>
           <Route exact path="/map" element={<Map/>}/>
+          <Route exact path="/ggmap" element={<GGMap/>}/>
 
         </Routes>
       </Router>
