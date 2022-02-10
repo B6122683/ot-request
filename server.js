@@ -427,7 +427,7 @@ app.delete("/employees/:emp_id", jsonParser, function (req, res) {
 //SELECT DATA IN EMPLOYEES
 app.get("/employeesview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,department.dep_name,positions.position_name,employees.emp_images FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
+    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,employees.dep_id,department.dep_name,employees.position_id,positions.position_name,employees.emp_images FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -453,6 +453,19 @@ app.get("/employees/:emp_id", jsonParser, function (req, res) {
   );
 });
 
+//SELECT DATA IN EMPLOYEES
+app.get("/employeescount", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT department.dep_name AS department_name, COUNT(*) AS no_emp FROM department INNER JOIN employees ON employees.dep_id = department.dep_id GROUP BY department.dep_id, dep_name ORDER BY dep_name",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
 
 //UPDATE OT_ASSIGNMENT DATA FORM DB
 app.put("/employees", jsonParser, function (req, res) {
@@ -770,7 +783,7 @@ app.put("/positions", jsonParser, function (req, res) {
 //ADD LEAVE WORK
 app.post("/leavework", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc, start_leave, end_leave, leave_accept) VALUES (?, ?, ?, ?, ?, ?, 0)",
+    "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc,leave_date, start_leave, end_leave, leave_accept) VALUES (?, ?, ?, ?, NOW(), ?, ?, 0)",
     [
       req.body.emp_id,
       req.body.dep_id,
@@ -792,7 +805,7 @@ app.post("/leavework", jsonParser, function (req, res) {
 //SELECT DATA IN LEAVE WORK
 app.get("/leaveworkview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_date, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -846,7 +859,7 @@ app.get("/leavework/:leave_id", jsonParser, function (req, res) {
 //GET LEAVEWORK FROM ID
 app.get("/leaveworkId/:leave_id", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leavework.leave_id,employees.emp_firstname,employees.emp_surname, department.dep_name, leave_type.ltype_name, leavework.leave_desc, leavework.start_leave, leavework.end_leave, leavework.leave_accept FROM leavework LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id WHERE leavework.leave_id = ?",
+    "SELECT leavework.leave_id,employees.emp_firstname,employees.emp_surname, department.dep_name, leave_type.ltype_name, leavework.leave_desc,leavework.leave_date, leavework.start_leave, leavework.end_leave, leavework.leave_accept FROM leavework LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id WHERE leavework.leave_id = ?",
     [req.params.leave_id],
     (err, result) => {
       if (err) {
@@ -872,6 +885,25 @@ app.get("/leaveworkcount/:emp_id", jsonParser, function (req, res) {
     }
   );
 });
+
+
+//----------------------------ATTENDANCE-----------------------------
+
+//ADD ATTENDANCE
+app.post("/attendance", jsonParser, function (req, res) {
+  db.execute(
+    "INSERT INTO attendance (emp_id, work_date,address, work_status, lat, lng) VALUES (?, ?, NOW(), NOW(), ?, ?)",
+    [req.body.emp_id],
+    function (err, results, fields) {
+      if (err) {
+        res.json({ status: "error", message: err });
+        return;
+      }
+      res.json({ status: "ok" });
+    }
+  );
+});
+
 //-----------------------------POSITION------------------------------
 
 //-----------------------------test------------------------------
