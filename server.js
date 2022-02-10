@@ -593,11 +593,10 @@ app.get("/otrequest/:otr_id", jsonParser, function (req, res) {
     }
   );
 });
-
-app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
+//COUNT
+app.get("/otrequestcount", jsonParser, function (req, res) {
   db.execute(
-    "SELECT COUNT( CASE WHEN otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN otr_status = 2 THEN 1 END ) AS reject FROM ot_request WHERE emp_id = ?",
-    [req.params.emp_id],
+    "SELECT emp_id, COUNT( CASE WHEN otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN otr_status = 2 THEN 1 END ) AS reject FROM ot_request GROUP BY emp_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -607,6 +606,19 @@ app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
     }
   );
 });
+//COUNT
+// app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
+//   db.execute(
+//     "SELECT emp_id, COUNT( CASE WHEN otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN otr_status = 2 THEN 1 END ) AS reject FROM ot_request WHERE emp_id = ?",[req.params.emp_id],
+//     (err, result) => {
+//       if (err) {
+//         console.log(err);
+//       } else {
+//         res.send(result);
+//       }
+//     }
+//   );
+// });
 
 //GET OTR FROM ID
 app.get("/otrequestId/:otr_id", jsonParser, function (req, res) {
