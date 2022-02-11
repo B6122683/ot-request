@@ -5,6 +5,8 @@ import Axios from "axios";
 import "../App.css";
 import Navbar from "../Components/Navbar";
 import NavbarAdmin from "../Components/NavbarAdmin";
+import PieChart from "../Components/PieCharts";
+import ColumnChart from "../Components/ColumnChart";
 
 function Home() {
   const [loginStatus, setLoginStatus] = useState("");
@@ -50,7 +52,7 @@ function Home() {
 }
 
 const ReactStyle = () => (
-  <Container>
+  <Container className="mb-3">
     <Row>
       <Col sm>ทำงานล่วงเวลาต่อเดือน</Col>
       <Col sm>จำนวนวันทำงานต่อเดือน</Col>
@@ -59,6 +61,14 @@ const ReactStyle = () => (
     <Row>
       <Col sm className="graphatt">
         กราฟสถิติการเข้า-ออกงาน
+      </Col>
+    </Row>
+    <Row>
+      <Col className="col-md-6 col-12">
+        <PieChart />
+      </Col>
+      <Col className="col-md-6 col-12">
+        <ColumnChart />
       </Col>
     </Row>
   </Container>
