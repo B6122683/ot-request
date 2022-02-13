@@ -54,21 +54,22 @@ function Home() {
 const ReactStyle = () => (
   <Container className="mb-3">
     <Row>
-      <Col sm>ทำงานล่วงเวลาต่อเดือน</Col>
-      <Col sm>จำนวนวันทำงานต่อเดือน</Col>
-      <Col sm>จำนวนวันที่สามารถลางานได้</Col>
+      <Col className="col-md-4 col-12"><Col className="p-2 my-3 addash">จำนวนพนักงานทั้งหมด</Col></Col>
+      {/* <Col className="col-md-4 col-12 adminhome"><>ทำงานล่วงเวลาต่อเดือน</></Col> */}
+      <Col className="col-md-4 col-12"><Col className="p-2 my-3 addash">จำนวนพนักงานทั้งหมด</Col></Col>
+      <Col className="col-md-4 col-12"><Col className="p-2 my-3 addash">จำนวนพนักงานทั้งหมด</Col></Col>
     </Row>
-    <Row>
+    {/* <Row>
       <Col sm className="graphatt">
         กราฟสถิติการเข้า-ออกงาน
       </Col>
-    </Row>
+    </Row> */}
     <Row>
-      <Col className="col-md-6 col-12">
-        <PieChart />
+      <Col className="col-md-6 col-12 my-2" >
+        <PieChart/>
       </Col>
-      <Col className="col-md-6 col-12">
-        <ColumnChart />
+      <Col className="col-md-6 col-12 my-2" >
+        <ColumnChart/>
       </Col>
     </Row>
   </Container>

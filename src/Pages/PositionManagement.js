@@ -18,21 +18,22 @@ function PositionManagement() {
       e.preventDefault();
       e.stopPropagation();
     }
-
-    setValidated(true);
-
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("dep_id", dep_id);
-    formData.append("position_name", position_name);
-    try {
-      await Axios.post("/positions", formData);
-      window.location = "/position";
-    } catch (err) {
-      if (err.response.status === 500) {
-        setMessage("There was a problem with the server");
-      } else {
-        setMessage(err.response.data.msg);
+    if (dep_id == "" || position_name == "") {
+      setValidated(true);
+    } else {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("dep_id", dep_id);
+      formData.append("position_name", position_name);
+      try {
+        await Axios.post("/positions", formData);
+        window.location = "/position";
+      } catch (err) {
+        if (err.response.status === 500) {
+          setMessage("There was a problem with the server");
+        } else {
+          setMessage(err.response.data.msg);
+        }
       }
     }
   };
@@ -56,7 +57,7 @@ function PositionManagement() {
         <Row>
           <Form
             className="position"
-            onSubmit={(e)=> Addposition}
+            onSubmit={Addposition}
             noValidate
             validated={validated}
           >

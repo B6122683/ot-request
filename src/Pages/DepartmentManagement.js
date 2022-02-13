@@ -10,7 +10,6 @@ function DepartmentManagement() {
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
 
-  
   const adddepartment = async (e) => {
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -18,23 +17,23 @@ function DepartmentManagement() {
       e.stopPropagation();
     }
 
-    setValidated(true);
-
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("dep_name", dep_name);
-    try {
-      await Axios.post("/department", formData);
-      window.location = "/department";
-    } catch (err) {
-      if (err.response.status === 500) {
-        setMessage("There was a problem with the server");
-      } else {
-        setMessage(err.response.data.msg);
+    if (dep_name == "") {
+      setValidated(true);
+    } else {
+      const formData = new FormData();
+      formData.append("dep_name", dep_name);
+      try {
+        await Axios.post("/department", formData);
+        window.location = "/department";
+      } catch (err) {
+        if (err.response.status === 500) {
+          setMessage("There was a problem with the server");
+        } else {
+          setMessage(err.response.data.msg);
+        }
       }
     }
   };
-
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
