@@ -243,8 +243,10 @@ function EditEmployee() {
                 <Image
                   style={{
                     height: 150,
+                    width: 150,
                     objectFit: "cover",
                     marginBlock: "13px",
+                    borderRadius: "50%",
                   }}
                   alt=""
                   src={`http://localhost:3333/${emp_images}`}
@@ -253,8 +255,10 @@ function EditEmployee() {
                 <Image
                   style={{
                     height: 150,
+                    width: 150,
                     objectFit: "cover",
                     marginBlock: "13px",
+                    borderRadius: "50%",
                   }}
                   alt=""
                   src={previewImg}
