@@ -441,7 +441,7 @@ app.get("/employeesview", jsonParser, function (req, res) {
 //GET EMPLOYEE BY ID
 app.get("/employees/:emp_id", jsonParser, function (req, res) {
   db.execute(
-    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,employees.emp_images,employees.emp_address,employees.emp_tel,employees.emp_email,employees.emp_username,employees.emp_card_id,department.dep_name,role.role_name,positions.position_name,employees.emp_dob,employees.emp_gender FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id LEFT JOIN role ON employees.role_id = role.role_id WHERE employees.emp_id = ?",
+    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,employees.emp_images,employees.emp_address,employees.emp_tel,employees.emp_email,employees.emp_username,employees.emp_card_id,employees.dep_id,department.dep_name,employees.role_id,role.role_name,employees.position_id,positions.position_name,employees.emp_dob,employees.emp_gender FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id LEFT JOIN role ON employees.role_id = role.role_id WHERE employees.emp_id = ?",
     [req.params.emp_id],
     (err, result) => {
       if (err) {
@@ -498,7 +498,7 @@ app.get("/otassignment", jsonParser, function (req, res) {
 //GET OT BY ID
 app.get("/otassignment/:ot_id", jsonParser, function (req, res) {
   db.execute(
-    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id WHERE ot_assignment.ot_id = ?",
+    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,ot_assignment.dep_id,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id WHERE ot_assignment.ot_id = ?",
     [req.params.ot_id],
     (err, result) => {
       if (err) {
@@ -536,7 +536,22 @@ app.post("/otassignment", jsonParser, function (req, res) {
 //SELECT DATA IN OT_ASSIGNMENT
 app.get("/otassignview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id",
+    "SELECT ot_assignment.ot_id,ot_assignment.ot_name,ot_assignment.dep_id,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//DELETE OT_ASSIGNMENT DATA FORM DB
+app.delete("/otassignment/:ot_id", jsonParser, function (req, res) {
+  db.execute(
+    "DELETE FROM ot_assignment WHERE ot_id = ?",
+    [req.params.ot_id],
     (err, result) => {
       if (err) {
         console.log(err);

@@ -23,6 +23,8 @@ function EditAdminOT() {
   const [OTAssignmentList, setOTAssignmentList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
   const { ot_id } = useParams();
+  const [validated, setValidated] = useState(false);
+  const [message, setMessage] = useState("");
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
@@ -55,18 +57,36 @@ function EditAdminOT() {
     );
   };
 
-  const editotmng = () => {
-    Axios.put("http://localhost:3333/otassignment", {
-      ot_name: ot_name,
-      ot_rate: ot_rate,
-      dep_id: depid,
-      ot_desc: ot_desc,
-      ot_starttime: ot_starttime,
-      ot_finishtime: ot_finishtime,
-      ot_apply: ot_apply,
-      ot_id: ot_id,
-    });
-    window.location = "/adminot";
+  const editotmng = (e) => {
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    if (
+      ot_name == "" ||
+      ot_rate == "" ||
+      depid == "" ||
+      ot_desc == "" ||
+      ot_starttime == "" ||
+      ot_finishtime == "" ||
+      ot_apply == ""
+    ) {
+      setValidated(true);
+    } else {
+      Axios.put("http://localhost:3333/otassignment", {
+        ot_name: ot_name,
+        ot_rate: ot_rate,
+        dep_id: depid,
+        ot_desc: ot_desc,
+        ot_starttime: ot_starttime,
+        ot_finishtime: ot_finishtime,
+        ot_apply: ot_apply,
+        ot_id: ot_id,
+      });
+      window.location = "/adminot";
+    }
   };
 
   const dataepartment = () => {
@@ -88,7 +108,12 @@ function EditAdminOT() {
           <h1 className="adot">แก้ไขข้อมูล OT</h1>
         </Row>
         <Row>
-          <Form className="adminot" onSubmit={editotmng}>
+          <Form
+            className="adminot"
+            onSubmit={editotmng}
+            noValidate
+            validated={validated}
+          >
             <Row className="col-md-12" style={{ marginTop: "30px" }}>
               <Col className="col-12">
                 <Form.Group controlId="formBasicTextInput">
@@ -98,31 +123,40 @@ function EditAdminOT() {
                     placeholder="กรอกชื่องาน"
                     name="ot_name"
                     value={ot_name}
+                    required
                     onChange={(e) => {
                       setOt_name(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกชื่องาน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
 
             <Row className="col-md-12 ">
               <Col className="col-md-12">
-              <Form.Group className="mb-3">
-              <Form.Label>ชื่อแผนก</Form.Label>
-              <Form.Select
-                value={depid}
-                onChange={(e) => {
-                  setDepid(e.target.value);
-                }}
-              >
-                {departmentList.map((department) => (
-                  <option value={department.dep_id}>
-                    {department.dep_name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>ชื่อแผนก</Form.Label>
+                  <Form.Select
+                    value={depid}
+                    onChange={(e) => {
+                      setDepid(e.target.value);
+                    }}
+                    required
+                  >
+                    <option value="">กรุณาเลือก</option>
+                    {departmentList.map((department) => (
+                      <option value={department.dep_id}>
+                        {department.dep_name}
+                      </option>
+                    ))}
+                  </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกแผนก
+                  </Form.Control.Feedback>
+                </Form.Group>
               </Col>
             </Row>
 
@@ -135,10 +169,14 @@ function EditAdminOT() {
                     placeholder="กรอกรายละเอียด"
                     name="ot_desc"
                     value={ot_desc}
+                    required
                     onChange={(e) => {
                       setOt_desc(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกรายละเอียด
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -156,7 +194,11 @@ function EditAdminOT() {
                     onChange={(e) => {
                       setOt_starttime(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกวัน/เวลาเริ่ม
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col className="col-md-6 col-12">
@@ -171,7 +213,11 @@ function EditAdminOT() {
                     onChange={(e) => {
                       setOt_finishtime(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกวัน/เวลาสิ้นสุด
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -188,7 +234,11 @@ function EditAdminOT() {
                     onChange={(e) => {
                       setOt_apply(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกจำนวนที่รับ
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -203,7 +253,11 @@ function EditAdminOT() {
                     onChange={(e) => {
                       setOt_rate(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกค่าตอบแทน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>

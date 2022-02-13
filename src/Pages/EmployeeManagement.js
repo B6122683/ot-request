@@ -239,14 +239,14 @@ function EmployeeManagement() {
                   <Form.Group controlId="fileName" className="mb-3">
                     <Form.Label>Upload Image</Form.Label>
                     <Form.Control
-                    required
+                      required
                       type="file"
                       name="emp_images"
                       onChange={onChange}
                     />
-                        <Form.Control.Feedback type="invalid">
-                  กรุณาเลือกรูปภาพ
-                  </Form.Control.Feedback>
+                    <Form.Control.Feedback type="invalid">
+                      กรุณาเลือกรูปภาพ
+                    </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Group>
               </Col>
@@ -284,7 +284,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกนามสกุล
+                    กรุณากรอกนามสกุล
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -306,7 +306,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกเลขบัตรประจำตัวประชาชน
+                    กรุณากรอกเลขบัตรประจำตัวประชาชน
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -323,7 +323,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณาเลือกวัน/เดือน/ปีเกิด
+                    กรุณาเลือกวัน/เดือน/ปีเกิด
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -345,7 +345,7 @@ function EmployeeManagement() {
                     <option value="2">หญิง</option>
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
-                  กรุณาเลือกเพศ
+                    กรุณาเลือกเพศ
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -365,7 +365,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกอีเมล
+                    กรุณากรอกอีเมล
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -384,7 +384,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกเบอร์โทร
+                    กรุณากรอกเบอร์โทร
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -404,7 +404,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกเบอร์โทร
+                    กรุณากรอกที่อยู่
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -427,7 +427,7 @@ function EmployeeManagement() {
                     ))}
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
-                  กรุณาเลือกประเภทพนักงาน
+                    กรุณาเลือกประเภทพนักงาน
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -450,7 +450,7 @@ function EmployeeManagement() {
                     ))}
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
-                  กรุณาเลือกตำแหน่ง
+                    กรุณาเลือกตำแหน่ง
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -475,7 +475,7 @@ function EmployeeManagement() {
                     ))}
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
-                  กรุณาเลือกแผนก
+                    กรุณาเลือกแผนก
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -496,7 +496,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกชื่อผู้ใช้
+                    กรุณากรอกชื่อผู้ใช้
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -513,7 +513,7 @@ function EmployeeManagement() {
                     }}
                   />
                   <Form.Control.Feedback type="invalid">
-                  กรุณากรอกรหัสผ่าน
+                    กรุณากรอกรหัสผ่าน
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>

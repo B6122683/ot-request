@@ -46,6 +46,7 @@ function EditEmployee() {
   const [message, setMessage] = useState("");
 
   const [displayImg, setDisplaayImg] = useState(null);
+  const [validated, setValidated] = useState(false);
 
   const onChange = (e) => {
     setFile(e.target.files[0]);
@@ -64,6 +65,7 @@ function EditEmployee() {
       setEmp_card_id(response.data[0].emp_card_id);
       setEmp_email(response.data[0].emp_email);
       setEmp_tel(response.data[0].emp_tel);
+      setEmp_dob(response.data[0].emp_dob);
       setRole_id(response.data[0].role_id);
       setDep_id(response.data[0].dep_id);
       setPosition_id(response.data[0].position_id);
@@ -159,38 +161,59 @@ function EditEmployee() {
   }, []);
 
   const editemployees = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    if (file != "") {
-      formData.append("file", file);
-      formData.append("emp_images", "images\\" + emp_images);
-    } else {
-      formData.append("emp_images", emp_images);
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-    formData.append("emp_id", emp_id);
-    formData.append("emp_firstname", emp_firstname);
-    formData.append("emp_surname", emp_surname);
-    formData.append("emp_tel", emp_tel);
-    formData.append("emp_address", emp_address);
-    formData.append("emp_email", emp_email);
-    formData.append("dep_id", dep_id);
-    formData.append("role_id", role_id);
-    formData.append("emp_card_id", emp_card_id);
-    formData.append("emp_dob", emp_dob);
-    formData.append("position_id", position_id);
-    formData.append("emp_gender", emp_gender);
-
-    try {
+    if (
+      emp_firstname == "" ||
+      emp_surname == "" ||
+      emp_tel == "" ||
+      emp_address == "" ||
+      emp_email == "" ||
+      dep_id == "" ||
+      role_id == "" ||
+      emp_card_id == "" ||
+      emp_dob == "" ||
+      position_id == "" ||
+      emp_gender == ""
+    ) {
+      setValidated(true);
+    } else {
+      e.preventDefault();
+      const formData = new FormData();
       if (file != "") {
-        await Axios.post("/upload", formData);
-      }
-      await Axios.put("/employees", formData);
-      window.location = "/employee";
-    } catch (err) {
-      if (err.response.status === 500) {
-        setMessage("There was a problem with the server");
+        formData.append("file", file);
+        formData.append("emp_images", "images\\" + emp_images);
       } else {
-        setMessage(err.response.data.msg);
+        formData.append("emp_images", emp_images);
+      }
+      formData.append("emp_id", emp_id);
+      formData.append("emp_firstname", emp_firstname);
+      formData.append("emp_surname", emp_surname);
+      formData.append("emp_tel", emp_tel);
+      formData.append("emp_address", emp_address);
+      formData.append("emp_email", emp_email);
+      formData.append("dep_id", dep_id);
+      formData.append("role_id", role_id);
+      formData.append("emp_card_id", emp_card_id);
+      formData.append("emp_dob", emp_dob);
+      formData.append("position_id", position_id);
+      formData.append("emp_gender", emp_gender);
+
+      try {
+        if (file != "") {
+          await Axios.post("/upload", formData);
+        }
+        await Axios.put("/employees", formData);
+        window.location = "/employee";
+      } catch (err) {
+        if (err.response.status === 500) {
+          setMessage("There was a problem with the server");
+        } else {
+          setMessage(err.response.data.msg);
+        }
       }
     }
   };
@@ -206,6 +229,8 @@ function EditEmployee() {
             className="employee"
             encType="multipart/form-data"
             onSubmit={editemployees}
+            noValidate
+            validated={validated}
           >
             <div
               style={{
@@ -263,7 +288,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_firstname(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกชื่อ
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -278,7 +307,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_surname(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกนามสกุล
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -295,7 +328,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_card_id(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกเลขบัตรประจำตัวประชาชน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col className="col-md-6 col-12">
@@ -309,7 +346,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_dob(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกวัน/เดือน/ปีเกิด
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -323,11 +364,15 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_gender(e.target.value);
                     }}
+                    required
                   >
-                    <option value="0">กรุณาเลือก</option>
+                    <option value="">กรุณาเลือก</option>
                     <option value="1">ชาย</option>
                     <option value="2">หญิง</option>
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกเพศ
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -344,7 +389,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_email(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกอีเมล
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col className="col-md-6 col-12">
@@ -358,7 +407,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_tel(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกเบอร์โทร
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -375,7 +428,11 @@ function EditEmployee() {
                     onChange={(e) => {
                       setEmp_address(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกที่อยู่
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -389,6 +446,7 @@ function EditEmployee() {
                     onChange={(e) => {
                       setRole_id(e.target.value);
                     }}
+                    required
                   >
                     {" "}
                     <option value="">กรุณาเลือก</option>
@@ -396,6 +454,9 @@ function EditEmployee() {
                       <option value={role.role_id}>{role.role_name}</option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกประเภทพนักงาน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -407,13 +468,18 @@ function EditEmployee() {
                     onChange={(e) => {
                       setPosition_id(e.target.value);
                     }}
+                    required
                   >
+                    <option value="">กรุณาเลือก</option>
                     {positionsList.map((positions) => (
                       <option value={positions.position_id}>
                         {positions.position_name}
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกตำแหน่ง
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -428,12 +494,16 @@ function EditEmployee() {
                       setDep_id(e.target.value);
                     }}
                   >
+                    <option value="">กรุณาเลือก</option>
                     {departmentList.map((department) => (
                       <option value={department.dep_id}>
                         {department.dep_name}
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกแผนก
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>

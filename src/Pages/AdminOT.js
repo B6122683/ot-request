@@ -39,6 +39,16 @@ function AdminOT() {
     });
   };
 
+  const deleteAdminOT = (id) => {
+    Axios.delete(`http://localhost:3333/otassignment/${id}`).then((response) => {
+      setOtassignList(
+        otassignList.filter((val) => {
+          return val.ot_id != id;
+        })
+      );
+    });
+  };
+
   useEffect(() => {
     otassign();
     getAuth();
@@ -103,6 +113,9 @@ function AdminOT() {
                       }}
                       alt=""
                       src={images3}
+                      onClick={() => {
+                        deleteAdminOT(val.ot_id);
+                      }}
                     />
                   </td>
                 </tr>

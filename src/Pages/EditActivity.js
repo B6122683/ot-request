@@ -27,6 +27,7 @@ function EditActivity() {
   const [displayImg, setDisplaayImg] = useState(null);
   const [activity, setActivity] = useState("");
   const [ActivityList, setActivityList] = useState([]);
+  const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
 
   const getAuth = () => {
@@ -66,32 +67,47 @@ function EditActivity() {
   };
 
   const Editactivity = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    if (file != "") {
-      formData.append("file", file);
-      formData.append("act_image", "images\\" + act_image);
-    } else {
-      formData.append("act_image", act_image);
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-    formData.append("act_id", act_id);
-    formData.append("act_name", act_name);
-    formData.append("act_place", act_place);
-    formData.append("act_date", act_date);
-    formData.append("act_time", act_time);
-    formData.append("act_desc", act_desc);
-
-    try {
+    if (
+      act_name == "" ||
+      act_place == "" ||
+      act_date == "" ||
+      act_time == "" ||
+      act_desc == ""
+    ) {
+      setValidated(true);
+    } else {
+      e.preventDefault();
+      const formData = new FormData();
       if (file != "") {
-        await Axios.post("/upload", formData);
-      }
-      await Axios.put("/activity", formData);
-      window.location = "/adminactivity";
-    } catch (err) {
-      if (err.response.status === 500) {
-        setMessage("There was a problem with the server");
+        formData.append("file", file);
+        formData.append("act_image", "images\\" + act_image);
       } else {
-        setMessage(err.response.data.msg);
+        formData.append("act_image", act_image);
+      }
+      formData.append("act_id", act_id);
+      formData.append("act_name", act_name);
+      formData.append("act_place", act_place);
+      formData.append("act_date", act_date);
+      formData.append("act_time", act_time);
+      formData.append("act_desc", act_desc);
+
+      try {
+        if (file != "") {
+          await Axios.post("/upload", formData);
+        }
+        await Axios.put("/activity", formData);
+        window.location = "/adminactivity";
+      } catch (err) {
+        if (err.response.status === 500) {
+          setMessage("There was a problem with the server");
+        } else {
+          setMessage(err.response.data.msg);
+        }
       }
     }
   };
@@ -109,7 +125,12 @@ function EditActivity() {
         </Row>
         <Container>
           <Row className="activity">
-            <Form encType="multipart/form-data" onSubmit={Editactivity}>
+            <Form
+              encType="multipart/form-data"
+              onSubmit={Editactivity}
+              noValidate
+              validated={validated}
+            >
               <div
                 style={{
                   display: "flex",
@@ -163,10 +184,14 @@ function EditActivity() {
                     placeholder="กรอกชื่อกิจกรรม"
                     name="act_name"
                     value={act_name}
+                    required
                     onChange={(e) => {
                       setAct_name(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกชื่อกิจกรรม
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -181,7 +206,11 @@ function EditActivity() {
                     onChange={(e) => {
                       setAct_date(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกวันที่
+                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="col-md-6">
@@ -194,7 +223,11 @@ function EditActivity() {
                     onChange={(e) => {
                       setAct_time(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกเวลา
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -212,7 +245,11 @@ function EditActivity() {
                     onChange={(e) => {
                       setAct_place(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกสถานที่
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -230,7 +267,11 @@ function EditActivity() {
                     onChange={(e) => {
                       setAct_desc(e.target.value);
                     }}
+                    required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกรายละเอียด
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
