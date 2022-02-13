@@ -18,18 +18,18 @@ function Leave() {
   const { emp_id } = useParams();
   const [eemp_id, setEEmpId] = useState("");
 
-  const leaveworkcount = async (emp_id) => {
+  const leaveworkcount = async (e) => {
     await Axios.get(`http://localhost:3333/leaveworkcount/${emp_id}`).then(
       (response) => {
         setLeaveWorkcountList(response.data);
         setWaiting(response.data[0].waiting);
         setAccept(response.data[0].accept);
-        console.log("count",response.data);
+        console.log("count", response.data);
       }
     );
   };
 
-  useEffect(() =>{
+  useEffect(() => {
     leaveworkcount();
   }, []);
   return (
@@ -39,31 +39,29 @@ function Leave() {
           <h1 className="leave">แจ้งลา</h1>
         </Row>
         <Row>
-            <Col className="request">
-              <Col>
-                <p style={{ display: "flex", fontSize: "1.5rem" }}>รออนุมัติ</p>
-                <Col
-                  className="col"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <h1>{waiting +" รายการ"}</h1>
-                </Col>
+          <Col className="request">
+            <Col>
+              <p style={{ display: "flex", fontSize: "1.5rem" }}>รออนุมัติ</p>
+              <Col
+                className="col"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <h1>{waiting + " รายการ"}</h1>
               </Col>
             </Col>
-            <Col sm className="request">
-              <Col>
-                <p style={{ display: "flex", fontSize: "1.5rem" }}>
-                  อนุมัติแล้ว
-                </p>
-                <Col
-                  className="col"
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <h1>{accept +" รายการ"}</h1>
-                </Col>
+          </Col>
+          <Col sm className="request">
+            <Col>
+              <p style={{ display: "flex", fontSize: "1.5rem" }}>อนุมัติแล้ว</p>
+              <Col
+                className="col"
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                <h1>{accept + " รายการ"}</h1>
               </Col>
             </Col>
-          </Row>
+          </Col>
+        </Row>
         {/* <Row>
 
           <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
@@ -81,9 +79,19 @@ function Leave() {
           </div>
         </Row>
         <Row>
-          <div style={{ marginBottom: "50px",display:"flex", justifyContent: "center"}}>
-            <Col className="col-md-10" style={{ alignItems: "center", height: "100%" }}>
-            <FullCal /></Col>
+          <div
+            style={{
+              marginBottom: "50px",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Col
+              className="col-md-10"
+              style={{ alignItems: "center", height: "100%" }}
+            >
+              <FullCal />
+            </Col>
           </div>
         </Row>
       </Container>
@@ -110,29 +118,48 @@ function MydModalWithGrid(props) {
   const [emp_depname, setEmpDepName] = useState("");
   const [emp_posname, setEmpPosName] = useState("");
   const [ltype_id, setLtype_id] = useState(0);
+  const [validated, setValidated] = useState(false);
+  const [message, setMessage] = useState("");
 
- 
-  const Addleave = () => {
-    Axios.post("http://localhost:3333/leavework", {
-      emp_id: emp_id,
-      dep_id: dep_id,
-      leave_type: ltype_id,
-      leave_desc: leave_desc,
-      start_leave: start_leave,
-      end_leave: end_leave,
-    }).then(() => {
-      setLeaveList({
-        ...LeaveList,
+  const Addleave = (e) => {
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
 
+    if (
+      emp_id == "" ||
+      dep_id == "" ||
+      ltype_id == "" ||
+      leave_desc == "" ||
+      start_leave == "" ||
+      end_leave == ""
+    ) {
+      setValidated(true);
+    } else {
+      e.preventDefault();
+      Axios.post("http://localhost:3333/leavework", {
         emp_id: emp_id,
         dep_id: dep_id,
         leave_type: ltype_id,
         leave_desc: leave_desc,
         start_leave: start_leave,
         end_leave: end_leave,
+      }).then(() => {
+        setLeaveList({
+          ...LeaveList,
+
+          emp_id: emp_id,
+          dep_id: dep_id,
+          leave_type: ltype_id,
+          leave_desc: leave_desc,
+          start_leave: start_leave,
+          end_leave: end_leave,
+        });
+        window.location = "/leave";
       });
-      window.location = "/leave";
-    });
+    }
   };
 
   const dataepartment = () => {
@@ -196,95 +223,110 @@ function MydModalWithGrid(props) {
             </h2>
           </Row>
           <Row>
+            <Form onSubmit={Addleave} noValidate validated={validated}>
+              <Form.Group
+                className="mb-3 col-12"
+                controlId="formBasicTextInput"
+              >
+                <Form.Label>ชื่อ-สกุล</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="กรอกชื่อ-สกุล"
+                  value={emp_name}
+                  disabled
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicTextInput">
+                <Form.Label>แผนก</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="กรอกแผนก"
+                  value={emp_depname}
+                  disabled
+                />
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>ประเภทการลา</Form.Label>
+                <Form.Select
+                  value={ltype_id}
+                  required
+                  onChange={(e) => {
+                    setLtype_id(e.target.value);
+                  }}
+                >
+                  <option value="">กรุณาเลือก</option>
+                  {leavetypeList.map((leavetype) => (
+                    <option value={leavetype.ltype_id}>
+                      {leavetype.ltype_name}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกประเภทการลา
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="formBasicTextInput">
+                <Form.Label>เนื่องจาก</Form.Label>
+                <textarea
+                  class="form-control"
+                  required
+                  type="text-area"
+                  placeholder="กรอกเหตุผลที่ลา"
+                  onChange={(e) => {
+                    setLeave_desc(e.target.value);
+                  }}
+                />
+                <Form.Control.Feedback type="invalid">
+                  กรุณากรอกเหตุผลที่ลา
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>ขอลาตั้งแต่วันที่</Form.Label>
+                <Form.Control
+                  type="date"
+                  required
+                  placeholder="กรอกวันที่เริ่มลา"
+                  onChange={(e) => {
+                    setStart_leave(e.target.value);
+                  }}
+                />
+                <Form.Control.Feedback type="invalid">
+                  กรุณากรอกวันที่เริ่มลา
+                </Form.Control.Feedback>
+              </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>ถึงวันที่</Form.Label>
+                <Form.Control
+                  type="date"
+                  required
+                  placeholder="กรอกวันที่สิ้นสุด"
+                  onChange={(e) => {
+                    setEnd_leave(e.target.value);
+                  }}
+                />
+                <Form.Control.Feedback type="invalid">
+                  กรุณากรอกวันที่สิ้นสุด
+                </Form.Control.Feedback>
+              </Form.Group>
 
-                <Form>
-                  <Form.Group
-                    className="mb-3 col-12"
-                    controlId="formBasicTextInput"
-                  >
-                    <Form.Label>ชื่อ-สกุล</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="กรอกชื่อ-สกุล"
-                      value={emp_name}
-                      disabled
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formBasicTextInput">
-                    <Form.Label>แผนก</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="กรอกแผนก"
-                      value={emp_depname}
-                      disabled
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>ประเภทการลา</Form.Label>
-                    <Form.Select
-                    value={ltype_id}
-                    onChange={(e) => {
-                      setLtype_id(e.target.value);
-                    }}
-                  >
-                    {leavetypeList.map((leavetype) => (
-                      <option value={leavetype.ltype_id}>
-                        {leavetype.ltype_name}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="formBasicTextInput">
-                    <Form.Label>เนื่องจาก</Form.Label>
-                    <textarea
-                      class="form-control"
-                      type="text-area"
-                      placeholder="กรอกเหตุผลที่ลา"
-                      onChange={(e) => {
-                        setLeave_desc(e.target.value);
-                      }}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>ขอลาตั้งแต่วันที่</Form.Label>
-                    <Form.Control
-                      type="date"
-                      placeholder="กรอกวันที่เริ่มลา"
-                      onChange={(e) => {
-                        setStart_leave(e.target.value);
-                      }}
-                    />
-                  </Form.Group>
-                  <Form.Group className="mb-3">
-                    <Form.Label>ถึงวันที่</Form.Label>
-                    <Form.Control
-                      type="date"
-                      placeholder="กรอกวันที่สิ้นสุด"
-                      onChange={(e) => {
-                        setEnd_leave(e.target.value);
-                      }}
-                    />
-                  </Form.Group>
-
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    <Button
-                      variant="danger"
-                      onClick={props.onHide}
-                      style={{ margin: "10px" }}
-                    >
-                      ยกเลิก
-                    </Button>
-                    <Button
-                      onClick={Addleave}
-                      variant="primary"
-                      type="submit"
-                      style={{ margin: "10px" }}
-                    >
-                      ยืนยัน
-                    </Button>
-                  </div>
-                </Form>
-
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Button
+                  variant="danger"
+                  onClick={props.onHide}
+                  style={{ margin: "10px" }}
+                >
+                  ยกเลิก
+                </Button>
+                <Button
+                  variant="primary"
+                  type="submit"
+                  
+                  style={{ margin: "10px" }}
+                >
+                  ยืนยัน
+                </Button>
+              </div>
+            </Form>
           </Row>
         </Container>
       </Modal.Body>
