@@ -10,6 +10,28 @@ import Image from "react-bootstrap/Image";
 import account from "../images/account.png";
 import Axios from "axios";
 
+// import { useForm } from 'react-hook-form';
+// import { yupResolver } from '@hookform/resolvers/yup';
+// import * as yup from 'yup';
+
+// const schema = yup.object().shape({
+//   file: yup.string().required(),
+//   emp_firstname: yup.string().required("Firstname is require"),
+//   emp_surname: yup.string().required(),
+//   emp_surname: yup.string().required(),
+//   emp_card_id: yup.string().required().max(13),
+//   emp_dob: yup.date().required(),
+//   emp_gender: yup.string().required(),
+//   emp_email: yup.string().required(),
+//   emp_tel: yup.string().required().max(10),
+//   emp_address: yup.string().required(),
+//   role_name: yup.string().required(),
+//   position_name: yup.string().required(),
+//   dep_name: yup.string().required(),
+//   emp_username: yup.string().required(),
+//   emp_password: yup.string().required(),
+// });
+
 function EmployeeManagement() {
   const [images, setImages] = React.useState([]);
   const [emp_firstname, setEmp_firstname] = useState("");
@@ -136,7 +158,17 @@ function EmployeeManagement() {
     positions();
   }, []);
 
+  const [validated, setValidated] = useState(false);
+
   const Addemployees = async (e) => {
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
+
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
@@ -179,6 +211,8 @@ function EmployeeManagement() {
             className="employee"
             encType="multipart/form-data"
             onSubmit={Addemployees}
+            noValidate
+            validated={validated}
           >
             <div
               style={{
@@ -193,7 +227,7 @@ function EmployeeManagement() {
                   width: 150,
                   objectFit: "cover",
                   marginBlock: "13px",
-                  borderRadius: "50%"
+                  borderRadius: "50%",
                 }}
                 alt=""
                 src={emp_images == "" ? account : previewImg}
@@ -201,16 +235,20 @@ function EmployeeManagement() {
             </div>
             <Row className="col-md-12 ">
               <Col className="col-md-12">
-              <Form.Group controlId="formBasicTextInput">
-              <Form.Group controlId="fileName" className="mb-3">
-                <Form.Label>Upload Image</Form.Label>
-                <Form.Control
-                  type="file"
-                  name="emp_images"
-                  onChange={onChange}
-                />
-              </Form.Group>
-              </Form.Group>
+                <Form.Group controlId="formBasicTextInput">
+                  <Form.Group controlId="fileName" className="mb-3">
+                    <Form.Label>Upload Image</Form.Label>
+                    <Form.Control
+                    required
+                      type="file"
+                      name="emp_images"
+                      onChange={onChange}
+                    />
+                        <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกรูปภาพ
+                  </Form.Control.Feedback>
+                  </Form.Group>
+                </Form.Group>
               </Col>
             </Row>
 
@@ -220,12 +258,16 @@ function EmployeeManagement() {
                   <Form.Label>ชื่อ</Form.Label>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="กรอกชื่อ"
                     name="emp_firstname"
                     onChange={(e) => {
                       setEmp_firstname(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                    กรุณากรอกชื่อ
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -234,12 +276,16 @@ function EmployeeManagement() {
                   <Form.Label>นามสกุล</Form.Label>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="กรอกนามสกุล"
                     name="emp_surname"
                     onChange={(e) => {
                       setEmp_surname(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกนามสกุล
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -250,12 +296,18 @@ function EmployeeManagement() {
                   <Form.Label>เลขบัตรประจำตัวประชาชน</Form.Label>
                   <Form.Control
                     type="text"
+                    pattern="^[0-9]*$"
+                    maxLength={13}
+                    required
                     placeholder="กรอกเลขบัตรประจำตัวประชาชน"
                     name="emp_card_id"
                     onChange={(e) => {
                       setEmp_card_id(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกเลขบัตรประจำตัวประชาชน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col className="col-md-6 col-12">
@@ -263,12 +315,16 @@ function EmployeeManagement() {
                   <Form.Label>วัน/เดือน/ปีเกิด</Form.Label>
                   <Form.Control
                     type="date"
+                    required
                     placeholder="เลือกวัน/เดือน/ปีเกิด"
                     name="emp_dob"
                     onChange={(e) => {
                       setEmp_dob(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกวัน/เดือน/ปีเกิด
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -278,15 +334,19 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>เพศ</Form.Label>
                   <Form.Select
+                    required
                     value={emp_gender}
                     onChange={(e) => {
                       setEmp_gender(e.target.value);
                     }}
                   >
-                    <option value="0">กรุณาเลือก</option>
+                    <option value="">กรุณาเลือก</option>
                     <option value="1">ชาย</option>
                     <option value="2">หญิง</option>
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกเพศ
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -296,13 +356,17 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>อีเมล</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="email"
+                    required
                     placeholder="กรอกอีเมล"
                     name="emp_email"
                     onChange={(e) => {
                       setEmp_email(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกอีเมล
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col className="col-md-6 col-12">
@@ -310,12 +374,18 @@ function EmployeeManagement() {
                   <Form.Label>เบอร์โทร</Form.Label>
                   <Form.Control
                     type="text"
+                    pattern="^[0-9]*$"
+                    maxLength={10}
+                    required
                     placeholder="กรอกเบอร์โทร"
                     name="emp_tel"
                     onChange={(e) => {
                       setEmp_tel(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกเบอร์โทร
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -326,12 +396,16 @@ function EmployeeManagement() {
                   <Form.Label>ที่อยู่</Form.Label>
                   <Form.Control
                     type="textarea"
+                    required
                     placeholder="กรอกที่อยู่"
                     name="emp_address"
                     onChange={(e) => {
                       setEmp_address(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกเบอร์โทร
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -341,15 +415,20 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ประเภทพนักงาน</Form.Label>
                   <Form.Select
+                    required
                     value={role_id}
                     onChange={(e) => {
                       setRole_id(e.target.value);
                     }}
                   >
+                    <option value="">กรุณาเลือก</option>
                     {roleList.map((role) => (
                       <option value={role.role_id}>{role.role_name}</option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกประเภทพนักงาน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -357,17 +436,22 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ตำแหน่ง</Form.Label>
                   <Form.Select
+                    required
                     value={position_id}
                     onChange={(e) => {
                       setPosition_id(e.target.value);
                     }}
                   >
+                    <option value="">กรุณาเลือก</option>
                     {positionsList.map((positions) => (
                       <option value={positions.position_id}>
                         {positions.position_name}
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกตำแหน่ง
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -377,17 +461,22 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>แผนก</Form.Label>
                   <Form.Select
+                    required
                     value={dep_id}
                     onChange={(e) => {
                       setDep_id(e.target.value);
                     }}
                   >
+                    <option value="">กรุณาเลือก</option>
                     {departmentList.map((department) => (
                       <option value={department.dep_id}>
                         {department.dep_name}
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกแผนก
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -398,12 +487,17 @@ function EmployeeManagement() {
                   <Form.Label>ชื่อผู้ใช้</Form.Label>
                   <Form.Control
                     type="text"
+                    required
+                    pattern="^[A-Za-z]*$"
                     placeholder="กรอกชื่อผู้ใช้"
                     name="emp_username"
                     onChange={(e) => {
                       setEmp_username(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกชื่อผู้ใช้
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col className="col-md-6 col-12">
@@ -411,12 +505,16 @@ function EmployeeManagement() {
                   <Form.Label>รหัสผ่าน</Form.Label>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="กรอกรหัสผ่าน"
                     name="emp_password	"
                     onChange={(e) => {
                       setEmp_password(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกรหัสผ่าน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -429,7 +527,11 @@ function EmployeeManagement() {
                   padding: "20px",
                 }}
               >
-                <Button variant="danger" style={{ margin: "10px" }} onClick={() => (window.location = "/employee")}>
+                <Button
+                  variant="danger"
+                  style={{ margin: "10px" }}
+                  onClick={() => (window.location = "/employee")}
+                >
                   ยกเลิก
                 </Button>
                 <Button

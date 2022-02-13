@@ -55,8 +55,17 @@ function ActivityManagement() {
   //     });
   //   });
   // };
+  const [validated, setValidated] = useState(false);
 
   const Addactivity = async (e) => {
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
+
     e.preventDefault();
     const formData = new FormData();
     formData.append("file", file);
@@ -88,7 +97,10 @@ function ActivityManagement() {
         </Row>
         <Container>
           <Row className="activity">
-            <Form encType="multipart/form-data" onSubmit={Addactivity}>
+            <Form encType="multipart/form-data" 
+            onSubmit={Addactivity}
+            noValidate
+            validated={validated}>
               <div
                 style={{
                   display: "flex",
@@ -114,9 +126,13 @@ function ActivityManagement() {
                   <Form.Label>Upload Image</Form.Label>
                   <Form.Control
                     type="file"
+                    required
                     name="act_image"
                     onChange={onChange}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกรูปภาพ
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -128,12 +144,16 @@ function ActivityManagement() {
                   <Form.Label>ชื่อกิจกรรม</Form.Label>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="กรอกชื่อกิจกรรม"
                     name="act_name"
                     onChange={(e) => {
                       setAct_name(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกชื่อกิจกรรม
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -142,24 +162,32 @@ function ActivityManagement() {
                   <Form.Label>วันที่</Form.Label>
                   <Form.Control
                     type="date"
+                    required
                     placeholder="เลือกวันที่"
                     name="act_date"
                     onChange={(e) => {
                       setAct_date(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกวันที่
+                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="col-md-6">
                   <Form.Label>เวลา</Form.Label>
                   <Form.Control
                     type="time"
+                    required
                     placeholder="เลือกเวลา"
                     name="act_time"
                     onChange={(e) => {
                       setAct_time(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณาเลือกเวลา
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -171,12 +199,16 @@ function ActivityManagement() {
                   <Form.Label>สถานที่</Form.Label>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="กรอกสถานที่"
                     name="act_place"
                     onChange={(e) => {
                       setAct_place(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกสถานที่
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
@@ -188,12 +220,16 @@ function ActivityManagement() {
                   <Form.Label>รายละเอียด</Form.Label>
                   <Form.Control
                     type="text"
+                    required
                     placeholder="กรอกรายละเอียด"
                     name="act_desc"
                     onChange={(e) => {
                       setAct_desc(e.target.value);
                     }}
                   />
+                  <Form.Control.Feedback type="invalid">
+                  กรุณากรอกรายละเอียด
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Row>
 
