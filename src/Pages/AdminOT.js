@@ -13,6 +13,7 @@ import images3 from "../images/delete.png";
 import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function AdminOT() {
   const [otassignList, setOtassignList] = useState([]);
@@ -40,12 +41,27 @@ function AdminOT() {
   };
 
   const deleteAdminOT = (id) => {
-    Axios.delete(`http://localhost:3333/otassignment/${id}`).then((response) => {
-      setOtassignList(
-        otassignList.filter((val) => {
-          return val.ot_id != id;
-        })
-      );
+    Swal.fire({
+      title: "ต้องการลบข้อมูล?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Axios.delete(`http://localhost:3333/otassignment/${id}`).then(
+          (response) => {
+            setOtassignList(
+              otassignList.filter((val) => {
+                return val.ot_id != id;
+              })
+            );
+          }
+        );
+        Swal.fire("ลบแล้ว!", "ลบไฟล์เรียบร้อย", "success");
+      }
     });
   };
 
@@ -59,70 +75,80 @@ function AdminOT() {
       <h1 className="attendance">จัดการข้อมูล OT</h1>
       <Row>
         <div style={{ display: "flex", justifyContent: "right" }}>
-          <Button variant="secondary" style={{ margin: "0px" }} onClick={() => (window.location = "/adminotmanagement")}>
+          <Button
+            variant="secondary"
+            style={{ margin: "0px" }}
+            onClick={() => (window.location = "/adminotmanagement")}
+          >
             {" "}
             เพิ่ม{" "}
           </Button>{" "}
         </div>
-        <div style={{overflowX:"auto"}}>
-        <Table striped bordered hover responsive="lg" >
-          <thead>
-            <tr className="trAdmin">
-              <th>รหัสงาน</th>
-              <th>ชื่องาน</th>
-              <th>แผนก</th>
-              <th>รายละเอียด</th>
-              <th>วัน/เวลา เริ่ม</th>
-              <th>วัน/เวลา สิ้นสุด</th>
-              <th>จำนวนที่รับ</th>
-              <th>ค่าตอบแทน</th>
-              <th style={{width:'100px'}}>จัดการ</th>
-            </tr>
-          </thead>
-          {otassignList.map((val,index) => {
-            return (
-              <tbody>
-                <tr className="tbody">
-                  <td>{index + 1}</td>
-                  <td>{val.ot_name}</td>
-                  <td>{val.dep_name}</td>
-                  <td>{val.ot_desc}</td>
-                  <td>{moment(val.ot_starttime).locale("th").format("LLL") + " น."}</td>
-                  <td>{moment(val.ot_finishtime).locale("th").format("LLL") + " น."}</td>
-                  <td>{val.ot_apply}</td>
-                  <td>{val.ot_rate}</td>
-                  <td >
-                  <Link to={`/adminotmanagement/${val.ot_id}`}>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images1}
-                    />
-                    </Link>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images3}
-                      onClick={() => {
-                        deleteAdminOT(val.ot_id);
-                      }}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })}
-        </Table>
+        <div style={{ overflowX: "auto" }}>
+          <Table striped bordered hover responsive="lg">
+            <thead>
+              <tr className="trAdmin">
+                <th>รหัสงาน</th>
+                <th>ชื่องาน</th>
+                <th>แผนก</th>
+                <th>รายละเอียด</th>
+                <th>วัน/เวลา เริ่ม</th>
+                <th>วัน/เวลา สิ้นสุด</th>
+                <th>จำนวนที่รับ</th>
+                <th>ค่าตอบแทน</th>
+                <th style={{ width: "100px" }}>จัดการ</th>
+              </tr>
+            </thead>
+            {otassignList.map((val, index) => {
+              return (
+                <tbody>
+                  <tr className="tbody">
+                    <td>{index + 1}</td>
+                    <td>{val.ot_name}</td>
+                    <td>{val.dep_name}</td>
+                    <td>{val.ot_desc}</td>
+                    <td>
+                      {moment(val.ot_starttime).locale("th").format("LLL") +
+                        " น."}
+                    </td>
+                    <td>
+                      {moment(val.ot_finishtime).locale("th").format("LLL") +
+                        " น."}
+                    </td>
+                    <td>{val.ot_apply}</td>
+                    <td>{val.ot_rate}</td>
+                    <td>
+                      <Link to={`/adminotmanagement/${val.ot_id}`}>
+                        <Image
+                          style={{
+                            height: 30,
+                            width: 30,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt=""
+                          src={images1}
+                        />
+                      </Link>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images3}
+                        onClick={() => {
+                          deleteAdminOT(val.ot_id);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
+          </Table>
         </div>
       </Row>
     </Container>

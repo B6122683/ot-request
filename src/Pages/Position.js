@@ -12,9 +12,9 @@ import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
 import { Link } from "react-router-dom";
 import Axios from "axios";
+import Swal from "sweetalert2";
 
 function Position() {
-
   const [positionList, setPositionList] = useState([]);
 
   const position = () => {
@@ -24,12 +24,27 @@ function Position() {
   };
 
   const deletePosition = (id) => {
-    Axios.delete(`http://localhost:3333/positions/${id}`).then((response) => {
-      setPositionList(
-        positionList.filter((val) => {
-          return val.position_id != id;
-        })
-      );
+    Swal.fire({
+      title: "ต้องการลบข้อมูล?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน!",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Axios.delete(`http://localhost:3333/positions/${id}`).then(
+          (response) => {
+            setPositionList(
+              positionList.filter((val) => {
+                return val.position_id != id;
+              })
+            );
+          }
+        );
+        Swal.fire("ลบแล้ว!", "ลบไฟล์เรียบร้อย", "success");
+      }
     });
   };
 
@@ -62,41 +77,41 @@ function Position() {
           </thead>
           {positionList.map((val) => {
             return (
-          <tbody>
-            <tr className="tbody">
-              <td>{val.position_id}</td>
-              <td>{val.dep_name}</td>
-              <td>{val.position_name}</td>
-              <td>
-              <Link to={`/positionmanagement/${val.position_id}`}>
-                <Image
-                  style={{
-                    height: 30,
-                    width: 30,
-                    objectFit: "cover",
-                    margin: "5px",
-                  }}
-                  alt=""
-                  src={images1}
-                />
-                </Link>
-                <Image
-                  style={{
-                    height: 30,
-                    width: 30,
-                    objectFit: "cover",
-                    margin: "5px",
-                  }}
-                  alt=""
-                  src={images3}
-                  onClick={() => {
-                    deletePosition(val.position_id);
-                  }}
-                />
-              </td>
-            </tr>
-          </tbody>
-           );
+              <tbody>
+                <tr className="tbody">
+                  <td>{val.position_id}</td>
+                  <td>{val.dep_name}</td>
+                  <td>{val.position_name}</td>
+                  <td>
+                    <Link to={`/positionmanagement/${val.position_id}`}>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images1}
+                      />
+                    </Link>
+                    <Image
+                      style={{
+                        height: 30,
+                        width: 30,
+                        objectFit: "cover",
+                        margin: "5px",
+                      }}
+                      alt=""
+                      src={images3}
+                      onClick={() => {
+                        deletePosition(val.position_id);
+                      }}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            );
           })}
         </Table>
       </Row>
