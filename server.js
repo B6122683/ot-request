@@ -467,6 +467,20 @@ app.get("/employeescount", jsonParser, function (req, res) {
   );
 });
 
+//SELECT DATA IN EMPLOYEES
+app.get("/employeescountbyrole", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT role.role_name AS role_name, COUNT(*) AS no_role FROM role INNER JOIN employees ON employees.role_id = role.role_id GROUP BY role.role_id, role_name ORDER BY role_name",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 //UPDATE OT_ASSIGNMENT DATA FORM DB
 app.put("/employees", jsonParser, function (req, res) {
   db.execute(

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
 import * as GrIcons from "react-icons/gr";
@@ -19,7 +20,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 function Department() {
-  const [depname, setDepname] = useState("");
+  const [depname, setDepName] = useState("");
   const [departmentList, setDepartmentList] = useState([]);
 
   const dataepartment = () => {
@@ -70,74 +71,99 @@ function Department() {
   ]
 
   return (
-    <Container>
-       <h1 className="attendance">ข้อมูลแผนก</h1>
-    <div className="ag-theme-alpine" style={{height: 400, width: 900}}>
-      <AgGridReact rowData={departmentList} columnDefs={columns}/>
-    </div>
-    </Container>
     // <Container>
-    //   <h1 className="attendance">ข้อมูลแผนก</h1>
-    //   <div style={{ display: "flex", justifyContent: "center" }}></div>
-    //   <Row>
-    //     <div style={{ display: "flex", justifyContent: "right" }}>
-    //       <Button
-    //         variant="secondary"
-    //         style={{ margin: "0px" }}
-    //         onClick={() => (window.location = "/departmentmanagement")}
-    //       >
-    //         {" "}
-    //         เพิ่ม{" "}
-    //       </Button>{" "}
-    //     </div>
-    //     <Table striped bordered hover>
-    //       <thead>
-    //         <tr className="trAdmin">
-    //           <th>รหัสแผนก</th>
-    //           <th>ชื่อแผนก</th>
-    //           <th>จัดการ</th>
-    //         </tr>
-    //       </thead>
-    //       {departmentList.map((val) => {
-    //         return (
-    //           <tbody>
-    //             <tr className="tbody">
-    //               <td>{val.dep_id}</td>
-    //               <td>{val.dep_name}</td>
-    //               <td>
-    //                 <Link to={`/departmentmanagement/${val.dep_id}`}>
-    //                   <Image
-    //                     style={{
-    //                       height: 30,
-    //                       width: 30,
-    //                       objectFit: "cover",
-    //                       margin: "5px",
-    //                     }}
-    //                     alt=""
-    //                     src={images1}
-    //                   />
-    //                 </Link>
-    //                 <Image
-    //                   style={{
-    //                     height: 30,
-    //                     width: 30,
-    //                     objectFit: "cover",
-    //                     margin: "5px",
-    //                   }}
-    //                   alt=""
-    //                   src={images3}
-    //                   onClick={() => {
-    //                     deleteDepartment(val.dep_id);
-    //                   }}
-    //                 />
-    //               </td>
-    //             </tr>
-    //           </tbody>
-    //         );
-    //       })}
-    //     </Table>
-    //   </Row>
+    //    <h1 className="attendance">ข้อมูลแผนก</h1>
+    // <div className="ag-theme-alpine" style={{height: 400, width: 900}}>
+    //   <AgGridReact rowData={departmentList} columnDefs={columns}/>
+    // </div>
     // </Container>
+    <Container>
+      <h1 className="attendance">ข้อมูลแผนก</h1>
+      <div style={{ justifyContent: "center" }}>
+        <Row className="col-md-12 col-12" aria-colspan={2}>
+          <Col className="col-md-6 col-12">
+            <Form.Group className="mb-3">
+              <Form.Label>ค้นหาจาก แผนก</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="กรอกแผนก"
+                name="dep_name"
+                onChange={(e) => setDepName(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+        </Row>
+      </div>
+      <div style={{ display: "flex", justifyContent: "center" }}></div>
+      <Row>
+        <div style={{ display: "flex", justifyContent: "right" }}>
+          <Button
+            variant="secondary"
+            style={{ margin: "0px" }}
+            onClick={() => (window.location = "/departmentmanagement")}
+          >
+            {" "}
+            เพิ่ม{" "}
+          </Button>{" "}
+        </div>
+        <Table striped bordered hover>
+          <thead>
+            <tr className="trAdmin">
+              <th>ลำดับ</th>
+              <th>ชื่อแผนก</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody>
+            {departmentList
+              .filter((val) => {
+                if (depname === "") {
+                  return val;
+                } else {
+                  return val.dep_name
+                    .toLowerCase()
+                    .includes(depname.toLowerCase());
+                }
+              })
+              .map((val, index) => {
+                return (
+                  <tr className="tbody">
+                    <td>{index + 1}</td>
+                    <td>{val.dep_name}</td>
+                    <td>
+                      <Link to={`/departmentmanagement/${val.dep_id}`}>
+                        <Image
+                          style={{
+                            height: 30,
+                            width: 30,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt=""
+                          src={images1}
+                        />
+                      </Link>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images3}
+                        onClick={() => {
+                          deleteDepartment(val.dep_id);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </Table>
+      </Row>
+    </Container>
   );
 }
 

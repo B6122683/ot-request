@@ -20,6 +20,7 @@ function OTManagement() {
   const [otrequestList, setOtrequestList] = useState([]);
   const [otrequestListbyId, setOtrequestListbyId] = useState([]);
   const [otstatus, setotStatus] = useState(0);
+  const [statusot, setStatusOt] = useState("");
   const [modalShow, setModalShow] = useState(false);
 
   const [modalShowview, setModalShowview] = useState(false);
@@ -101,7 +102,27 @@ function OTManagement() {
   return (
     <Container>
       <h1 className="attendance">จัดการคำขอ OT</h1>
-      <div style={{ display: "flex", justifyContent: "center" }}></div>
+      <div style={{ justifyContent: "center" }}>
+        <Row className="col-md-12 col-12" aria-colspan={2}>
+          <Col className="col-md-6 col-12">
+            <Form.Group className="mb-3">
+              <Form.Label>เลือกสถานะคำขอ</Form.Label>
+              <Form.Select
+                required
+                value={statusot}
+                onChange={(e) => {
+                  setStatusOt(e.target.value);
+                }}
+              >
+                <option value="">ทั้งหมด</option>
+                <option value="0">รออนุมัติ</option>
+                <option value="1">อนุมัติ</option>
+                <option value="2">ไม่อนุมัติ</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
+      </div>
       <Row>
         <Table striped bordered hover>
           <thead>
@@ -114,57 +135,65 @@ function OTManagement() {
               <th>สถานะ</th>
             </tr>
           </thead>
-          {otrequestList.map((val, index) => {
-            return (
-              <tbody>
-                <tr className="tbody">
-                  <td>
-                    {/* <Link to={`/otrequestdesc/${val.ot_id}`}> */}
-                    <Image
-                      style={{
-                        height: "30px",
-                        width: "30px",
-                        objectFit: "cover",
-                        justifyContent: "center",
-                      }}
-                      alt=""
-                      src={images2}
-                      onClick={() => otbyid(val.otr_id)}
-                    />
-                    {/* </Link> */}
-                  </td>
-                  <td>{index + 1}</td>
-                  <td>{val.emp_firstname + " " + val.emp_surname}</td>
-                  <td>{val.ot_name}</td>
-                  <td>{moment(val.otr_date).locale("th").format("ll")} น.</td>
-                  <td>
-                    {val.otr_status == 0 && (
-                      <Button
-                        variant="warning"
-                        style={{ margin: "0px" }}
-                        onClick={() => getOTrequest(val.otr_id)}
-                      >
-                        {" "}
-                        รออนุมัติ{" "}
-                      </Button>
-                    )}
-                    {val.otr_status == 1 && (
-                      <Button variant="success" style={{ margin: "0px" }}>
-                        {" "}
-                        อนุมัติ{" "}
-                      </Button>
-                    )}
-                    {val.otr_status == 2 && (
-                      <Button variant="danger" style={{ margin: "0px" }}>
-                        {" "}
-                        ไม่อนุมัติ{" "}
-                      </Button>
-                    )}
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })}
+          {otrequestList
+            .filter((val) => {
+              if (statusot === "") {
+                return val;
+              } else {
+                return val.otr_status == statusot;
+              }
+            })
+            .map((val, index) => {
+              return (
+                <tbody>
+                  <tr className="tbody">
+                    <td>
+                      {/* <Link to={`/otrequestdesc/${val.ot_id}`}> */}
+                      <Image
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          objectFit: "cover",
+                          justifyContent: "center",
+                        }}
+                        alt=""
+                        src={images2}
+                        onClick={() => otbyid(val.otr_id)}
+                      />
+                      {/* </Link> */}
+                    </td>
+                    <td>{index + 1}</td>
+                    <td>{val.emp_firstname + " " + val.emp_surname}</td>
+                    <td>{val.ot_name}</td>
+                    <td>{moment(val.otr_date).locale("th").format("ll")} น.</td>
+                    <td>
+                      {val.otr_status == 0 && (
+                        <Button
+                          variant="warning"
+                          style={{ margin: "0px" }}
+                          onClick={() => getOTrequest(val.otr_id)}
+                        >
+                          {" "}
+                          รออนุมัติ{" "}
+                        </Button>
+                      )}
+                      {val.otr_status == 1 && (
+                        <Button variant="success" style={{ margin: "0px" }}>
+                          {" "}
+                          อนุมัติ{" "}
+                        </Button>
+                      )}
+                      {val.otr_status == 2 && (
+                        <Button variant="danger" style={{ margin: "0px" }}>
+                          {" "}
+                          ไม่อนุมัติ{" "}
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
         </Table>
         <Modal show={modalShow} centered>
           <Modal.Body className="show-grid">

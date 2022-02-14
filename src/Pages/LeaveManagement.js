@@ -30,6 +30,7 @@ function LeaveManagement() {
   const [emp_posname, setEmpPosName] = useState("");
   const [leaveworkListbyId, setLeaveworkListbyId] = useState([]);
   const [leaveaccept, setleaveaccept] = useState(0);
+  const [statusot, setStatusOt] = useState("");
 
   const [modalShowview, setModalShowview] = useState(false);
   const [leaveListbyId, setLeaveListbyId] = useState([]);
@@ -118,7 +119,27 @@ function LeaveManagement() {
   return (
     <Container>
       <h1 className="leave">จัดการคำขอลางาน</h1>
-      <div style={{ display: "flex", justifyContent: "center" }}></div>
+      <div style={{ justifyContent: "center" }}>
+        <Row className="col-md-12 col-12" aria-colspan={2}>
+          <Col className="col-md-6 col-12">
+            <Form.Group className="mb-3">
+              <Form.Label>เลือกสถานะคำขอ</Form.Label>
+              <Form.Select
+                required
+                value={statusot}
+                onChange={(e) => {
+                  setStatusOt(e.target.value);
+                }}
+              >
+                <option value="">ทั้งหมด</option>
+                <option value="0">รออนุมัติ</option>
+                <option value="1">อนุมัติ</option>
+                <option value="2">ไม่อนุมัติ</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
+      </div>
       <Row>
         <Table striped bordered hover>
           <thead>
@@ -132,7 +153,13 @@ function LeaveManagement() {
               <th>สถานะ</th>
             </tr>
           </thead>
-          {LeaveList.map((val) => {
+          {LeaveList.filter((val) => {
+            if (statusot === "") {
+              return val;
+            } else {
+              return val.otr_status == statusot;
+            }
+          }).map((val,index) => {
             return (
               <tbody>
                 <tr className="tbody">
@@ -149,7 +176,7 @@ function LeaveManagement() {
                       onClick={() => leavebyid(val.leave_id)}
                     />
                   </td>
-                  <td>{val.leave_id}</td>
+                  <td>{index +1}</td>
                   <td>
                     {val.emp_firstname} {val.emp_surname}
                   </td>
@@ -371,7 +398,7 @@ function LeaveManagement() {
                         </Col>
                       </Row>
                       <Row className="col-md-12 ">
-                      <Col className="col-md-6 col-12">
+                        <Col className="col-md-6 col-12">
                           <Form.Group
                             className="mb-3"
                             controlId="formBasicTextInput"
