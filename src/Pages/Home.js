@@ -7,6 +7,7 @@ import Navbar from "../Components/Navbar";
 import NavbarAdmin from "../Components/NavbarAdmin";
 import PieChart from "../Components/PieCharts";
 import ColumnChart from "../Components/ColumnChart";
+import Image from "react-bootstrap/Image";
 
 function Home() {
   const [loginStatus, setLoginStatus] = useState("");
@@ -54,10 +55,52 @@ function Home() {
 const ReactStyle = () => (
   <Container className="mb-3">
     <Row>
-      <Col className="col-md-4 col-12"><Col className="p-2 my-3 addash">จำนวนพนักงานทั้งหมด</Col></Col>
+      <Col className="col-md-4 col-12">
+        <Col className="p-2 my-3 addash bottom-one">
+          จำนวนพนักงานทั้งหมด
+          <Col className="imgicon">
+            <Image
+              style={{
+                width: "50px",
+                display: "flex",
+                justifyContent: "right",
+              }}
+              src="https://cdn-user-icons.flaticon.com/62088/62088061/1644870019958.svg?token=exp=1644870920~hmac=5540668af72f53211e30e209922b18da"
+            />
+          </Col>
+        </Col>
+      </Col>
       {/* <Col className="col-md-4 col-12 adminhome"><>ทำงานล่วงเวลาต่อเดือน</></Col> */}
-      <Col className="col-md-4 col-12"><Col className="p-2 my-3 addash">จำนวนพนักงานทั้งหมด</Col></Col>
-      <Col className="col-md-4 col-12"><Col className="p-2 my-3 addash">จำนวนพนักงานทั้งหมด</Col></Col>
+      <Col className="col-md-4 col-12">
+        <Col className="p-2 my-3 addash bottom-two">
+          จำนวนพนักงานทั้งหมด
+          <Col className="imgicon">
+            <Image
+              style={{
+                width: "50px",
+                display: "flex",
+                justifyContent: "right",
+              }}
+              src="https://cdn-user-icons.flaticon.com/62088/62088061/1644869239427.svg?token=exp=1644870140~hmac=1d2dd4bfd27510ee971a40588404ace8"
+            />
+          </Col>
+        </Col>
+      </Col>
+      <Col className="col-md-4 col-12">
+        <Col className="p-2 my-3 addash bottom-three">
+          จำนวนพนักงานทั้งหมด
+          <Col className="imgicon">
+            <Image
+              style={{
+                width: "50px",
+                display: "flex",
+                justifyContent: "right",
+              }}
+              src="https://cdn-user-icons.flaticon.com/62088/62088061/1644867770404.svg?token=exp=1644868674~hmac=39d17f7223b422922b55d0f0bca49952"
+            />
+          </Col>
+        </Col>
+      </Col>
     </Row>
     {/* <Row>
       <Col sm className="graphatt">
@@ -65,11 +108,11 @@ const ReactStyle = () => (
       </Col>
     </Row> */}
     <Row>
-      <Col className="col-md-6 col-12 my-2" >
-        <PieChart/>
+      <Col className="col-md-6 col-12 my-2">
+        <PieChart />
       </Col>
-      <Col className="col-md-6 col-12 my-2" >
-        <ColumnChart/>
+      <Col className="col-md-6 col-12 my-2">
+        <ColumnChart />
       </Col>
     </Row>
   </Container>

@@ -3,6 +3,8 @@ import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import Axios from "axios";
 import "./Login.css";
 import Swal from "sweetalert2";
+import Image from "react-bootstrap/Image";
+import OTLOGO from "../images/otlogo.png"
 
 function Login() {
   const [emp_username, setUsername] = useState("");
@@ -87,7 +89,9 @@ function Login() {
     <>
       <Container>
         <Row className="logincard p-3 p-md-3 col-md-10 col-10">
-          <Col className="loginleft col-md-6 d-md-block d-none"></Col>
+          <Col className="loginleft col-md-6 d-md-block d-none">
+            <Col className="logo"><Image src={OTLOGO} /></Col>
+          </Col>
           <Col className="loginright col-md-6 py-5 px-4 p-md-5">
             <h2 style={{ textAlign: "center" }}>เข้าสู่ระบบ</h2>
             <Form>
