@@ -112,27 +112,27 @@ function EditEmployee() {
   //   });
   // };
 
-  const imgType = ["image/png", "image/jpeg"];
-  const handleImgChange = (e) => {
-    let selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (selectedFile && imgType.includes(selectedFile.type)) {
-        setPreviewImg(URL.createObjectURL(selectedFile));
-        setPreviewImgError("");
-        setEmp_images(selectedFile.name);
-      } else {
-        setPreviewImg(null);
-        setPreviewImgError("please select vlid image type jpeg or png");
-      }
-    } else {
-      console.log("select your file");
-    }
-  };
+  // const imgType = ["image/png", "image/jpeg"];
+  // const handleImgChange = (e) => {
+  //   let selectedFile = e.target.files[0];
+  //   if (selectedFile) {
+  //     if (selectedFile && imgType.includes(selectedFile.type)) {
+  //       setPreviewImg(URL.createObjectURL(selectedFile));
+  //       setPreviewImgError("");
+  //       setEmp_images(selectedFile.name);
+  //     } else {
+  //       setPreviewImg(null);
+  //       setPreviewImgError("please select vlid image type jpeg or png");
+  //     }
+  //   } else {
+  //     console.log("select your file");
+  //   }
+  // };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setDisplaayImg(previewImg);
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   setDisplaayImg(previewImg);
+  // };
 
   const dataepartment = () => {
     Axios.get("http://localhost:3333/department").then((response) => {
@@ -189,6 +189,11 @@ function EditEmployee() {
       } else {
         formData.append("emp_images", emp_images);
       }
+
+      if (emp_images == "") {
+        formData.append("emp_images", "");
+      }
+
       formData.append("emp_id", emp_id);
       formData.append("emp_firstname", emp_firstname);
       formData.append("emp_surname", emp_surname);

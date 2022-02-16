@@ -30,7 +30,7 @@ function LeaveManagement() {
   const [emp_posname, setEmpPosName] = useState("");
   const [leaveworkListbyId, setLeaveworkListbyId] = useState([]);
   const [leaveaccept, setleaveaccept] = useState(0);
-  const [statusot, setStatusOt] = useState("");
+  const [statusleave, setStatusLeave] = useState("");
 
   const [modalShowview, setModalShowview] = useState(false);
   const [leaveListbyId, setLeaveListbyId] = useState([]);
@@ -126,9 +126,9 @@ function LeaveManagement() {
               <Form.Label>เลือกสถานะคำขอ</Form.Label>
               <Form.Select
                 required
-                value={statusot}
+                value={statusleave}
                 onChange={(e) => {
-                  setStatusOt(e.target.value);
+                  setStatusLeave(e.target.value);
                 }}
               >
                 <option value="">ทั้งหมด</option>
@@ -154,10 +154,10 @@ function LeaveManagement() {
             </tr>
           </thead>
           {LeaveList.filter((val) => {
-            if (statusot === "") {
+            if (statusleave === "") {
               return val;
             } else {
-              return val.otr_status == statusot;
+              return val.leave_accept == statusleave;
             }
           }).map((val,index) => {
             return (

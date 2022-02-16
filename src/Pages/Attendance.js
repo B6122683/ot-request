@@ -7,10 +7,39 @@ import Button from "react-bootstrap/Button";
 import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Webcam from "react-webcam";
-import Map from "./Map";
+import GGMap from "./GGMap";
+import Axios from "axios";
+import moment from "moment/min/moment-with-locales";
+
 const WebcamComponent = () => <Webcam />;
 
 function Attendance() {
+  const [attendanceList, setAttendanceList] = useState([]);
+  const [emp_id, setEmpId] = useState("");
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+
+    Axios.get("/authen", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      console.log(response);
+      if (response.data.status == "ok") {
+        setEmpId(response.data.decoded.user.emp_id);
+      } else {
+        window.location = "/login";
+      }
+    });
+  };
+
+  const attList = () => {
+    Axios.get("http://localhost:3333/attendance").then((response) => {
+      setAttendanceList(response.data);
+    });
+  };
+
   const webcamRef = React.useRef(null);
   const [imgSrc, setImgSrc] = React.useState(null);
 
@@ -19,6 +48,11 @@ function Attendance() {
     setImgSrc(imageSrc);
   }, [webcamRef, setImgSrc]);
 
+  useEffect(() => {
+    getAuth();
+    attList();
+  }, []);
+
   return (
     <Container>
       <h1 className="attendance">บันทึกเวลาเข้า-ออกงาน</h1>
@@ -26,14 +60,14 @@ function Attendance() {
       {imgSrc && <img src={imgSrc} />} */}
       <Row style={{ display: "flex", justifyContent: "center" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Map />
+          <GGMap />
         </div>
       </Row>
 
       <Row>
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
-            <tr className="tr">
+            <tr className="trAdmin">
               <th>วันที่</th>
               <th>เวลา</th>
               <th>สถานะ</th>
@@ -42,13 +76,27 @@ function Attendance() {
             </tr>
           </thead>
           <tbody>
-            <tr className="tbody">
-              <td>07/01/2565</td>
-              <td>07:59</td>
-              <td>Check In</td>
-              <td>มทส. นครราชสีมา</td>
-              <td>14.2222, 102.5552</td>
-            </tr>
+            {attendanceList.map((val, index) => {
+              return (
+                <tr className="tbody" style={{marginBottom: "50px"}}>
+                  {val.emp_id == emp_id ? (
+                    <>
+                      <td>{moment(val.work_date).locale("th").format("L")}</td>
+                      <td>{moment(val.work_date).locale("th").format("LT")}</td>
+                      <td>
+                        {val.work_status == 0 ? (
+                          <p style={{ color: "#1FB640" }}>Check In</p>
+                        ) : (
+                          <p style={{ color: "#FB3131" }}>Check Out</p>
+                        )}
+                      </td>
+                      <td>{val.work_address}</td>
+                      <td>{val.work_lat + ", " + val.work_lng}</td>
+                    </>
+                  ) : null}
+                </tr>
+              );
+            })}
           </tbody>
         </Table>
       </Row>

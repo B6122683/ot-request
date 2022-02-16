@@ -31,13 +31,7 @@ function OTRequest() {
 
   const otrequestcount = () => {
     Axios.get(`http://localhost:3333/otrequestcount`).then((response) => {
-      for (let i = 0; i < response.length; i++) {
-        if (response.data[i].emp_id == emp_id) {
-          setOtrequestcountList(response.data[i]);
-          setWaiting(response.data[i].waiting);
-          setAccept(response.data[i].accept);
-        }
-      }
+      setOtrequestcountList(response.data);
     });
   };
 
@@ -88,29 +82,44 @@ function OTRequest() {
   return (
     <Container>
       <h1 className="otrequest">แจ้งคำขอทำงานล่วงเวลา​</h1>
+
       <Row>
-        <Col className="request">
-          <Col>
-            <p style={{ display: "flex", fontSize: "1.5rem" }}>รออนุมัติ</p>
-            <Col
-              className="col"
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <h1>{waiting + " รายการ"}</h1>
-            </Col>
-          </Col>
-        </Col>
-        <Col sm className="request">
-          <Col>
-            <p style={{ display: "flex", fontSize: "1.5rem" }}>อนุมัติแล้ว</p>
-            <Col
-              className="col"
-              style={{ display: "flex", justifyContent: "center" }}
-            >
-              <h1>{accept + " รายการ"}</h1>
-            </Col>
-          </Col>
-        </Col>
+        {otrequestcountList.map((val, index) => {
+          return (
+            <>
+              {val.emp_id == emp_id && (
+                <>
+                  <Col className="request">
+                    <Col>
+                      <p style={{ display: "flex", fontSize: "1.5rem" }}>
+                        รออนุมัติ
+                      </p>
+                      <Col
+                        className="col"
+                        style={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <h1>{val.waiting + " รายการ"}</h1>
+                      </Col>
+                    </Col>
+                  </Col>
+                  <Col sm className="request">
+                    <Col>
+                      <p style={{ display: "flex", fontSize: "1.5rem" }}>
+                        อนุมัติแล้ว
+                      </p>
+                      <Col
+                        className="col"
+                        style={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <h1>{val.accept + " รายการ"}</h1>
+                      </Col>
+                    </Col>
+                  </Col>
+                </>
+              )}
+            </>
+          );
+        })}
       </Row>
       <Row>
         <Table striped bordered hover>

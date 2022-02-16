@@ -14,10 +14,13 @@ import images3 from "../images/delete.png";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { AgGridReact } from 'ag-grid-react';
+import { AgGridReact } from "ag-grid-react";
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
+import { DataGrid } from "@mui/x-data-grid";
+import BasicTable from "../Components/DataTable";
+// import DataGridDemo from '../Components/DataGrid';
 
 function Department() {
   const [depname, setDepName] = useState("");
@@ -54,21 +57,45 @@ function Department() {
     });
   };
 
+  const columns2 = [
+    { field: "id", headerName: "ID", width: 90 },
+    {
+      field: "dep_name",
+      headerName: "ชื่อแผนก",
+      width: 150,
+      editable: true,
+    },
+  ];
+
+  const rows = departmentList.map((row) => ({
+    id: row.dep_id,
+    dep_name: row.dep_name,
+  }));
+
   useEffect(() => {
     dataepartment();
   }, []);
 
-  const columns=[
+  const columns = [
     {
-      headerName: "รหัสแผนก",field:'dep_id',sortable:true,filter:true
+      headerName: "รหัสแผนก",
+      field: "dep_id",
+      sortable: true,
+      filter: true,
     },
     {
-      headerName: "ชื่อแผนก",field:'dep_name',sortable:true,filter:true
+      headerName: "ชื่อแผนก",
+      field: "dep_name",
+      sortable: true,
+      filter: true,
     },
     {
-      headerName: "จัดการ",field:'',sortable:true,filter:true
+      headerName: "จัดการ",
+      field: "",
+      sortable: true,
+      filter: true,
     },
-  ]
+  ];
 
   return (
     // <Container>
@@ -106,7 +133,7 @@ function Department() {
             เพิ่ม{" "}
           </Button>{" "}
         </div>
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr className="trAdmin">
               <th>ลำดับ</th>
@@ -163,6 +190,16 @@ function Department() {
           </tbody>
         </Table>
       </Row>
+      {/* <div style={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns2}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+        />
+      </div>
+      <BasicTable /> */}
     </Container>
   );
 }

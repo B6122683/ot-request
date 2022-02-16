@@ -364,7 +364,15 @@ app.delete("/activity/:act_id", jsonParser, function (req, res) {
 app.put("/activity", jsonParser, function (req, res) {
   db.execute(
     "UPDATE activity SET act_name = ?, act_image = ?, act_place = ?, act_date = ?, act_time = ?,act_desc = ? WHERE act_id = ?",
-    [req.body.act_name,req.body.act_image, req.body.act_place,req.body.act_date,req.body.act_time, req.body.act_desc,req.body.act_id],
+    [
+      req.body.act_name,
+      req.body.act_image,
+      req.body.act_place,
+      req.body.act_date,
+      req.body.act_time,
+      req.body.act_desc,
+      req.body.act_id,
+    ],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -485,7 +493,21 @@ app.get("/employeescountbyrole", jsonParser, function (req, res) {
 app.put("/employees", jsonParser, function (req, res) {
   db.execute(
     "UPDATE employees SET emp_firstname = ?, emp_surname = ?, emp_address = ?, emp_tel = ?, emp_email = ?, dep_id = ?, role_id = ?, emp_card_id = ?, emp_dob = ?, emp_images = ?, position_id = ?, emp_gender = ?, update_at = NOW() WHERE emp_id = ?",
-    [req.body.emp_firstname, req.body.emp_surname, req.body.emp_address, req.body.emp_tel, req.body.emp_email, req.body.dep_id, req.body.role_id, req.body.emp_card_id, req.body.emp_dob, req.body.emp_images, req.body.position_id, req.body.emp_gender, req.body.emp_id],
+    [
+      req.body.emp_firstname,
+      req.body.emp_surname,
+      req.body.emp_address,
+      req.body.emp_tel,
+      req.body.emp_email,
+      req.body.dep_id,
+      req.body.role_id,
+      req.body.emp_card_id,
+      req.body.emp_dob,
+      req.body.emp_images,
+      req.body.position_id,
+      req.body.emp_gender,
+      req.body.emp_id,
+    ],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -551,6 +573,45 @@ app.post("/otassignment", jsonParser, function (req, res) {
 app.get("/otassignview", jsonParser, function (req, res) {
   db.execute(
     "SELECT ot_assignment.ot_id,ot_assignment.ot_name,ot_assignment.dep_id,department.dep_name,ot_assignment.ot_desc,ot_assignment.ot_starttime,ot_assignment.ot_finishtime,ot_assignment.ot_apply,ot_assignment.ot_request,ot_assignment.ot_stump,ot_assignment.ot_status,ot_assignment.ot_rate,TIMEDIFF(ot_assignment.ot_finishtime,ot_assignment.ot_starttime) AS summary FROM ot_assignment LEFT JOIN department ON ot_assignment.dep_id = department.dep_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//UPDATE OT_ASSIGNMENT DATA FORM DB
+app.put("/otassignment", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE ot_assignment SET ot_name = ?, ot_rate = ?, dep_id = ?, ot_desc = ?, ot_starttime = ?, ot_finishtime = ?, ot_apply = ?, update_at = NOW() WHERE ot_id = ?",
+    [
+      req.body.ot_name,
+      req.body.ot_rate,
+      req.body.dep_id,
+      req.body.ot_desc,
+      req.body.ot_starttime,
+      req.body.ot_finishtime,
+      req.body.ot_apply,
+      req.body.ot_id,
+    ],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//UPDATE OT_ASSIGNMENT DATA FORM DB
+app.put("/otrequestcountbystatus", jsonParser, function (req, res) {
+  db.execute(
+    "UPDATE ot_assignment SET ot_request = ot_request + 1, ot_stump = ot_stump - 1 , update_at = NOW() WHERE ot_id = ?",
+    [req.body.ot_id],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -648,6 +709,21 @@ app.get("/otrequestcount", jsonParser, function (req, res) {
     }
   );
 });
+
+//COUNT
+app.get("/otrequestcountbystatus", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT department.dep_name AS dep_name, COUNT( CASE WHEN ot_request.otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN ot_request.otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN ot_request.otr_status = 2 THEN 1 END ) AS reject FROM ot_request INNER JOIN department ON department.dep_id = ot_request.dep_id GROUP BY dep_name",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 //COUNT
 // app.get("/otrequestcount/:emp_id", jsonParser, function (req, res) {
 //   db.execute(
@@ -797,7 +873,7 @@ app.get("/positions/:position_id", jsonParser, function (req, res) {
 app.put("/positions", jsonParser, function (req, res) {
   db.execute(
     "UPDATE positions SET position_name = ?, dep_id = ? WHERE position_id = ?",
-    [req.body.position_name, req.body.dep_id,req.body.position_id],
+    [req.body.position_name, req.body.dep_id, req.body.position_id],
     (err, result) => {
       if (err) {
         console.log(err);
@@ -835,6 +911,20 @@ app.post("/leavework", jsonParser, function (req, res) {
 app.get("/leaveworkview", jsonParser, function (req, res) {
   db.execute(
     "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_date, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//SELECT DATA IN EMPLOYEES
+app.get("/leavecountbyname", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT leave_type.ltype_name AS leavetype_name, COUNT(*) AS no_emp FROM leavework INNER JOIN leave_type ON leavework.leave_type = leave_type.ltype_id GROUP BY leave_type.ltype_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -901,10 +991,9 @@ app.get("/leaveworkId/:leave_id", jsonParser, function (req, res) {
 });
 
 //LEAVE WORK COUNT
-app.get("/leaveworkcount/:emp_id", jsonParser, function (req, res) {
+app.post("/leaveworkcount", jsonParser, function (req, res) {
   db.execute(
-    "SELECT COUNT( CASE WHEN leave_accept = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN leave_accept = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN leave_accept = 2 THEN 1 END ) AS reject FROM leavework WHERE emp_id = ?",
-    [req.params.emp_id],
+    "SELECT emp_id, COUNT( CASE WHEN leave_accept = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN leave_accept = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN leave_accept = 2 THEN 1 END ) AS reject FROM leavework GROUP BY emp_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -915,20 +1004,25 @@ app.get("/leaveworkcount/:emp_id", jsonParser, function (req, res) {
   );
 });
 
-
 //----------------------------ATTENDANCE-----------------------------
 
 //ADD ATTENDANCE
 app.post("/attendance", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO attendance (emp_id, work_date,address, work_status, lat, lng) VALUES (?, ?, NOW(), NOW(), ?, ?)",
-    [req.body.emp_id],
-    function (err, results, fields) {
+    "INSERT INTO attendance (emp_id, work_date, work_address, work_status, work_lat, work_lng) VALUES (?, NOW(), ?, ?, ?, ?)",
+    [
+      req.body.emp_id,
+      req.body.work_address,
+      req.body.work_status,
+      req.body.work_lat,
+      req.body.work_lng,
+    ],
+    (err, result) => {
       if (err) {
-        res.json({ status: "error", message: err });
-        return;
+        console.log(err);
+      } else {
+        res.send(result);
       }
-      res.json({ status: "ok" });
     }
   );
 });
@@ -942,6 +1036,20 @@ app.get("/attendance", jsonParser, function (req, res) {
       res.send(result);
     }
   });
+});
+
+//LEAVE WORK COUNT
+app.post("/attendancecount", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT emp_id, CONVERT(DATE(work_date), CHAR) AS working, MIN(CASE WHEN work_status = 0 THEN TIME(work_date) END) AS checkin, MAX(CASE WHEN work_status = 1 THEN TIME(work_date) END) AS checkout FROM attendance GROUP BY emp_id, DATE(work_date)",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
 });
 
 //-----------------------------POSITION------------------------------

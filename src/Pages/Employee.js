@@ -21,8 +21,7 @@ import { Link, useParams } from "react-router-dom";
 
 function Employee() {
   const [employeeList, setEmployeeList] = useState([]);
-  const [dep_name, setDepName] = useState("");
-  const [position_name, setPositionName] = useState("");
+  const [empfname, setEmpFName] = useState("");
   const [employeeListbyId, setEmployeeListbyId] = useState([]);
   const [modalShow, setModalShow] = useState(false);
 
@@ -95,16 +94,6 @@ function Employee() {
     });
   };
 
-  const searchByDepAndPos = (dep, pos) => {
-    // Axios.post(`http://localhost:3333/employees/${id}`).then((response) => {
-    //   setEmployeeList(
-    //     employeeList.filter((val) => {
-    //       return val.emp_id != id;
-    //     })
-    //   );
-    // });
-  };
-
   useEffect(() => {
     empList();
     getAuth();
@@ -117,38 +106,14 @@ function Employee() {
         <Row className="col-md-12 col-12" aria-colspan={2}>
           <Col className="col-md-6 col-12">
             <Form.Group className="mb-3">
-              <Form.Label>ค้นหาจาก แผนก</Form.Label>
+              <Form.Label>ค้นหาจากชื่อ-สกุล</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="กรอกแผนก"
-                name="dep_name"
-                onChange={(e) => {
-                  setDepName(e.target.value);
-                }}
+                placeholder="ค้นหา..."
+                name="emp_name"
+                onChange={(e) => setEmpFName(e.target.value)}
               />
             </Form.Group>
-          </Col>
-          <Col className="col-md-6 col-12">
-            <Form.Group className="mb-3">
-              <Form.Label>ค้นหาจาก ตำแหน่ง</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="กรอกตำแหน่ง"
-                name="position_name"
-                onChange={(e) => {
-                  setPositionName(e.target.value);
-                }}
-              />
-            </Form.Group>
-          </Col>
-          <Col
-            className="col-md-12 col-12"
-            style={{ display: "flex", justifyContent: "center" }}
-          >
-            <Button variant="primary" onClick={(dep, pos) => searchByDepAndPos}>
-              {" "}
-              ค้นหา{" "}
-            </Button>{" "}
           </Col>
         </Row>
       </div>
@@ -163,7 +128,7 @@ function Employee() {
             เพิ่ม{" "}
           </Button>{" "}
         </div>
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr className="trAdmin">
               <th>รหัสพนักงาน</th>
@@ -174,41 +139,45 @@ function Employee() {
               <th>จัดการ</th>
             </tr>
           </thead>
-          {employeeList.map((val) => {
-            return (
-              <tbody>
-                <tr className="tbody">
-                  <td>{val.emp_id}</td>
-                  <td>
-                    <Image
-                      style={{
-                        height: "100px",
-                        width: "60%",
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={val.emp_images}
-                    />
-                  </td>
-                  <td>
-                    {val.emp_firstname} {val.emp_surname}
-                  </td>
-                  <td>{val.dep_name}</td>
-                  <td>{val.position_name}</td>
-                  <td>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images2}
-                      onClick={() => employeebyid(val.emp_id)}
-                    />
-                    <Link to={`/employeemanagement/${val.emp_id}`}>
+
+          <tbody>
+            {employeeList
+              .filter((val) => {
+                if (empfname === "") {
+                  return val;
+                } else {
+                  return (
+                    val.emp_firstname
+                      .toLowerCase()
+                      .includes(empfname.toLowerCase()) ||
+                    val.emp_surname
+                      .toLowerCase()
+                      .includes(empfname.toLowerCase())
+                  );
+                }
+              })
+              .map((val) => {
+                return (
+                  <tr className="tbody">
+                    <td>{val.emp_id}</td>
+                    <td>
+                      <Image
+                        style={{
+                          height: "100px",
+                          width: "60%",
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={val.emp_images}
+                      />
+                    </td>
+                    <td>
+                      {val.emp_firstname} {val.emp_surname}
+                    </td>
+                    <td>{val.dep_name}</td>
+                    <td>{val.position_name}</td>
+                    <td>
                       <Image
                         style={{
                           height: 30,
@@ -217,27 +186,39 @@ function Employee() {
                           margin: "5px",
                         }}
                         alt=""
-                        src={images1}
+                        src={images2}
+                        onClick={() => employeebyid(val.emp_id)}
                       />
-                    </Link>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images3}
-                      onClick={() => {
-                        deleteEmployee(val.emp_id);
-                      }}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })}
+                      <Link to={`/employeemanagement/${val.emp_id}`}>
+                        <Image
+                          style={{
+                            height: 30,
+                            width: 30,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt=""
+                          src={images1}
+                        />
+                      </Link>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images3}
+                        onClick={() => {
+                          deleteEmployee(val.emp_id);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
         </Table>
         <Modal
           show={modalShow}

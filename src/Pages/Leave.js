@@ -15,21 +15,38 @@ function Leave() {
   const [leaveworkcountList, setLeaveWorkcountList] = useState([]);
   const [waiting, setWaiting] = useState(0);
   const [accept, setAccept] = useState(0);
-  const { emp_id } = useParams();
-  const [eemp_id, setEEmpId] = useState("");
+  const [emp_id, setEmpId] = useState("");
 
-  const leaveworkcount = async (e) => {
-    await Axios.get(`http://localhost:3333/leaveworkcount/${emp_id}`).then(
-      (response) => {
-        setLeaveWorkcountList(response.data);
-        setWaiting(response.data[0].waiting);
-        setAccept(response.data[0].accept);
-        console.log("count", response.data);
+  const leaveworkcount = (e) => {
+    Axios.post("http://localhost:3333/leaveworkcount", {
+      emp_id: emp_id,
+    }).then((response) => {
+      setLeaveWorkcountList(response.data);
+      setWaiting(response.data[0].waiting);
+      setAccept(response.data[0].accept);
+      console.log("count", response.data);
+    });
+  };
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+
+    Axios.get("http://localhost:3333/authen", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    }).then((response) => {
+      console.log(response);
+      if (response.data.status == "ok") {
+        setEmpId(response.data.decoded.user.emp_id);
+      } else {
+        window.location = "/login";
       }
-    );
+    });
   };
 
   useEffect(() => {
+    getAuth();
     leaveworkcount();
   }, []);
   return (
@@ -50,6 +67,7 @@ function Leave() {
               </Col>
             </Col>
           </Col>
+          {emp_id}
           <Col sm className="request">
             <Col>
               <p style={{ display: "flex", fontSize: "1.5rem" }}>อนุมัติแล้ว</p>
@@ -320,7 +338,6 @@ function MydModalWithGrid(props) {
                 <Button
                   variant="primary"
                   type="submit"
-                  
                   style={{ margin: "10px" }}
                 >
                   ยืนยัน
