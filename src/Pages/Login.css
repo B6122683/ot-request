@@ -19,6 +19,27 @@
   background: #fbfbfb;
   border-radius: 0 10px 10px 0;
 }
+.loginleft .logo {
+  display: flex;
+  justify-content: center;
+  width: auto;
+  animation: fadeInAnimation ease 2s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+@keyframes fadeInAnimation {
+  0% {
+      opacity: 0;
+  }
+  100% {
+      opacity: 1;
+  }
+}
+
+.loginleft .logo :hover {
+  transform: scale(1.1);
+
+}
 
 @media (max-width: 767.98px) {
   .loginpage {
