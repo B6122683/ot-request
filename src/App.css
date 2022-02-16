@@ -94,8 +94,23 @@ body {
   background-color: #FFFFFF;
   border-radius: 10px;
   height: 200px;
+  
 }
 
+.bottom-one {
+  border-bottom: 60px solid tomato;
+}
+.bottom-two {
+  border-bottom: 60px solid rgb(207, 30, 30);
+}
+.bottom-three {
+  border-bottom: 60px solid rgb(5, 172, 41);
+}
+.imgicon{
+  display: flex;
+  justify-content: right;
+  padding: 10px;
+}
 .BigCalendar {
   text-align: center;
 }
