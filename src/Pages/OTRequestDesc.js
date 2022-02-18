@@ -63,7 +63,7 @@ function OTRequestDesc() {
       ot_id: ot_id,
     }).then((response) => {
       if (response.data.status == "exist") {
-        alert("เคยส่งละสู");
+        alert("คุณเคยยื่นคำขอแล้ว!");
       } else {
         setOtRequestList({
           ...otrequestList,

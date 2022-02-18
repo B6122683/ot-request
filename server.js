@@ -1129,7 +1129,7 @@ app.post("/attendance", jsonParser, function (req, res) {
 
 //GET ATTENDANCE DATA FORM DB
 app.get("/attendance", jsonParser, function (req, res) {
-  db.execute("SELECT * FROM attendance", (err, result) => {
+  db.execute("SELECT * FROM attendance WHERE DATE(work_date) > NOW() - interval 7 day ORDER BY work_date DESC", (err, result) => {
     if (err) {
       console.log(err);
     } else {
