@@ -11,6 +11,7 @@ function OTRequest() {
   const [otrequestcountList, setOtrequestcountList] = useState([]);
   const [dep_id, setDepId] = useState("");
   const [emp_id, setEmpId] = useState("");
+
   const otassign = () => {
     Axios.get("http://localhost:3333/otassignview").then((response) => {
       setOtassignList(response.data);
@@ -51,7 +52,7 @@ function OTRequest() {
   }, []);
 
   return (
-    <Container>
+    <Container className="mb-5">
       <h1 className="otrequest">แจ้งคำขอทำงานล่วงเวลา​</h1>
 
       <Row>
@@ -60,8 +61,8 @@ function OTRequest() {
             <>
               {val.emp_id == emp_id && (
                 <>
-                  <Col className="request">
-                    <Col>
+                  <Col className="col-md-6 col-12">
+                    <Col className="p-2 my-3 addash">
                       <p style={{ display: "flex", fontSize: "1.5rem" }}>
                         รออนุมัติ
                       </p>
@@ -73,8 +74,8 @@ function OTRequest() {
                       </Col>
                     </Col>
                   </Col>
-                  <Col sm className="request">
-                    <Col>
+                  <Col className="col-md-6 col-12">
+                    <Col className="p-2 my-3 addash">
                       <p style={{ display: "flex", fontSize: "1.5rem" }}>
                         อนุมัติแล้ว
                       </p>

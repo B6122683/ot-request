@@ -11,12 +11,27 @@ import Button from "react-bootstrap/Button";
 import FullCal from "../Components/FullCalendar";
 import Axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 
 function Leave() {
   const [modalShow, setModalShow] = useState(false);
   const [leaveworkcountList, setLeaveWorkcountList] = useState([]);
   const [leaveworkList, setLeaveWorkList] = useState([]);
   const [emp_id, setEmpId] = useState("");
+
+  var active = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  const [val, setVal] = useState(active.slice(0, 10));
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const usersPerPage = 5;
+  const pagesVisited = pageNumber * usersPerPage;
+
+  const pageCount = Math.ceil(val.length / usersPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
@@ -26,9 +41,7 @@ function Leave() {
           Authorization: "Bearer " + token,
         },
       }).then((response) => {
-        if (
-           response.data.decoded.user.role_id != 2
-        ) {
+        if (response.data.decoded.user.role_id != 2) {
           localStorage.removeItem("token");
           window.location = "/login";
         } else {
@@ -59,7 +72,7 @@ function Leave() {
   }, []);
   return (
     <>
-      <Container>
+      <Container className="mb-5">
         <Row>
           <h1 className="leave">แจ้งลา</h1>
         </Row>
@@ -69,8 +82,8 @@ function Leave() {
               <>
                 {val.emp_id == emp_id && (
                   <>
-                    <Col className="request">
-                      <Col>
+                    <Col className="col-md-6 col-12">
+                      <Col className="p-2 my-3 addash">
                         <p style={{ display: "flex", fontSize: "1.5rem" }}>
                           รออนุมัติ
                         </p>
@@ -82,8 +95,8 @@ function Leave() {
                         </Col>
                       </Col>
                     </Col>
-                    <Col sm className="request">
-                      <Col>
+                    <Col className="col-md-6 col-12">
+                      <Col className="p-2 my-3 addash">
                         <p style={{ display: "flex", fontSize: "1.5rem" }}>
                           อนุมัติแล้ว
                         </p>
@@ -124,33 +137,52 @@ function Leave() {
                 <th>สถานะ</th>
               </tr>
             </thead>
-            {leaveworkList.map((val) => {
-              return (
-                <tbody>
-                  {val.emp_id == emp_id && (
-                    <tr className="tbody">
-                      <td>{val.ltype_name}</td>
-                      <td>{val.leave_desc}</td>
-                      <td>
-                        {moment(val.start_leave).locale("th").format("L")}
-                      </td>
-                      <td>{moment(val.end_leave).locale("th").format("L")}</td>
-                      <td>{moment(val.leave_date).locale("th").format("L")}</td>
-                      <td>
-                        {val.leave_accept == 0 ? (
-                          <p style={{ color: "#FB3131" }}>รออนุมัติ</p>
-                        ) : val.leave_accept == 1 ? (
-                          <p style={{ color: "#1FB640" }}>อนุมัติ</p>
-                        ) : (
-                          <p style={{ color: "#FB3131" }}>ไม่อนุมัติ</p>
-                        )}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              );
-            })}
+            {leaveworkList
+              .slice(pagesVisited, pagesVisited + usersPerPage)
+              .map((val) => {
+                return (
+                  <tbody>
+                    {val.emp_id == emp_id && (
+                      <tr className="tbody">
+                        <td>{val.ltype_name}</td>
+                        <td>{val.leave_desc}</td>
+                        <td>
+                          {moment(val.start_leave).locale("th").format("L")}
+                        </td>
+                        <td>
+                          {moment(val.end_leave).locale("th").format("L")}
+                        </td>
+                        <td>
+                          {moment(val.leave_date).locale("th").format("L")}
+                        </td>
+                        <td>
+                          {val.leave_accept == 0 ? (
+                            <p style={{ color: "#FB3131" }}>รออนุมัติ</p>
+                          ) : val.leave_accept == 1 ? (
+                            <p style={{ color: "#1FB640" }}>อนุมัติ</p>
+                          ) : (
+                            <p style={{ color: "#FB3131" }}>ไม่อนุมัติ</p>
+                          )}
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                );
+              })}
           </Table>
+          <div style={{ display: "flex", justifyContent: "right" }}>
+            <ReactPaginate
+              previousLabel={"Previous"}
+              nextLabel={"Next"}
+              pageCount={pageCount}
+              onPageChange={changePage}
+              containerClassName={"paginationBttns"}
+              previousLinkClassName={"previousBttn"}
+              nextLinkClassName={"nextBttn"}
+              disabledClassName={"paginationDisabled"}
+              activeClassName={"paginationActive"}
+            />
+          </div>
         </Row>
         {/* <Row>
           <div

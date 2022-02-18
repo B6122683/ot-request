@@ -19,12 +19,14 @@ import Swal from "sweetalert2";
 import moment from "moment/min/moment-with-locales";
 import { Link, useParams } from "react-router-dom";
 
+
 function Employee() {
   const [employeeList, setEmployeeList] = useState([]);
   const [empfname, setEmpFName] = useState("");
   const [employeeListbyId, setEmployeeListbyId] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [dep_id, setDepId] = useState("");
+
 
   const empList = () => {
     Axios.get("http://localhost:3333/employeesview").then((response) => {
@@ -60,9 +62,7 @@ function Employee() {
           Authorization: "Bearer " + token,
         },
       }).then((response) => {
-        if (
-           response.data.decoded.user.role_id != 1
-        ) {
+        if (response.data.decoded.user.role_id != 1) {
           localStorage.removeItem("token");
           window.location = "/login";
         } else {
@@ -105,7 +105,7 @@ function Employee() {
   }, []);
 
   return (
-    <Container>
+    <Container className="mb-5">
       <h1 className="attendance">ข้อมูลพนักงาน</h1>
       <div style={{ justifyContent: "center" }}>
         <Row className="col-md-12 col-12">
@@ -163,12 +163,12 @@ function Employee() {
                   );
                 }
               })
-              .map((val,index) => {
+              .map((val, index) => {
                 return (
                   <tr className="tbody">
                     {val.dep_id == dep_id && (
                       <>
-                        <td>{index +1}</td>
+                        <td>{index + 1}</td>
                         <td>
                           <Image
                             style={{

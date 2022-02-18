@@ -1,6 +1,6 @@
  .box {
 
-    color:rgb(255, 255, 255);
+    color:rgb(0, 0, 0);
     text-align: center;
     display: flex;
     justify-content: center;
@@ -17,14 +17,7 @@
  .pagetitle + p {
     font-size: 3vh;
  }
- @keyframes light {
-    33% {
-       text-shadow: 0 0 20px #e900fe;
-    }
-    66% {
-       text-shadow: 0 0 20px #6de33c;
-    }
- }
+
 
  #container {
      position: absolute;
@@ -36,8 +29,7 @@
      display: flex;
      justify-content: center;
      align-items: center;
-     background: #151729;
-     box-shadow: 0 15px 30px rgba(0, 0, 0, .5);
+
  }
 
  #container p {
