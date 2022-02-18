@@ -18,6 +18,7 @@ import Axios from "axios";
 import Select from "react-select";
 import moment from "moment/min/moment-with-locales";
 import { useHistory, useParams } from "react-router-dom";
+import ReactPaginate from "react-paginate";
 
 function LeaveManagement() {
   const [modalShow, setModalShow] = useState(false);
@@ -29,6 +30,20 @@ function LeaveManagement() {
 
   const [modalShowview, setModalShowview] = useState(false);
   const [leaveListbyId, setLeaveListbyId] = useState([]);
+
+  var active = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  const [val, setVal] = useState(active.slice(0, 10));
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const usersPerPage = 5;
+  const pagesVisited = pageNumber * usersPerPage;
+
+  const pageCount = Math.ceil(val.length / usersPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   const leavebyid = (leave_id) => {
     Axios.get(`http://localhost:3333/leaveworkId/${leave_id}`).then(
@@ -150,65 +165,80 @@ function LeaveManagement() {
             } else {
               return val.leave_accept == statusleave;
             }
-          }).map((val, index) => {
-            return (
-              <tbody>
-                {val.dep_id == dep_id && (
-                  <>
-                    <tr className="tbody">
-                      <td>
-                        <Image
-                          style={{
-                            height: 30,
-                            width: 30,
-                            objectFit: "cover",
-                            margin: "5px",
-                          }}
-                          alt=""
-                          src={images2}
-                          onClick={() => leavebyid(val.leave_id)}
-                        />
-                      </td>
-                      <td>{index + 1}</td>
-                      <td>
-                        {val.emp_firstname} {val.emp_surname}
-                      </td>
-                      <td>{val.dep_name}</td>
-                      <td>{val.ltype_name}</td>
-                      <td>
-                        {moment(val.leave_date).locale("th").format("LL")}
-                      </td>
-                      <td>
-                        {val.leave_accept == 0 && (
-                          <Button
-                            variant="warning"
-                            style={{ margin: "0px" }}
-                            onClick={() => getLeavework(val.leave_id)}
-                          >
-                            {" "}
-                            รออนุมัติ{" "}
-                          </Button>
-                        )}
-                        {val.leave_accept == 1 && (
-                          <Button variant="success" style={{ margin: "0px" }}>
-                            {" "}
-                            อนุมัติ{" "}
-                          </Button>
-                        )}
-                        {val.leave_accept == 2 && (
-                          <Button variant="danger" style={{ margin: "0px" }}>
-                            {" "}
-                            ไม่อนุมัติ{" "}
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  </>
-                )}
-              </tbody>
-            );
-          })}
+          })
+            .slice(pagesVisited, pagesVisited + usersPerPage)
+            .map((val, index) => {
+              return (
+                <tbody>
+                  {val.dep_id == dep_id && (
+                    <>
+                      <tr className="tbody">
+                        <td>
+                          <Image
+                            style={{
+                              height: 30,
+                              width: 30,
+                              objectFit: "cover",
+                              margin: "5px",
+                            }}
+                            alt=""
+                            src={images2}
+                            onClick={() => leavebyid(val.leave_id)}
+                          />
+                        </td>
+                        <td>{index + 1}</td>
+                        <td>
+                          {val.emp_firstname} {val.emp_surname}
+                        </td>
+                        <td>{val.dep_name}</td>
+                        <td>{val.ltype_name}</td>
+                        <td>
+                          {moment(val.leave_date).locale("th").format("LL")}
+                        </td>
+                        <td>
+                          {val.leave_accept == 0 && (
+                            <Button
+                              variant="warning"
+                              style={{ margin: "0px" }}
+                              onClick={() => getLeavework(val.leave_id)}
+                            >
+                              {" "}
+                              รออนุมัติ{" "}
+                            </Button>
+                          )}
+                          {val.leave_accept == 1 && (
+                            <Button variant="success" style={{ margin: "0px" }}>
+                              {" "}
+                              อนุมัติ{" "}
+                            </Button>
+                          )}
+                          {val.leave_accept == 2 && (
+                            <Button variant="danger" style={{ margin: "0px" }}>
+                              {" "}
+                              ไม่อนุมัติ{" "}
+                            </Button>
+                          )}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+                </tbody>
+              );
+            })}
         </Table>
+        <div style={{ display: "flex", justifyContent: "right" }}>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"paginationBttns"}
+            previousLinkClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}
+          />
+        </div>
 
         <Modal show={modalShow} centered>
           <Modal.Body className="show-grid">

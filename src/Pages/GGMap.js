@@ -8,6 +8,7 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import Axios from "axios";
+import Swal from "sweetalert2";
 
 function GGMap() {
   const { isLoaded } = useJsApiLoader({
@@ -85,6 +86,7 @@ function GGMap() {
   };
 
   const checkInWork = () => {
+
     Axios.post("http://localhost:3333/attendance", {
       emp_id: emp_id,
       work_address: userAddress,
@@ -100,7 +102,17 @@ function GGMap() {
         work_lat: locallatitude,
         work_lng: locallongitude,
       });
-      window.location = "/attendance";
+      Swal.fire({
+        title: "สำเร็จ",
+        text: "ลงชื่อเข้างานเรียบร้อย",
+        icon: "success",
+        confirmButtonText: "ยืนยัน!",
+        cancelButtonText: "ยกเลิก",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location = "/attendance";
+        }
+      });
     });
   };
   const checkOutWork = () => {
@@ -119,7 +131,17 @@ function GGMap() {
         work_lat: locallatitude,
         work_lng: locallongitude,
       });
-      window.location = "/attendance";
+      Swal.fire({
+        title: "สำเร็จ",
+        text: "ลงชื่อออกงานเรียบร้อย",
+        icon: "success",
+        confirmButtonText: "ยืนยัน!",
+        cancelButtonText: "ยกเลิก",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location = "/attendance";
+        }
+      });
     });
   };
 

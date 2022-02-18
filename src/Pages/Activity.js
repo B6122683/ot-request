@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import CardReactFormContainer from "card-react";
 import { Card } from "react-bootstrap";
 
-function ReadMore({ children, maxCharacterCount = 100 }) {
+function ReadMore({ children, maxCharacterCount = 200 }) {
   const text = children;
 
   const [isTruncated, setIsTruncated] = useState(true);
@@ -84,9 +84,9 @@ function Activity() {
   return (
     <Container className="mb-5">
       <div className="header">
-        <span className="header-title">กิจกรรม</span>
+        {/* <span className="header-title">กิจกรรม</span>
         <br />
-        <span className="header-text">ส่งเสริมพนักงานให้มีความสุขในการทำงาน...</span>
+        <span className="header-text">ส่งเสริมพนักงานให้มีความสุขในการทำงาน...</span> */}
       </div>
 
       <div className="section bg-grey">
@@ -96,7 +96,7 @@ function Activity() {
 
         <div className="big-div">
           <span className="div-title">
-            <a>About the Company</a>
+            <a>กิจกรรมบริษัท</a>
           </span>
           <br />
           <span>

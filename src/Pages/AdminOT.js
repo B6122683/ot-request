@@ -15,12 +15,27 @@ import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import ReactPaginate from "react-paginate";
 
 function AdminOT() {
   const [otassignList, setOtassignList] = useState([]);
   const [role_id, setRole] = useState("");
   const [dep_id, setDepId] = useState("");
   const [otname, setOTName] = useState("");
+
+  var active = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  const [val, setVal] = useState(active.slice(0, 10));
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const usersPerPage = 5;
+  const pagesVisited = pageNumber * usersPerPage;
+
+  const pageCount = Math.ceil(val.length / usersPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
 
   const otassign = () => {
     Axios.get("http://localhost:3333/otassignview").then((response) => {
@@ -141,7 +156,7 @@ function AdminOT() {
                     .includes(otname.toLowerCase());
                 }
               })
-              .map((val, index) => {
+              .slice(pagesVisited, pagesVisited + usersPerPage).map((val, index) => {
                 return (
                   <tbody>
                     {val.dep_id == dep_id && (
@@ -199,6 +214,19 @@ function AdminOT() {
                 );
               })}
           </Table>
+          <div style={{ display: "flex", justifyContent: "right" }}>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"paginationBttns"}
+            previousLinkClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}
+          />
+        </div>
         </div>
       </Row>
     </Container>

@@ -95,7 +95,7 @@ function OTManagement() {
   }, []);
 
   return (
-    <Container>
+    <Container className="mb-5">
       <h1 className="attendance">จัดการคำขอ OT</h1>
       <div style={{ justifyContent: "center" }}>
         <Row className="col-md-12 col-12">
