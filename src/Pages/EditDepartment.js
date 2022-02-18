@@ -4,24 +4,20 @@ import Axios from "axios";
 import { useHistory, useParams } from "react-router-dom";
 import "./Department.css";
 
-function EditDepartment() {
+function SPEditDepartment() {
   const [depname, setDepname] = useState("");
   const { dep_id } = useParams();
-  const [departmentList, setDepartmentList] = useState([]);
   const [validated, setValidated] = useState(false);
-  const [message, setMessage] = useState("");
 
   const departmentById = () => {
     Axios.get(`http://localhost:3333/department/${dep_id}`).then((response) => {
-      setDepartmentList(response.data[0]);
       setDepname(response.data[0].dep_name);
-      console.log(response.data[0]);
     });
   };
 
   const editdepartment = (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -38,17 +34,20 @@ function EditDepartment() {
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
-
-    Axios.get("/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.decoded.user.role_id != 1) {
-        window.location = "/";
-      }
-    });
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
   };
 
   useEffect(() => {
@@ -108,4 +107,4 @@ function EditDepartment() {
   );
 }
 
-export default EditDepartment;
+export default SPEditDepartment;

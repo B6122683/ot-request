@@ -16,7 +16,7 @@ function EditPosition() {
 
   const positionById = (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -50,17 +50,20 @@ function EditPosition() {
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
-
-    Axios.get("/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.decoded.user.role_id != 1) {
-        window.location = "/";
-      }
-    });
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
   };
 
   useEffect(() => {

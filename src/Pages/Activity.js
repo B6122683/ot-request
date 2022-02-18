@@ -49,8 +49,26 @@ function ReadMore({ children, maxCharacterCount = 100 }) {
   );
 }
 
-function Activity(props) {
+function Activity() {
   const [activityList, setActivityList] = useState([]);
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 2) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
 
   const activity = () => {
     Axios.get("http://localhost:3333/activity").then((response) => {
@@ -59,6 +77,7 @@ function Activity(props) {
   };
 
   useEffect(() => {
+    getAuth();
     activity();
   }, []);
 

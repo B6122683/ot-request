@@ -29,6 +29,24 @@ function AdminActivity() {
   const usersPerPage = 5;
   const pagesVisited = pageNumber * usersPerPage;
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3 && response.data.decoded.user.role_id != 1) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        } 
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
   const activity = () => {
     Axios.get("http://localhost:3333/activity").then((response) => {
       setActivityList(response.data);
@@ -86,6 +104,7 @@ function AdminActivity() {
   };
 
   useEffect(() => {
+    getAuth();
     activity();
   }, []);
 
@@ -104,7 +123,7 @@ function AdminActivity() {
             เพิ่ม{" "}
           </Button>{" "}
         </div>
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr className="trAdmin">
               <th>ลำดับกิจกรรม</th>

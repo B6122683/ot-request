@@ -11,27 +11,28 @@ import GGMap from "./GGMap";
 import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
 
-const WebcamComponent = () => <Webcam />;
-
 function Attendance() {
   const [attendanceList, setAttendanceList] = useState([]);
   const [emp_id, setEmpId] = useState("");
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
-
-    Axios.get("/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.status == "ok") {
-        setEmpId(response.data.decoded.user.emp_id);
-      } else {
-        window.location = "/login";
-      }
-    });
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 2) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        } else {
+          setEmpId(response.data.decoded.user.emp_id);
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
   };
 
   const attList = () => {
@@ -39,14 +40,6 @@ function Attendance() {
       setAttendanceList(response.data);
     });
   };
-
-  const webcamRef = React.useRef(null);
-  const [imgSrc, setImgSrc] = React.useState(null);
-
-  const capture = React.useCallback(() => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setImgSrc(imageSrc);
-  }, [webcamRef, setImgSrc]);
 
   useEffect(() => {
     getAuth();
@@ -78,7 +71,7 @@ function Attendance() {
           <tbody>
             {attendanceList.map((val, index) => {
               return (
-                <tr className="tbody" style={{marginBottom: "50px"}}>
+                <tr className="tbody" style={{ marginBottom: "50px" }}>
                   {val.emp_id == emp_id ? (
                     <>
                       <td>{moment(val.work_date).locale("th").format("L")}</td>

@@ -10,10 +10,6 @@ function Login() {
   const [emp_username, setUsername] = useState("");
   const [emp_password, setPassword] = useState("");
 
-  const [loginStatus, setLoginStatus] = useState("");
-  var username = document.getElementById("username");
-  var password = document.getElementById("password");
-
   // Axios.defaults.withCredentials = true;
 
   const loginadmin = () => {
@@ -49,42 +45,9 @@ function Login() {
           icon: "error",
         });
       }
-      // if (response.data.message) {
-      //   alert(response.data.message);
-      // } else {
-      //   window.location = "/";
-      // }
     });
   };
 
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-
-  //   const jsonData = {
-  //     emp_username: data.get("username"),
-  //     emp_password: data.get("password"),
-  //   };
-
-  //   fetch("http://localhost:3333/login", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(jsonData),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       if (data.status == "ok") {
-  //         window.location = "/employee";
-  //       } else {
-  //         alert("login failed");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error:", error);
-  //     });
-  // };
   return (
     <>
       <Container>

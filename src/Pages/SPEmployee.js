@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import moment from "moment/min/moment-with-locales";
 import { Link, useParams } from "react-router-dom";
 
-function Employee() {
+function SPEmployee() {
   const [employeeList, setEmployeeList] = useState([]);
   const [empfname, setEmpFName] = useState("");
   const [employeeListbyId, setEmployeeListbyId] = useState([]);
@@ -60,13 +60,9 @@ function Employee() {
           Authorization: "Bearer " + token,
         },
       }).then((response) => {
-        if (
-           response.data.decoded.user.role_id != 1
-        ) {
+        if (response.data.decoded.user.role_id != 3) {
           localStorage.removeItem("token");
           window.location = "/login";
-        } else {
-          setDepId(response.data.decoded.user.dep_id);
         }
       });
     } else {
@@ -108,7 +104,7 @@ function Employee() {
     <Container>
       <h1 className="attendance">ข้อมูลพนักงาน</h1>
       <div style={{ justifyContent: "center" }}>
-        <Row className="col-md-12 col-12">
+      <Row className="col-md-12 col-12">
           <Col className="col-md-4"></Col>
           <Col className="col-md-4 col-12">
             <Form.Group className="mb-3">
@@ -129,7 +125,7 @@ function Employee() {
           <Button
             variant="secondary"
             style={{ margin: "0px" }}
-            onClick={() => (window.location = "/employeemanagement")}
+            onClick={() => (window.location = "/spemployeemanagement")}
           >
             {" "}
             เพิ่ม{" "}
@@ -163,69 +159,65 @@ function Employee() {
                   );
                 }
               })
-              .map((val,index) => {
+              .map((val, index) => {
                 return (
                   <tr className="tbody">
-                    {val.dep_id == dep_id && (
-                      <>
-                        <td>{index +1}</td>
-                        <td>
-                          <Image
-                            style={{
-                              height: "100px",
-                              width: "60%",
-                              objectFit: "cover",
-                              margin: "5px",
-                            }}
-                            alt=""
-                            src={val.emp_images}
-                          />
-                        </td>
-                        <td>
-                          {val.emp_firstname} {val.emp_surname}
-                        </td>
-                        <td>{val.dep_name}</td>
-                        <td>{val.position_name}</td>
-                        <td>
-                          <Image
-                            style={{
-                              height: 30,
-                              width: 30,
-                              objectFit: "cover",
-                              margin: "5px",
-                            }}
-                            alt=""
-                            src={images2}
-                            onClick={() => employeebyid(val.emp_id)}
-                          />
-                          <Link to={`/employeemanagement/${val.emp_id}`}>
-                            <Image
-                              style={{
-                                height: 30,
-                                width: 30,
-                                objectFit: "cover",
-                                margin: "5px",
-                              }}
-                              alt=""
-                              src={images1}
-                            />
-                          </Link>
-                          <Image
-                            style={{
-                              height: 30,
-                              width: 30,
-                              objectFit: "cover",
-                              margin: "5px",
-                            }}
-                            alt=""
-                            src={images3}
-                            onClick={() => {
-                              deleteEmployee(val.emp_id);
-                            }}
-                          />
-                        </td>
-                      </>
-                    )}
+                    <td>{index + 1}</td>
+                    <td>
+                      <Image
+                        style={{
+                          height: "100px",
+                          width: "60%",
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={val.emp_images}
+                      />
+                    </td>
+                    <td>
+                      {val.emp_firstname} {val.emp_surname}
+                    </td>
+                    <td>{val.dep_name}</td>
+                    <td>{val.position_name}</td>
+                    <td>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images2}
+                        onClick={() => employeebyid(val.emp_id)}
+                      />
+                      <Link to={`/spemployeemanagement/${val.emp_id}`}>
+                        <Image
+                          style={{
+                            height: 30,
+                            width: 30,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt=""
+                          src={images1}
+                        />
+                      </Link>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images3}
+                        onClick={() => {
+                          deleteEmployee(val.emp_id);
+                        }}
+                      />
+                    </td>
                   </tr>
                 );
               })}
@@ -450,4 +442,4 @@ function Employee() {
   );
 }
 
-export default Employee;
+export default SPEmployee;

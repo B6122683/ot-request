@@ -29,30 +29,33 @@ function OTRequestDesc() {
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
-
-    Axios.get("http://localhost:3333/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.status == "ok") {
-        setRole(response.data.decoded.user.role_id);
-        setEmpName(
-          response.data.decoded.user.emp_firstname +
-            " " +
-            response.data.decoded.user.emp_surname
-        );
-        setEmpDepName(response.data.decoded.user.dep_name);
-        setEmpPosName(response.data.decoded.user.position_name);
-        setEmpId(response.data.decoded.user.emp_id);
-        setDepId(response.data.decoded.user.dep_id);
-      } else {
-        window.location = "/login";
-      }
-    });
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 2) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        } else {
+          setRole(response.data.decoded.user.role_id);
+          setEmpName(
+            response.data.decoded.user.emp_firstname +
+              " " +
+              response.data.decoded.user.emp_surname
+          );
+          setEmpDepName(response.data.decoded.user.dep_name);
+          setEmpPosName(response.data.decoded.user.position_name);
+          setEmpId(response.data.decoded.user.emp_id);
+          setDepId(response.data.decoded.user.dep_id);
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
   };
-
+  
   const sendOTRequest = () => {
     Axios.post("http://localhost:3333/otrequest", {
       emp_id: emp_id,

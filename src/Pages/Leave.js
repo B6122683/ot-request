@@ -18,6 +18,28 @@ function Leave() {
   const [leaveworkList, setLeaveWorkList] = useState([]);
   const [emp_id, setEmpId] = useState("");
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (
+           response.data.decoded.user.role_id != 2
+        ) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        } else {
+          setEmpId(response.data.decoded.user.emp_id);
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
   const leaveworkcount = (e) => {
     Axios.post("http://localhost:3333/leaveworkcount").then((response) => {
       setLeaveWorkcountList(response.data);
@@ -27,23 +49,6 @@ function Leave() {
   const leavelist = () => {
     Axios.get("http://localhost:3333/leaveworkview").then((response) => {
       setLeaveWorkList(response.data);
-    });
-  };
-
-  const getAuth = () => {
-    const token = localStorage.getItem("token");
-
-    Axios.get("http://localhost:3333/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.status == "ok") {
-        setEmpId(response.data.decoded.user.emp_id);
-      } else {
-        window.location = "/login";
-      }
     });
   };
 
@@ -108,7 +113,7 @@ function Leave() {
           </div>
         </Row>
         <Row>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive>
             <thead>
               <tr className="tr">
                 <th>ประเภทการลา</th>
@@ -192,7 +197,7 @@ function MydModalWithGrid(props) {
 
   const Addleave = (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }

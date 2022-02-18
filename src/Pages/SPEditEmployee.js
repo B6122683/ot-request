@@ -8,31 +8,12 @@ import "./Employee.css";
 import Button from "react-bootstrap/Button";
 import Image from "react-bootstrap/Image";
 import account from "../images/account.png";
+import { useHistory, useParams } from "react-router-dom";
+import moment from "moment/min/moment-with-locales";
 import Axios from "axios";
 
-// import { useForm } from 'react-hook-form';
-// import { yupResolver } from '@hookform/resolvers/yup';
-// import * as yup from 'yup';
-
-// const schema = yup.object().shape({
-//   file: yup.string().required(),
-//   emp_firstname: yup.string().required("Firstname is require"),
-//   emp_surname: yup.string().required(),
-//   emp_surname: yup.string().required(),
-//   emp_card_id: yup.string().required().max(13),
-//   emp_dob: yup.date().required(),
-//   emp_gender: yup.string().required(),
-//   emp_email: yup.string().required(),
-//   emp_tel: yup.string().required().max(10),
-//   emp_address: yup.string().required(),
-//   role_name: yup.string().required(),
-//   position_name: yup.string().required(),
-//   dep_name: yup.string().required(),
-//   emp_username: yup.string().required(),
-//   emp_password: yup.string().required(),
-// });
-
-function EmployeeManagement() {
+function SPEditEmployee() {
+  const { emp_id } = useParams();
   const [images, setImages] = React.useState([]);
   const [emp_firstname, setEmp_firstname] = useState("");
   const [emp_surname, setEmp_surname] = useState("");
@@ -42,7 +23,6 @@ function EmployeeManagement() {
   const [emp_username, setEmp_username] = useState("");
   const [emp_password, setEmp_password] = useState("");
   const [dep_id, setDep_id] = useState(0);
-  const [dep_emp, setDepEmp] = useState(0);
   const [role_id, setRole_id] = useState(0);
   const [emp_dob, setEmp_dob] = useState("");
   const [emp_images, setEmp_images] = useState("");
@@ -66,6 +46,7 @@ function EmployeeManagement() {
   const [message, setMessage] = useState("");
 
   const [displayImg, setDisplaayImg] = useState(null);
+  const [validated, setValidated] = useState(false);
 
   const onChange = (e) => {
     setFile(e.target.files[0]);
@@ -82,11 +63,9 @@ function EmployeeManagement() {
           Authorization: "Bearer " + token,
         },
       }).then((response) => {
-        if (response.data.decoded.user.role_id != 1) {
+        if (response.data.decoded.user.role_id != 3) {
           localStorage.removeItem("token");
           window.location = "/login";
-        } else {
-          setDepEmp(response.data.decoded.user.dep_id);
         }
       });
     } else {
@@ -94,27 +73,84 @@ function EmployeeManagement() {
     }
   };
 
-  const imgType = ["image/png", "image/jpeg"];
-  const handleImgChange = (e) => {
-    let selectedFile = e.target.files[0];
-    if (selectedFile) {
-      if (selectedFile && imgType.includes(selectedFile.type)) {
-        setPreviewImg(URL.createObjectURL(selectedFile));
-        setPreviewImgError("");
-        setEmp_images(selectedFile.name);
-      } else {
-        setPreviewImg(null);
-        setPreviewImgError("please select vlid image type jpeg or png");
-      }
-    } else {
-      console.log("select your file");
-    }
+  const employeeById = () => {
+    Axios.get(`http://localhost:3333/employees/${emp_id}`).then((response) => {
+      setEmployeesList(response.data[0]);
+      setEmp_firstname(response.data[0].emp_firstname);
+      setEmp_surname(response.data[0].emp_surname);
+      setEmp_images(response.data[0].emp_images);
+      setEmp_address(response.data[0].emp_address);
+      setEmp_card_id(response.data[0].emp_card_id);
+      setEmp_email(response.data[0].emp_email);
+      setEmp_tel(response.data[0].emp_tel);
+      setEmp_dob(response.data[0].emp_dob);
+      setRole_id(response.data[0].role_id);
+      setDep_id(response.data[0].dep_id);
+      setPosition_id(response.data[0].position_id);
+      setEmp_gender(response.data[0].emp_gender);
+      console.log(response.data[0]);
+    });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setDisplaayImg(previewImg);
-  };
+  // const Addemployees = () => {
+  //   Axios.post("http://localhost:3333/employees", {
+  //     emp_firstname: emp_firstname,
+  //     emp_surname: emp_surname,
+  //     emp_address: emp_address,
+  //     emp_tel: emp_tel,
+  //     emp_email: emp_email,
+  //     emp_username: emp_username,
+  //     emp_password: emp_password,
+  //     dep_id: dep_id,
+  //     role_id: role_id,
+  //     emp_card_id: emp_card_id,
+  //     emp_dob: emp_dob,
+  //     position_id: position_id,
+  //     emp_gender: emp_gender,
+
+  //   }).then(() => {
+  //     setEmployeesList({
+  //       ...EmployeesList,
+
+  //       emp_firstname: emp_firstname,
+  //       emp_surname: emp_surname,
+  //       emp_address: emp_address,
+  //       emp_tel: emp_tel,
+  //       emp_email: emp_email,
+  //       emp_username: emp_username,
+  //       emp_password: emp_password,
+  //       dep_id: dep_id,
+  //       role_id: role_id,
+  //       emp_card_id: emp_card_id,
+  //       emp_dob: emp_dob,
+  //       position_id: position_id,
+  //       emp_geder: emp_gender,
+
+  //     });
+  //   });
+  // };
+
+  // const imgType = ["image/png", "image/jpeg"];
+  // const handleImgChange = (e) => {
+  //   let selectedFile = e.target.files[0];
+  //   if (selectedFile) {
+  //     if (selectedFile && imgType.includes(selectedFile.type)) {
+  //       setPreviewImg(URL.createObjectURL(selectedFile));
+  //       setPreviewImgError("");
+  //       setEmp_images(selectedFile.name);
+  //     } else {
+  //       setPreviewImg(null);
+  //       setPreviewImgError("please select vlid image type jpeg or png");
+  //     }
+  //   } else {
+  //     console.log("select your file");
+  //   }
+  // };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   setDisplaayImg(previewImg);
+  // };
 
   const dataepartment = () => {
     Axios.get("http://localhost:3333/department").then((response) => {
@@ -140,11 +176,10 @@ function EmployeeManagement() {
     dataepartment();
     role();
     positions();
+    employeeById();
   }, []);
 
-  const [validated, setValidated] = useState(false);
-
-  const Addemployees = async (e) => {
+  const editemployees = async (e) => {
     const form = e.currentTarget;
     if (form.checkValidity() == false) {
       e.preventDefault();
@@ -156,38 +191,47 @@ function EmployeeManagement() {
       emp_tel == "" ||
       emp_address == "" ||
       emp_email == "" ||
+      dep_id == "" ||
+      role_id == "" ||
       emp_card_id == "" ||
       emp_dob == "" ||
       position_id == "" ||
-      emp_gender == "" ||
-      emp_username == "" ||
-      emp_password == "" ||
-      emp_images == ""
+      emp_gender == ""
     ) {
       setValidated(true);
     } else {
       e.preventDefault();
       const formData = new FormData();
-      formData.append("file", file);
+      if (file != "") {
+        formData.append("file", file);
+        formData.append("emp_images", "images\\" + emp_images);
+      } else {
+        formData.append("emp_images", emp_images);
+      }
+
+      if (emp_images == "") {
+        formData.append("emp_images", "");
+      }
+
+      formData.append("emp_id", emp_id);
       formData.append("emp_firstname", emp_firstname);
       formData.append("emp_surname", emp_surname);
       formData.append("emp_tel", emp_tel);
       formData.append("emp_address", emp_address);
       formData.append("emp_email", emp_email);
-      formData.append("emp_images", "images\\" + emp_images);
-      formData.append("emp_username", emp_username);
-      formData.append("emp_password", emp_password);
-      formData.append("dep_id", dep_emp);
-      formData.append("role_id", 2);
+      formData.append("dep_id", dep_id);
+      formData.append("role_id", role_id);
       formData.append("emp_card_id", emp_card_id);
       formData.append("emp_dob", emp_dob);
       formData.append("position_id", position_id);
       formData.append("emp_gender", emp_gender);
 
       try {
-        await Axios.post("/upload", formData);
-        await Axios.post("/employees", formData);
-        window.location = "/employee";
+        if (file != "") {
+          await Axios.post("/upload", formData);
+        }
+        await Axios.put("/employees", formData);
+        window.location = "/spemployee";
       } catch (err) {
         if (err.response.status == 500) {
           setMessage("There was a problem with the server");
@@ -202,13 +246,13 @@ function EmployeeManagement() {
     <>
       <Container>
         <Row>
-          <h1 className="addemp">เพิ่มข้อมูลพนักงาน</h1>
+          <h1 className="addemp">แก้ไขข้อมูลพนักงาน</h1>
         </Row>
         <Row>
           <Form
             className="employee"
             encType="multipart/form-data"
-            onSubmit={Addemployees}
+            onSubmit={editemployees}
             noValidate
             validated={validated}
           >
@@ -219,17 +263,31 @@ function EmployeeManagement() {
                 padding: "20px",
               }}
             >
-              <Image
-                style={{
-                  height: 150,
-                  width: 150,
-                  objectFit: "cover",
-                  marginBlock: "13px",
-                  borderRadius: "50%",
-                }}
-                alt=""
-                src={emp_images == "" ? account : previewImg}
-              />
+              {emp_images && !previewImg ? (
+                <Image
+                  style={{
+                    height: 150,
+                    width: 150,
+                    objectFit: "cover",
+                    marginBlock: "13px",
+                    borderRadius: "50%",
+                  }}
+                  alt=""
+                  src={`http://localhost:3333/${emp_images}`}
+                />
+              ) : (
+                <Image
+                  style={{
+                    height: 150,
+                    width: 150,
+                    objectFit: "cover",
+                    marginBlock: "13px",
+                    borderRadius: "50%",
+                  }}
+                  alt=""
+                  src={previewImg}
+                />
+              )}
             </div>
             <Row className="col-md-12 ">
               <Col className="col-md-12">
@@ -237,14 +295,10 @@ function EmployeeManagement() {
                   <Form.Group controlId="fileName" className="mb-3">
                     <Form.Label>Upload Image</Form.Label>
                     <Form.Control
-                      required
                       type="file"
                       name="emp_images"
                       onChange={onChange}
                     />
-                    <Form.Control.Feedback type="invalid">
-                      กรุณาเลือกรูปภาพ
-                    </Form.Control.Feedback>
                   </Form.Group>
                 </Form.Group>
               </Col>
@@ -256,12 +310,13 @@ function EmployeeManagement() {
                   <Form.Label>ชื่อ</Form.Label>
                   <Form.Control
                     type="text"
-                    required
                     placeholder="กรอกชื่อ"
                     name="emp_firstname"
+                    value={emp_firstname}
                     onChange={(e) => {
                       setEmp_firstname(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณากรอกชื่อ
@@ -274,12 +329,13 @@ function EmployeeManagement() {
                   <Form.Label>นามสกุล</Form.Label>
                   <Form.Control
                     type="text"
-                    required
                     placeholder="กรอกนามสกุล"
                     name="emp_surname"
+                    value={emp_surname}
                     onChange={(e) => {
                       setEmp_surname(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณากรอกนามสกุล
@@ -294,14 +350,13 @@ function EmployeeManagement() {
                   <Form.Label>เลขบัตรประจำตัวประชาชน</Form.Label>
                   <Form.Control
                     type="text"
-                    pattern="^[0-9]*$"
-                    maxLength={13}
-                    required
                     placeholder="กรอกเลขบัตรประจำตัวประชาชน"
                     name="emp_card_id"
+                    value={emp_card_id}
                     onChange={(e) => {
                       setEmp_card_id(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณากรอกเลขบัตรประจำตัวประชาชน
@@ -313,12 +368,13 @@ function EmployeeManagement() {
                   <Form.Label>วัน/เดือน/ปีเกิด</Form.Label>
                   <Form.Control
                     type="date"
-                    required
                     placeholder="เลือกวัน/เดือน/ปีเกิด"
                     name="emp_dob"
+                    value={moment(emp_dob).locale("th").format("yyyy-MM-DD")}
                     onChange={(e) => {
                       setEmp_dob(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณาเลือกวัน/เดือน/ปีเกิด
@@ -332,11 +388,11 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>เพศ</Form.Label>
                   <Form.Select
-                    required
                     value={emp_gender}
                     onChange={(e) => {
                       setEmp_gender(e.target.value);
                     }}
+                    required
                   >
                     <option value="">กรุณาเลือก</option>
                     <option value="1">ชาย</option>
@@ -354,13 +410,14 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>อีเมล</Form.Label>
                   <Form.Control
-                    type="email"
-                    required
+                    type="text"
                     placeholder="กรอกอีเมล"
                     name="emp_email"
+                    value={emp_email}
                     onChange={(e) => {
                       setEmp_email(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณากรอกอีเมล
@@ -372,14 +429,13 @@ function EmployeeManagement() {
                   <Form.Label>เบอร์โทร</Form.Label>
                   <Form.Control
                     type="text"
-                    pattern="^[0-9]*$"
-                    maxLength={10}
-                    required
                     placeholder="กรอกเบอร์โทร"
                     name="emp_tel"
+                    value={emp_tel}
                     onChange={(e) => {
                       setEmp_tel(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณากรอกเบอร์โทร
@@ -394,12 +450,13 @@ function EmployeeManagement() {
                   <Form.Label>ที่อยู่</Form.Label>
                   <Form.Control
                     type="textarea"
-                    required
                     placeholder="กรอกที่อยู่"
                     name="emp_address"
+                    value={emp_address}
                     onChange={(e) => {
                       setEmp_address(e.target.value);
                     }}
+                    required
                   />
                   <Form.Control.Feedback type="invalid">
                     กรุณากรอกที่อยู่
@@ -412,12 +469,22 @@ function EmployeeManagement() {
               <Col className="col-md-6 col-12">
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ประเภทพนักงาน</Form.Label>
-                  <Form.Select required value={2} disabled>
+                  <Form.Select
+                    value={role_id}
+                    onChange={(e) => {
+                      setRole_id(e.target.value);
+                    }}
+                    required
+                  >
+                    {" "}
                     <option value="">กรุณาเลือก</option>
                     {roleList.map((role) => (
                       <option value={role.role_id}>{role.role_name}</option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    กรุณาเลือกประเภทพนักงาน
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -425,11 +492,11 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>ตำแหน่ง</Form.Label>
                   <Form.Select
-                    required
                     value={position_id}
                     onChange={(e) => {
                       setPosition_id(e.target.value);
                     }}
+                    required
                   >
                     <option value="">กรุณาเลือก</option>
                     {positionsList.map((positions) => (
@@ -450,9 +517,10 @@ function EmployeeManagement() {
                 <Form.Group controlId="formBasicTextInput">
                   <Form.Label>แผนก</Form.Label>
                   <Form.Select
-                    required
-                    value={dep_emp}
-                    disabled
+                    value={dep_id}
+                    onChange={(e) => {
+                      setDep_id(e.target.value);
+                    }}
                   >
                     <option value="">กรุณาเลือก</option>
                     {departmentList.map((department) => (
@@ -461,43 +529,8 @@ function EmployeeManagement() {
                       </option>
                     ))}
                   </Form.Select>
-                </Form.Group>
-              </Col>
-            </Row>
-
-            <Row className="col-md-12 ">
-              <Col className="col-md-6 col-12">
-                <Form.Group controlId="formBasicTextInput">
-                  <Form.Label>ชื่อผู้ใช้</Form.Label>
-                  <Form.Control
-                    type="text"
-                    required
-                    pattern="^[A-Za-z]*$"
-                    placeholder="กรอกชื่อผู้ใช้"
-                    name="emp_username"
-                    onChange={(e) => {
-                      setEmp_username(e.target.value);
-                    }}
-                  />
                   <Form.Control.Feedback type="invalid">
-                    กรุณากรอกชื่อผู้ใช้
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-              <Col className="col-md-6 col-12">
-                <Form.Group controlId="formBasicTextInput">
-                  <Form.Label>รหัสผ่าน</Form.Label>
-                  <Form.Control
-                    type="password"
-                    required
-                    placeholder="กรอกรหัสผ่าน"
-                    name="emp_password"
-                    onChange={(e) => {
-                      setEmp_password(e.target.value);
-                    }}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    กรุณากรอกรหัสผ่าน
+                    กรุณาเลือกแผนก
                   </Form.Control.Feedback>
                 </Form.Group>
               </Col>
@@ -514,7 +547,7 @@ function EmployeeManagement() {
                 <Button
                   variant="danger"
                   style={{ margin: "10px" }}
-                  onClick={() => (window.location = "/employee")}
+                  onClick={() => (window.location = "/spemployee")}
                 >
                   ยกเลิก
                 </Button>
@@ -534,4 +567,4 @@ function EmployeeManagement() {
   );
 }
 
-export default EmployeeManagement;
+export default SPEditEmployee;

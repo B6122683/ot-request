@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -34,32 +34,29 @@ function ActivityManagement() {
     setPreviewImg(URL.createObjectURL(e.target.files[0]));
   };
 
-  // const Addactivity = () => {
-  //   Axios.post("/addactivity", {
-  //     act_name: act_name,
-  //     act_place: act_place,
-  //     act_date: act_date,
-  //     act_time: act_time,
-  //     act_image: act_image,
-  //     act_desc: act_desc,
-  //   }).then(() => {
-  //     setActivityList({
-  //       ...ActivityList,
-
-  //       act_name: act_name,
-  //       act_place: act_place,
-  //       act_date: act_date,
-  //       act_time: act_time,
-  //       act_image: act_image,
-  //       act_desc: act_desc,
-  //     });
-  //   });
-  // };
   const [validated, setValidated] = useState(false);
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3 && response.data.decoded.user.role_id != 1) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
 
   const Addactivity = async (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -81,13 +78,17 @@ function ActivityManagement() {
       await Axios.post("/addactivity", formData);
       window.location = "/adminactivity";
     } catch (err) {
-      if (err.response.status === 500) {
+      if (err.response.status == 500) {
         setMessage("There was a problem with the server");
       } else {
         setMessage(err.response.data.msg);
       }
     }
   };
+
+  useEffect(() => {
+    getAuth();
+  }, []);
 
   return (
     <>

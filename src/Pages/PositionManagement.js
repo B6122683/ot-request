@@ -8,13 +8,30 @@ function PositionManagement() {
   const [position_name, setPosition_name] = useState("");
 
   const [departmentList, setDepartmentList] = useState([]);
-  const [positionList, setPositionList] = useState([]);
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
   const Addposition = async (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -29,7 +46,7 @@ function PositionManagement() {
         await Axios.post("/positions", formData);
         window.location = "/position";
       } catch (err) {
-        if (err.response.status === 500) {
+        if (err.response.status == 500) {
           setMessage("There was a problem with the server");
         } else {
           setMessage(err.response.data.msg);
@@ -45,6 +62,7 @@ function PositionManagement() {
   };
 
   useEffect(() => {
+    getAuth();
     dataepartment();
   }, []);
 

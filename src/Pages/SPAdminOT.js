@@ -16,7 +16,7 @@ import moment from "moment/min/moment-with-locales";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-function AdminOT() {
+function SPAdminOT() {
   const [otassignList, setOtassignList] = useState([]);
   const [role_id, setRole] = useState("");
   const [dep_id, setDepId] = useState("");
@@ -38,7 +38,7 @@ function AdminOT() {
         },
       }).then((response) => {
         if (
-          response.data.decoded.user.role_id != 1
+          response.data.decoded.user.role_id != 3
         ) {
           localStorage.removeItem("token");
           window.location = "/login";
@@ -117,7 +117,7 @@ function AdminOT() {
           )}
         </div>
         <div style={{ overflowX: "auto" }}>
-          <Table striped bordered hover responsive="lg">
+          <Table striped bordered hover responsive>
             <thead>
               <tr className="trAdmin">
                 <th>รหัสงาน</th>
@@ -144,57 +144,51 @@ function AdminOT() {
               .map((val, index) => {
                 return (
                   <tbody>
-                    {val.dep_id == dep_id && (
-                      <>
-                        <tr className="tbody">
-                          <td>{index + 1}</td>
-                          <td>{val.ot_name}</td>
-                          <td>{val.dep_name}</td>
-                          <td>{val.ot_desc}</td>
-                          <td>
-                            {moment(val.ot_starttime)
-                              .locale("th")
-                              .format("LLL") + " น."}
-                          </td>
-                          <td>
-                            {moment(val.ot_finishtime)
-                              .locale("th")
-                              .format("LLL") + " น."}
-                          </td>
-                          <td>{val.ot_apply}</td>
-                          <td>{val.ot_rate}</td>
-                          {role_id == 1 && (
-                            <td>
-                              <Link to={`/adminotmanagement/${val.ot_id}`}>
-                                <Image
-                                  style={{
-                                    height: 30,
-                                    width: 30,
-                                    objectFit: "cover",
-                                    margin: "5px",
-                                  }}
-                                  alt=""
-                                  src={images1}
-                                />
-                              </Link>
-                              <Image
-                                style={{
-                                  height: 30,
-                                  width: 30,
-                                  objectFit: "cover",
-                                  margin: "5px",
-                                }}
-                                alt=""
-                                src={images3}
-                                onClick={() => {
-                                  deleteAdminOT(val.ot_id);
-                                }}
-                              />
-                            </td>
-                          )}
-                        </tr>
-                      </>
-                    )}
+                    <tr className="tbody">
+                      <td>{index + 1}</td>
+                      <td>{val.ot_name}</td>
+                      <td>{val.dep_name}</td>
+                      <td>{val.ot_desc}</td>
+                      <td>
+                        {moment(val.ot_starttime).locale("th").format("LLL") +
+                          " น."}
+                      </td>
+                      <td>
+                        {moment(val.ot_finishtime).locale("th").format("LLL") +
+                          " น."}
+                      </td>
+                      <td>{val.ot_apply}</td>
+                      <td>{val.ot_rate}</td>
+                      {role_id == 1 && (
+                        <td>
+                          <Link to={`/adminotmanagement/${val.ot_id}`}>
+                            <Image
+                              style={{
+                                height: 30,
+                                width: 30,
+                                objectFit: "cover",
+                                margin: "5px",
+                              }}
+                              alt=""
+                              src={images1}
+                            />
+                          </Link>
+                          <Image
+                            style={{
+                              height: 30,
+                              width: 30,
+                              objectFit: "cover",
+                              margin: "5px",
+                            }}
+                            alt=""
+                            src={images3}
+                            onClick={() => {
+                              deleteAdminOT(val.ot_id);
+                            }}
+                          />
+                        </td>
+                      )}
+                    </tr>
                   </tbody>
                 );
               })}
@@ -205,4 +199,4 @@ function AdminOT() {
   );
 }
 
-export default AdminOT;
+export default SPAdminOT;

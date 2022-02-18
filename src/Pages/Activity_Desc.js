@@ -11,6 +11,24 @@ function ActivityDesc() {
   const [activityList, setActivityList] = useState([]);
   const { act_id } = useParams();
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 2) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
   const activity = () => {
     Axios.get(`http://localhost:3333/activity/${act_id}`).then((response) => {
       setActivityList(response.data);
@@ -19,6 +37,7 @@ function ActivityDesc() {
   };
 
   useEffect(() => {
+    getAuth();
     activity();
   }, []);
 

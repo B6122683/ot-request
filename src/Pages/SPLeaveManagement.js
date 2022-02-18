@@ -19,10 +19,15 @@ import Select from "react-select";
 import moment from "moment/min/moment-with-locales";
 import { useHistory, useParams } from "react-router-dom";
 
-function LeaveManagement() {
+function SPLeaveManagement() {
   const [modalShow, setModalShow] = useState(false);
   const [LeaveList, setLeaveList] = useState([]);
+  const [role_id, setRole] = useState("");
   const [dep_id, setDepId] = useState("");
+  const [emp_id, setEmpId] = useState("");
+  const [emp_name, setEmpName] = useState("");
+  const [emp_depname, setEmpDepName] = useState("");
+  const [emp_posname, setEmpPosName] = useState("");
   const [leaveworkListbyId, setLeaveworkListbyId] = useState([]);
   const [leaveaccept, setleaveaccept] = useState(0);
   const [statusleave, setStatusLeave] = useState("");
@@ -84,11 +89,9 @@ function LeaveManagement() {
           Authorization: "Bearer " + token,
         },
       }).then((response) => {
-        if (response.data.decoded.user.role_id != 1) {
+        if (response.data.decoded.user.role_id != 3) {
           localStorage.removeItem("token");
           window.location = "/login";
-        } else {
-          setDepId(response.data.decoded.user.dep_id);
         }
       });
     } else {
@@ -153,58 +156,52 @@ function LeaveManagement() {
           }).map((val, index) => {
             return (
               <tbody>
-                {val.dep_id == dep_id && (
-                  <>
-                    <tr className="tbody">
-                      <td>
-                        <Image
-                          style={{
-                            height: 30,
-                            width: 30,
-                            objectFit: "cover",
-                            margin: "5px",
-                          }}
-                          alt=""
-                          src={images2}
-                          onClick={() => leavebyid(val.leave_id)}
-                        />
-                      </td>
-                      <td>{index + 1}</td>
-                      <td>
-                        {val.emp_firstname} {val.emp_surname}
-                      </td>
-                      <td>{val.dep_name}</td>
-                      <td>{val.ltype_name}</td>
-                      <td>
-                        {moment(val.leave_date).locale("th").format("LL")}
-                      </td>
-                      <td>
-                        {val.leave_accept == 0 && (
-                          <Button
-                            variant="warning"
-                            style={{ margin: "0px" }}
-                            onClick={() => getLeavework(val.leave_id)}
-                          >
-                            {" "}
-                            รออนุมัติ{" "}
-                          </Button>
-                        )}
-                        {val.leave_accept == 1 && (
-                          <Button variant="success" style={{ margin: "0px" }}>
-                            {" "}
-                            อนุมัติ{" "}
-                          </Button>
-                        )}
-                        {val.leave_accept == 2 && (
-                          <Button variant="danger" style={{ margin: "0px" }}>
-                            {" "}
-                            ไม่อนุมัติ{" "}
-                          </Button>
-                        )}
-                      </td>
-                    </tr>
-                  </>
-                )}
+                <tr className="tbody">
+                  <td>
+                    <Image
+                      style={{
+                        height: 30,
+                        width: 30,
+                        objectFit: "cover",
+                        margin: "5px",
+                      }}
+                      alt=""
+                      src={images2}
+                      onClick={() => leavebyid(val.leave_id)}
+                    />
+                  </td>
+                  <td>{index + 1}</td>
+                  <td>
+                    {val.emp_firstname} {val.emp_surname}
+                  </td>
+                  <td>{val.dep_name}</td>
+                  <td>{val.ltype_name}</td>
+                  <td>{moment(val.leave_date).locale("th").format("LL")}</td>
+                  <td>
+                    {val.leave_accept == 0 && (
+                      <Button
+                        variant="warning"
+                        style={{ margin: "0px" }}
+                        onClick={() => getLeavework(val.leave_id)}
+                      >
+                        {" "}
+                        รออนุมัติ{" "}
+                      </Button>
+                    )}
+                    {val.leave_accept == 1 && (
+                      <Button variant="success" style={{ margin: "0px" }}>
+                        {" "}
+                        อนุมัติ{" "}
+                      </Button>
+                    )}
+                    {val.leave_accept == 2 && (
+                      <Button variant="danger" style={{ margin: "0px" }}>
+                        {" "}
+                        ไม่อนุมัติ{" "}
+                      </Button>
+                    )}
+                  </td>
+                </tr>
               </tbody>
             );
           })}
@@ -453,4 +450,4 @@ function LeaveManagement() {
   );
 }
 
-export default LeaveManagement;
+export default SPLeaveManagement;

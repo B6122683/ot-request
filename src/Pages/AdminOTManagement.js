@@ -26,7 +26,7 @@ function AdminOTManagement() {
 
   const Addotmng = (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -69,6 +69,26 @@ function AdminOTManagement() {
     }
   };
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 1) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        } else {
+          setDep_id(response.data.decoded.user.dep_id);
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
   const dataepartment = () => {
     Axios.get("http://localhost:3333/department").then((response) => {
       setDepartmentList(response.data);
@@ -76,6 +96,7 @@ function AdminOTManagement() {
   };
 
   useEffect(() => {
+    getAuth();
     dataepartment();
   }, []);
 
@@ -121,7 +142,8 @@ function AdminOTManagement() {
                     onChange={(e) => {
                       setDep_id(e.target.value);
                     }}
-                    required
+                    required  
+                    disabled
                   >
                     <option value="">กรุณาเลือก</option>
                     {departmentList.map((department) => (

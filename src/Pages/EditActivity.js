@@ -32,17 +32,20 @@ function EditActivity() {
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
-
-    Axios.get("/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.decoded.user.role_id != 1) {
-        window.location = "/";
-      }
-    });
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3 && response.data.decoded.user.role_id != 1) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
   };
 
   const activityById = () => {
@@ -68,7 +71,7 @@ function EditActivity() {
 
   const Editactivity = async (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -103,7 +106,7 @@ function EditActivity() {
         await Axios.put("/activity", formData);
         window.location = "/adminactivity";
       } catch (err) {
-        if (err.response.status === 500) {
+        if (err.response.status == 500) {
           setMessage("There was a problem with the server");
         } else {
           setMessage(err.response.data.msg);

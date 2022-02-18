@@ -16,7 +16,7 @@ import Axios from "axios";
 import moment from "moment/min/moment-with-locales";
 import { Link, useParams } from "react-router-dom";
 
-function OTManagement() {
+function SPOTManagement() {
   const [otrequestList, setOtrequestList] = useState([]);
   const [otrequestListbyId, setOtrequestListbyId] = useState([]);
   const [otstatus, setotStatus] = useState(0);
@@ -77,11 +77,9 @@ function OTManagement() {
           Authorization: "Bearer " + token,
         },
       }).then((response) => {
-        if (response.data.decoded.user.role_id != 1) {
+        if (response.data.decoded.user.role_id != 3) {
           localStorage.removeItem("token");
           window.location = "/login";
-        } else {
-          setDepId(response.data.decoded.user.dep_id);
         }
       });
     } else {
@@ -143,57 +141,51 @@ function OTManagement() {
             .map((val, index) => {
               return (
                 <tbody>
-                  {val.dep_id == dep_id && (
-                    <>
-                      <tr className="tbody">
-                        <td>
-                          {/* <Link to={`/otrequestdesc/${val.ot_id}`}> */}
-                          <Image
-                            style={{
-                              height: "30px",
-                              width: "30px",
-                              objectFit: "cover",
-                              justifyContent: "center",
-                            }}
-                            alt=""
-                            src={images2}
-                            onClick={() => otbyid(val.otr_id)}
-                          />
-                          {/* </Link> */}
-                        </td>
-                        <td>{index + 1}</td>
-                        <td>{val.emp_firstname + " " + val.emp_surname}</td>
-                        <td>{val.ot_name}</td>
-                        <td>
-                          {moment(val.otr_date).locale("th").format("ll")} น.
-                        </td>
-                        <td>
-                          {val.otr_status == 0 && (
-                            <Button
-                              variant="warning"
-                              style={{ margin: "0px" }}
-                              onClick={() => getOTrequest(val.otr_id)}
-                            >
-                              {" "}
-                              รออนุมัติ{" "}
-                            </Button>
-                          )}
-                          {val.otr_status == 1 && (
-                            <Button variant="success" style={{ margin: "0px" }}>
-                              {" "}
-                              อนุมัติ{" "}
-                            </Button>
-                          )}
-                          {val.otr_status == 2 && (
-                            <Button variant="danger" style={{ margin: "0px" }}>
-                              {" "}
-                              ไม่อนุมัติ{" "}
-                            </Button>
-                          )}
-                        </td>
-                      </tr>
-                    </>
-                  )}
+                  <tr className="tbody">
+                    <td>
+                      {/* <Link to={`/otrequestdesc/${val.ot_id}`}> */}
+                      <Image
+                        style={{
+                          height: "30px",
+                          width: "30px",
+                          objectFit: "cover",
+                          justifyContent: "center",
+                        }}
+                        alt=""
+                        src={images2}
+                        onClick={() => otbyid(val.otr_id)}
+                      />
+                      {/* </Link> */}
+                    </td>
+                    <td>{index + 1}</td>
+                    <td>{val.emp_firstname + " " + val.emp_surname}</td>
+                    <td>{val.ot_name}</td>
+                    <td>{moment(val.otr_date).locale("th").format("ll")} น.</td>
+                    <td>
+                      {val.otr_status == 0 && (
+                        <Button
+                          variant="warning"
+                          style={{ margin: "0px" }}
+                          onClick={() => getOTrequest(val.otr_id)}
+                        >
+                          {" "}
+                          รออนุมัติ{" "}
+                        </Button>
+                      )}
+                      {val.otr_status == 1 && (
+                        <Button variant="success" style={{ margin: "0px" }}>
+                          {" "}
+                          อนุมัติ{" "}
+                        </Button>
+                      )}
+                      {val.otr_status == 2 && (
+                        <Button variant="danger" style={{ margin: "0px" }}>
+                          {" "}
+                          ไม่อนุมัติ{" "}
+                        </Button>
+                      )}
+                    </td>
+                  </tr>
                 </tbody>
               );
             })}
@@ -379,4 +371,4 @@ function OTManagement() {
   );
 }
 
-export default OTManagement;
+export default SPOTManagement;

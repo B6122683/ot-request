@@ -296,7 +296,7 @@ p {
   overflow: hidden;
   /* opacity: 0.5; */
   /* background-color: cadetblue; */
-  background: url("../images/coveract.png") no-repeat;
+  /* background: url("../images/coveract.png") no-repeat; */
 }
 
 .header-title {

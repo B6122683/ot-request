@@ -10,9 +10,28 @@ function DepartmentManagement() {
   const [validated, setValidated] = useState(false);
   const [message, setMessage] = useState("");
 
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
+
   const adddepartment = async (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -26,28 +45,13 @@ function DepartmentManagement() {
         await Axios.post("/department", formData);
         window.location = "/department";
       } catch (err) {
-        if (err.response.status === 500) {
+        if (err.response.status == 500) {
           setMessage("There was a problem with the server");
         } else {
           setMessage(err.response.data.msg);
         }
       }
     }
-  };
-
-  const getAuth = () => {
-    const token = localStorage.getItem("token");
-
-    Axios.get("/authen", {
-      headers: {
-        Authorization: "Bearer " + token,
-      },
-    }).then((response) => {
-      console.log(response);
-      if (response.data.decoded.user.role_id != 1) {
-        window.location = "/";
-      }
-    });
   };
 
   useEffect(() => {

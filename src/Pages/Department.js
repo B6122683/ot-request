@@ -5,26 +5,39 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Table from "react-bootstrap/Table";
 import Button from "react-bootstrap/Button";
-import * as GrIcons from "react-icons/gr";
 import "../App.css";
 import Image from "react-bootstrap/Image";
 import images1 from "../images/edit.png";
-import images2 from "../images/visible.png";
 import images3 from "../images/delete.png";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
-import { AgGridReact } from "ag-grid-react";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import { DataGrid } from "@mui/x-data-grid";
-import BasicTable from "../Components/DataTable";
 // import DataGridDemo from '../Components/DataGrid';
 
 function Department() {
   const [depname, setDepName] = useState("");
   const [departmentList, setDepartmentList] = useState([]);
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
 
   const dataepartment = () => {
     Axios.get("http://localhost:3333/department").then((response) => {
@@ -73,6 +86,7 @@ function Department() {
   }));
 
   useEffect(() => {
+    getAuth();
     dataepartment();
   }, []);
 
@@ -107,8 +121,9 @@ function Department() {
     <Container>
       <h1 className="attendance">ข้อมูลแผนก</h1>
       <div style={{ justifyContent: "center" }}>
-        <Row className="col-md-12 col-12" aria-colspan={2}>
-          <Col className="col-md-6 col-12">
+        <Row className="col-md-12 col-12">
+          <Col className="col-md-4"></Col>
+          <Col className="col-md-4 col-12">
             <Form.Group className="mb-3">
               <Form.Label>ค้นหาจาก แผนก</Form.Label>
               <Form.Control
@@ -119,6 +134,7 @@ function Department() {
               />
             </Form.Group>
           </Col>
+          <Col className="col-md-4"></Col>
         </Row>
       </div>
       <div style={{ display: "flex", justifyContent: "center" }}></div>
@@ -144,7 +160,7 @@ function Department() {
           <tbody>
             {departmentList
               .filter((val) => {
-                if (depname === "") {
+                if (depname == "") {
                   return val;
                 } else {
                   return val.dep_name

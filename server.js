@@ -85,7 +85,7 @@ app.get("/employee/:emp_id", jsonParser, function (req, res) {
 app.post("/register", jsonParser, function (req, res) {
   bcrypt.hash(req.body.emp_password, saltRounds, function (err, hash) {
     db.execute(
-      "INSERT INTO employees (emp_firstname, emp_surname, emp_address, emp_tel, emp_email, emp_username, emp_password, dep_id, role_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO employees (emp_firstname, emp_surname, emp_address, emp_tel, emp_email, emp_username, emp_password, dep_id, role_id, create_at, update_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())",
       [
         req.body.emp_firstname,
         req.body.emp_surname,
@@ -232,7 +232,7 @@ app.get("/department/:dep_id", jsonParser, function (req, res) {
 //ADD DEPARTMENT
 app.post("/department", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO department (dep_name) VALUES (?)",
+    "INSERT INTO department (dep_name, create_at, update_at) VALUES (?, NOW(), NOW())",
     [req.body.dep_name],
     function (err, results, fields) {
       if (err) {
@@ -247,7 +247,7 @@ app.post("/department", jsonParser, function (req, res) {
 //UPDATE DEPARTMENT DATA FORM DB
 app.put("/department", jsonParser, function (req, res) {
   db.execute(
-    "UPDATE department SET dep_name = ? WHERE dep_id = ?",
+    "UPDATE department SET dep_name = ?, update_at = NOW() WHERE dep_id = ?",
     [req.body.dep_name, req.body.dep_id],
     (err, result) => {
       if (err) {
@@ -279,7 +279,7 @@ app.delete("/department/:dep_id", jsonParser, function (req, res) {
 //ADD ACTIVITY
 app.post("/activity", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO activity (act_name, act_place,act_date, act_time, act_image, act_desc) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO activity (act_name, act_place,act_date, act_time, act_image, act_desc, create_at, update_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())",
     [
       req.body.act_name,
       req.body.act_place,
@@ -312,7 +312,7 @@ app.get("/activity", jsonParser, function (req, res) {
 //Add Activity with Photo
 app.post("/addactivity", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO activity (act_name, act_place, act_date, act_time, act_image, act_desc) VALUES (?, ?, ?, ?, ?, ?)",
+    "INSERT INTO activity (act_name, act_place, act_date, act_time, act_image, act_desc, create_at, update_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())",
     [
       req.body.act_name,
       req.body.act_place,
@@ -364,7 +364,7 @@ app.delete("/activity/:act_id", jsonParser, function (req, res) {
 //UPDATE ACTIVITY DATA FORM DB
 app.put("/activity", jsonParser, function (req, res) {
   db.execute(
-    "UPDATE activity SET act_name = ?, act_image = ?, act_place = ?, act_date = ?, act_time = ?,act_desc = ? WHERE act_id = ?",
+    "UPDATE activity SET act_name = ?, act_image = ?, act_place = ?, act_date = ?, act_time = ?,act_desc = ?, update_at = NOW() WHERE act_id = ?",
     [
       req.body.act_name,
       req.body.act_image,
@@ -436,7 +436,7 @@ app.delete("/employees/:emp_id", jsonParser, function (req, res) {
 //SELECT DATA IN EMPLOYEES
 app.get("/employeesview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,employees.dep_id,department.dep_name,employees.position_id,positions.position_name,employees.emp_images FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id",
+    "SELECT employees.emp_id,employees.emp_firstname,employees.emp_surname,employees.dep_id,department.dep_name,employees.position_id,positions.position_name,employees.emp_images FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id WHERE employees.role_id != 3",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -465,6 +465,17 @@ app.get("/employees/:emp_id", jsonParser, function (req, res) {
 //SELECT DATA IN EMPLOYEES
 app.get("/allemployeescount", jsonParser, function (req, res) {
   db.execute("SELECT COUNT(*) AS no_emp FROM employees", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//SELECT DATA IN EMPLOYEES
+app.get("/emppositioncount", jsonParser, function (req, res) {
+  db.execute("SELECT employees.dep_id, department.dep_name, employees.position_id, positions.position_name, COUNT(*) AS no_position FROM employees LEFT JOIN department ON employees.dep_id = department.dep_id LEFT JOIN positions ON employees.position_id = positions.position_id GROUP BY positions.position_id", (err, result) => {
     if (err) {
       console.log(err);
     } else {
@@ -668,7 +679,7 @@ app.post("/otrequest", jsonParser, function (req, res) {
           });
         } else {
           db.execute(
-            "INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",
+            "INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date, create_at, update_at) VALUES (?, ?, ?, 0,NOW(), NOW(), NOW())",
             [req.body.emp_id, req.body.dep_id, req.body.ot_id],
             (err, result) => {
               if (err) {
@@ -746,7 +757,7 @@ app.get("/otrequestview", jsonParser, function (req, res) {
 //UPDATE OT_ASSIGNMENT DATA FORM DB
 app.put("/approveotrequest", jsonParser, function (req, res) {
   db.execute(
-    "UPDATE ot_request SET otr_status = ? WHERE otr_id = ?",
+    "UPDATE ot_request SET otr_status = ?, update_at = NOW() WHERE otr_id = ?",
     [req.body.otr_status, req.body.otr_id],
     (err, result) => {
       if (err) {
@@ -845,7 +856,7 @@ app.get("/role", jsonParser, function (req, res) {
 //ADD ROLE
 app.post("/role", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO role (role_name) VALUES (?)",
+    "INSERT INTO role (role_name, create_at, update_at) VALUES (?, NOW(), NOW())",
     [req.body.role_name],
     function (err, results, fields) {
       if (err) {
@@ -888,7 +899,7 @@ app.get("/positions", jsonParser, function (req, res) {
 //ADD POSITION
 app.post("/positions", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO positions (position_name, dep_id, create_at, update_at ) VALUES (?, ?, NOW(), NOW())",
+    "INSERT INTO positions (position_name, dep_id, create_at, update_at) VALUES (?, ?, NOW(), NOW())",
     [req.body.position_name, req.body.dep_id],
     function (err, results, fields) {
       if (err) {
@@ -947,7 +958,7 @@ app.get("/positions/:position_id", jsonParser, function (req, res) {
 //UPDATE POSITION DATA FORM DB
 app.put("/positions", jsonParser, function (req, res) {
   db.execute(
-    "UPDATE positions SET position_name = ?, dep_id = ? WHERE position_id = ?",
+    "UPDATE positions SET position_name = ?, dep_id = ?, update_at = NOW() WHERE position_id = ?",
     [req.body.position_name, req.body.dep_id, req.body.position_id],
     (err, result) => {
       if (err) {
@@ -963,7 +974,7 @@ app.put("/positions", jsonParser, function (req, res) {
 //ADD LEAVE WORK
 app.post("/leavework", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc,leave_date, start_leave, end_leave, leave_accept) VALUES (?, ?, ?, ?, NOW(), ?, ?, 0)",
+    "INSERT INTO leavework (emp_id, dep_id, leave_type, leave_desc,leave_date, start_leave, end_leave, leave_accept, create_at, update_at) VALUES (?, ?, ?, ?, NOW(), ?, ?, 0, NOW(), NOW())",
     [
       req.body.emp_id,
       req.body.dep_id,
@@ -985,7 +996,7 @@ app.post("/leavework", jsonParser, function (req, res) {
 //SELECT DATA IN LEAVE WORK
 app.get("/leaveworkview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_desc,leavework.leave_date, leavework.start_leave, leavework.end_leave,leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,leavework.dep_id,department.dep_name,leave_type.ltype_name, leavework.leave_desc,leavework.leave_date, leavework.start_leave, leavework.end_leave,leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -1013,7 +1024,7 @@ app.get("/leaveworkcountperweek", jsonParser, function (req, res) {
 //SELECT DATA IN LEAVEWORK
 app.get("/leavecountbyname", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leave_type.ltype_name AS leavetype_name, COUNT(*) AS no_emp FROM leavework INNER JOIN leave_type ON leavework.leave_type = leave_type.ltype_id WHERE leavework.leave_accept = 0 GROUP BY leave_type.ltype_id",
+    "SELECT leave_type.ltype_name AS leavetype_name, COUNT(*) AS no_emp FROM leavework INNER JOIN leave_type ON leavework.leave_type = leave_type.ltype_id WHERE leavework.leave_accept = 1 GROUP BY leave_type.ltype_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -1038,7 +1049,7 @@ app.get("/leave_type", jsonParser, function (req, res) {
 //UPDATE LEAVE WORK DATA FORM DB
 app.put("/approveleavework", jsonParser, function (req, res) {
   db.execute(
-    "UPDATE leavework SET leave_accept = ? WHERE leave_id = ?",
+    "UPDATE leavework SET leave_accept = ?, update_at = NOW() WHERE leave_id = ?",
     [req.body.leave_accept, req.body.leave_id],
     (err, result) => {
       if (err) {
@@ -1098,7 +1109,7 @@ app.post("/leaveworkcount", jsonParser, function (req, res) {
 //ADD ATTENDANCE
 app.post("/attendance", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO attendance (emp_id, work_date, work_address, work_status, work_lat, work_lng) VALUES (?, NOW(), ?, ?, ?, ?)",
+    "INSERT INTO attendance (emp_id, work_date, work_address, work_status, work_lat, work_lng, create_at, update_at) VALUES (?, NOW(), ?, ?, ?, ?, NOW(), NOW())",
     [
       req.body.emp_id,
       req.body.work_address,
@@ -1217,7 +1228,7 @@ app.post("/logintest", (req, res) => {
 
 //------------------UPLOAD IMAGES-------------------------
 app.post("/upload", (req, res) => {
-  if (req.files === null) {
+  if (req.files == null) {
     return res.status(400).json({ msg: "No file uploaded" });
   }
 

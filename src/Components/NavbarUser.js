@@ -5,10 +5,12 @@ import { Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import { SidebarAdminData } from "./SidebarDataAdmin";
+import { SidebarSPAdminData } from "./SidebarDataSPAdmin";
 import "./Navbar.css";
 import { IconContext } from "react-icons";
 import Axios from "axios";
-import logopic from "../images/otlogo.png";
+import logopic from "../images/OTIcon.png";
+import logoutpic from "../images/logout.png";
 
 function NavbarUser() {
   const [sidebar, setSidebar] = useState(false);
@@ -67,7 +69,7 @@ function NavbarUser() {
             className="d-flex col-md-4 col-6"
             style={{ justifyContent: "center" }}
           >
-            <Link to="/" className="menu-bars">
+            <Link to="/" className="menu-bars iconpic">
               <Image src={logopic} style={{ top: 0, height: "60px" }} />
             </Link>
           </div>
@@ -78,6 +80,7 @@ function NavbarUser() {
             {emp_id != "" ? (
               <>
                 <p
+                  className="d-lg-block d-none"
                   style={{
                     color: "white",
                     margin: "auto 30px",
@@ -86,8 +89,14 @@ function NavbarUser() {
                 >
                   {emp_name}
                 </p>
+                <Image
+                  className="d-lg-none d-block"
+                  style={{ marginRight: "20px", height: "35px" }}
+                  onClick={handleLogout}
+                  src={logoutpic}
+                />
                 <Button
-                  className="btn btn-danger"
+                  className="btn btn-danger d-lg-block d-none"
                   style={{ marginRight: "50px" }}
                   type="submit"
                   onClick={handleLogout}
@@ -131,6 +140,20 @@ function NavbarUser() {
             {emp_role == 2 && (
               <>
                 {SidebarData.map((item, index) => {
+                  return (
+                    <li key={index} className={item.cName}>
+                      <Link to={item.path}>
+                        {item.icon}
+                        <span className="spantitle">{item.title}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </>
+            )}
+            {emp_role == 3 && (
+              <>
+                {SidebarSPAdminData.map((item, index) => {
                   return (
                     <li key={index} className={item.cName}>
                       <Link to={item.path}>

@@ -14,25 +14,19 @@ import Axios from "axios";
 
 function EditEmployee() {
   const { emp_id } = useParams();
-  const [images, setImages] = React.useState([]);
   const [emp_firstname, setEmp_firstname] = useState("");
   const [emp_surname, setEmp_surname] = useState("");
   const [emp_address, setEmp_address] = useState("");
   const [emp_tel, setEmp_tel] = useState("");
   const [emp_email, setEmp_email] = useState("");
-  const [emp_username, setEmp_username] = useState("");
-  const [emp_password, setEmp_password] = useState("");
   const [dep_id, setDep_id] = useState(0);
   const [role_id, setRole_id] = useState(0);
   const [emp_dob, setEmp_dob] = useState("");
   const [emp_images, setEmp_images] = useState("");
   const [emp_card_id, setEmp_card_id] = useState("");
   const [position_id, setPosition_id] = useState(0);
-  const [create_at, setCreate_at] = useState("");
-  const [update_at, setUpdate_at] = useState("");
-  const [record_status, setRecord_status] = useState("");
+  const [dep_emp, setDepEmp] = useState("");
   const [emp_gender, setEmp_gender] = useState("");
-  const [uploadedFile, setUploadedFile] = useState({});
 
   const [EmployeesList, setEmployeesList] = useState([]);
   const [departmentList, setDepartmentList] = useState([]);
@@ -40,20 +34,38 @@ function EditEmployee() {
   const [positionsList, setPositionsList] = useState([]);
 
   const [previewImg, setPreviewImg] = useState(null);
-  const [previewImgError, setPreviewImgError] = useState("");
   const [file, setFile] = useState("");
-  const [filename, setFilename] = useState("Choose File");
   const [message, setMessage] = useState("");
 
-  const [displayImg, setDisplaayImg] = useState(null);
   const [validated, setValidated] = useState(false);
 
   const onChange = (e) => {
     setFile(e.target.files[0]);
-    setFilename(e.target.files[0].name);
+    //setFilename(e.target.files[0].name);
     setEmp_images(e.target.files[0].name);
     setPreviewImg(URL.createObjectURL(e.target.files[0]));
   };
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 1) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        } else {
+          setDepEmp(response.data.decoded.user.dep_id);
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
+
 
   const employeeById = () => {
     Axios.get(`http://localhost:3333/employees/${emp_id}`).then((response) => {
@@ -73,66 +85,6 @@ function EditEmployee() {
       console.log(response.data[0]);
     });
   };
-
-  // const Addemployees = () => {
-  //   Axios.post("http://localhost:3333/employees", {
-  //     emp_firstname: emp_firstname,
-  //     emp_surname: emp_surname,
-  //     emp_address: emp_address,
-  //     emp_tel: emp_tel,
-  //     emp_email: emp_email,
-  //     emp_username: emp_username,
-  //     emp_password: emp_password,
-  //     dep_id: dep_id,
-  //     role_id: role_id,
-  //     emp_card_id: emp_card_id,
-  //     emp_dob: emp_dob,
-  //     position_id: position_id,
-  //     emp_gender: emp_gender,
-
-  //   }).then(() => {
-  //     setEmployeesList({
-  //       ...EmployeesList,
-
-  //       emp_firstname: emp_firstname,
-  //       emp_surname: emp_surname,
-  //       emp_address: emp_address,
-  //       emp_tel: emp_tel,
-  //       emp_email: emp_email,
-  //       emp_username: emp_username,
-  //       emp_password: emp_password,
-  //       dep_id: dep_id,
-  //       role_id: role_id,
-  //       emp_card_id: emp_card_id,
-  //       emp_dob: emp_dob,
-  //       position_id: position_id,
-  //       emp_geder: emp_gender,
-
-  //     });
-  //   });
-  // };
-
-  // const imgType = ["image/png", "image/jpeg"];
-  // const handleImgChange = (e) => {
-  //   let selectedFile = e.target.files[0];
-  //   if (selectedFile) {
-  //     if (selectedFile && imgType.includes(selectedFile.type)) {
-  //       setPreviewImg(URL.createObjectURL(selectedFile));
-  //       setPreviewImgError("");
-  //       setEmp_images(selectedFile.name);
-  //     } else {
-  //       setPreviewImg(null);
-  //       setPreviewImgError("please select vlid image type jpeg or png");
-  //     }
-  //   } else {
-  //     console.log("select your file");
-  //   }
-  // };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   setDisplaayImg(previewImg);
-  // };
 
   const dataepartment = () => {
     Axios.get("http://localhost:3333/department").then((response) => {
@@ -154,6 +106,7 @@ function EditEmployee() {
   };
 
   useEffect(() => {
+    getAuth();
     dataepartment();
     role();
     positions();
@@ -162,7 +115,7 @@ function EditEmployee() {
 
   const editemployees = async (e) => {
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() == false) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -214,7 +167,7 @@ function EditEmployee() {
         await Axios.put("/employees", formData);
         window.location = "/employee";
       } catch (err) {
-        if (err.response.status === 500) {
+        if (err.response.status == 500) {
           setMessage("There was a problem with the server");
         } else {
           setMessage(err.response.data.msg);
@@ -456,6 +409,7 @@ function EditEmployee() {
                       setRole_id(e.target.value);
                     }}
                     required
+                    disabled
                   >
                     {" "}
                     <option value="">กรุณาเลือก</option>
@@ -463,9 +417,6 @@ function EditEmployee() {
                       <option value={role.role_id}>{role.role_name}</option>
                     ))}
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    กรุณาเลือกประเภทพนักงาน
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
 
@@ -502,6 +453,7 @@ function EditEmployee() {
                     onChange={(e) => {
                       setDep_id(e.target.value);
                     }}
+                    disabled
                   >
                     <option value="">กรุณาเลือก</option>
                     {departmentList.map((department) => (
@@ -510,9 +462,6 @@ function EditEmployee() {
                       </option>
                     ))}
                   </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    กรุณาเลือกแผนก
-                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>

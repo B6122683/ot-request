@@ -13,9 +13,29 @@ import images3 from "../images/delete.png";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 import Swal from "sweetalert2";
+import Form from "react-bootstrap/Form";
 
 function Position() {
   const [positionList, setPositionList] = useState([]);
+  const [posname, setPosName] = useState("");
+
+  const getAuth = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      Axios.get("http://localhost:3333/authen", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }).then((response) => {
+        if (response.data.decoded.user.role_id != 3) {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      });
+    } else {
+      window.location = "/login";
+    }
+  };
 
   const position = () => {
     Axios.get("http://localhost:3333/positionsview").then((response) => {
@@ -49,12 +69,30 @@ function Position() {
   };
 
   useEffect(() => {
+    getAuth();
     position();
   }, []);
 
   return (
     <Container>
       <h1 className="attendance">ข้อมูลตำแหน่ง</h1>
+      <div style={{ justifyContent: "center" }}>
+        <Row className="col-md-12 col-12">
+          <Col className="col-md-4"></Col>
+          <Col className="col-md-4 col-12">
+            <Form.Group className="mb-3">
+              <Form.Label>ค้นหาจาก ชื่อตำแหน่ง</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="ค้นหา..."
+                name="posname"
+                onChange={(e) => setPosName(e.target.value)}
+              />
+            </Form.Group>
+          </Col>
+          <Col className="col-md-4"></Col>
+        </Row>
+      </div>
       <div style={{ display: "flex", justifyContent: "center" }}></div>
       <Row>
         <div style={{ display: "flex", justifyContent: "right" }}>
@@ -66,7 +104,7 @@ function Position() {
             เพิ่ม{" "}
           </Button>{" "}
         </div>
-        <Table striped bordered hover>
+        <Table striped bordered hover responsive>
           <thead>
             <tr className="trAdmin">
               <th>รหัสตำแหน่ง</th>
@@ -75,15 +113,36 @@ function Position() {
               <th>จัดการ</th>
             </tr>
           </thead>
-          {positionList.map((val) => {
-            return (
-              <tbody>
-                <tr className="tbody">
-                  <td>{val.position_id}</td>
-                  <td>{val.dep_name}</td>
-                  <td>{val.position_name}</td>
-                  <td>
-                    <Link to={`/positionmanagement/${val.position_id}`}>
+          {positionList
+            .filter((val) => {
+              if (posname == "") {
+                return val;
+              } else {
+                return val.position_name
+                  .toLowerCase()
+                  .includes(posname.toLowerCase());
+              }
+            })
+            .map((val) => {
+              return (
+                <tbody>
+                  <tr className="tbody">
+                    <td>{val.position_id}</td>
+                    <td>{val.dep_name}</td>
+                    <td>{val.position_name}</td>
+                    <td>
+                      <Link to={`/positionmanagement/${val.position_id}`}>
+                        <Image
+                          style={{
+                            height: 30,
+                            width: 30,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt=""
+                          src={images1}
+                        />
+                      </Link>
                       <Image
                         style={{
                           height: 30,
@@ -92,27 +151,16 @@ function Position() {
                           margin: "5px",
                         }}
                         alt=""
-                        src={images1}
+                        src={images3}
+                        onClick={() => {
+                          deletePosition(val.position_id);
+                        }}
                       />
-                    </Link>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images3}
-                      onClick={() => {
-                        deletePosition(val.position_id);
-                      }}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })}
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
         </Table>
       </Row>
     </Container>
