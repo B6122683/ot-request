@@ -1,5 +1,3 @@
-
-
 .titleact {
   display: flex;
   margin-top: 10px;
@@ -11,9 +9,7 @@
   padding-right: 150px;
   color: #ffffff;
   font-size: 4rem;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
-  
-
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 .activity {
   background: #ffffff;
@@ -113,7 +109,6 @@
   font-size: 0.9em;
   padding: 15px;
   background: #fafafa;
-
 }
 
 .card__content > p:first-of-type {
@@ -152,13 +147,11 @@
 }
 
 .header {
-  margin-bottom: 20px;
   background-color: cornflowerblue;
   /* background: url("D:\OTRequest\src\images\cover.png"); */
   background-size: 300%;
   width: 100%;
   height: 300px;
-
 }
 
 .desc {
@@ -172,7 +165,7 @@
   padding-right: 150px;
   color: #ffffff;
   font-size: 20px;
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .desctitle {
@@ -203,19 +196,17 @@
   margin: 8px;
   border-radius: 15px;
   background-color: rgb(255, 255, 255);
-
 }
 
 .card-container:hover {
-  transform: scale(1.1);
-  box-shadow: 0px 0px 5px 0px;
+  transform: scale(0.99);
+  box-shadow: 0.5px 0px 1px 0px;
 }
 
-
-.image-container img{
+.image-container img {
   overflow: hidden;
   padding-top: 10px;
-  height:200px;
+  height: 200px;
   width: 100%;
 }
 
@@ -224,7 +215,8 @@
   margin-top: 0.3rem;
 }
 
-h3,p {
+h3,
+p {
   margin: 0;
   padding: 0;
 }
@@ -237,3 +229,140 @@ h3,p {
   display: flex;
   justify-content: center;
 }
+
+.val {
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: #b3e3ff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 500px;
+  height: 300px;
+  margin: 20px;
+}
+
+.paginationBttns {
+  width: 80%;
+  height: 40px;
+  color: #000000;
+  list-style: none;
+  display: flex;
+  justify-content: right;
+}
+
+.paginationBttns a {
+  border-radius: 5px;
+  color: #050505;
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  float: right;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  margin: 0 4px;
+}
+
+.paginationBttns a:hover:not(.active) {
+  background-color: #100f3a;
+  color: #ffffff;
+  border: 1px solid #100f3a;
+}
+
+.paginationActive {
+  color: #ffffff;
+}
+
+.paginationActive a {
+  background-color: #100f3a;
+  color: #ffffff;
+  border: 1px solid white;
+}
+
+.paginationDisabled a {
+  background-color: #ddd;
+}
+
+.header {
+  /* background-color: #f4511e; */
+  color: rgb(255, 255, 255);
+  width: 100%;
+  height: 500px;
+  text-align: center;
+  padding: 30px;
+  background-size: cover;
+  overflow: hidden;
+  /* opacity: 0.5; */
+  /* background-color: cadetblue; */
+  background: url("../images/coveract.png") no-repeat;
+}
+
+.header-title {
+  font-size: 50px;
+}
+
+.header-text {
+  font-size: 20px;
+}
+
+.section {
+  flex-flow: row wrap;
+  width: 100%;
+  display: flex;
+  flex-direction: row wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.section > div {
+  padding: 30px;
+}
+
+.small-div {
+  width: 20%;
+}
+
+.big-div {
+  width: 100%;
+}
+
+.bg-grey {
+  background-color: #c5c5c5;
+}
+
+.orange {
+  color: #f4511e;
+}
+
+.div-title {
+  font-size: 30px;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+}
+
+
+
+@media only screen and (min-width: 320px) and (max-width: 725px) {
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    /*flex-flow: row wrap;*/
+    width: 80%;
+  }
+
+  .section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .small-div {
+    width: 80%;
+  }
+}
+

@@ -13,6 +13,7 @@ import { Row, Card, Button, Modal, Form, Table, Col } from "react-bootstrap";
 import moment from "moment/min/moment-with-locales";
 import { Link, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import ReactPaginate from "react-paginate";
 
 const format = "hh:mm:ss";
 
@@ -20,6 +21,13 @@ function AdminActivity() {
   const [activityList, setActivityList] = useState([]);
   const [activityListbyId, setActivityListbyId] = useState([]);
   const [modalShow, setModalShow] = useState(false);
+  var active = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+  const [val, setVal] = useState(active.slice(0, 10));
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const usersPerPage = 5;
+  const pagesVisited = pageNumber * usersPerPage;
 
   const activity = () => {
     Axios.get("http://localhost:3333/activity").then((response) => {
@@ -71,12 +79,18 @@ function AdminActivity() {
     });
   };
 
+  const pageCount = Math.ceil(val.length / usersPerPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
+
   useEffect(() => {
     activity();
   }, []);
 
   return (
-    <Container>
+    <Container className="mb-5">
       <h1 className="attendance">กิจกรรม</h1>
       <div style={{ display: "flex", justifyContent: "center" }}></div>
       <Row>
@@ -100,40 +114,30 @@ function AdminActivity() {
               <th>จัดการ</th>
             </tr>
           </thead>
-          {activityList.map((val, index) => {
-            return (
-              <tbody>
-                <tr className="tbody">
-                  <td>{index + 1}</td>
-                  <td>
-                    <div>
-                      <Image
-                        style={{
-                          height: 80,
-                          width: 80,
-                          objectFit: "cover",
-                          margin: "5px",
-                        }}
-                        alt="file"
-                        src={val.act_image}
-                      />
-                    </div>
-                  </td>
-                  <td>{val.act_name}</td>
-                  <td>{val.act_desc}</td>
-                  <td>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images2}
-                      onClick={() => activitybyid(val.act_id)}
-                    />
-                    <Link to={`/activitymanagement/${val.act_id}`}>
+          {activityList
+            .slice(pagesVisited, pagesVisited + usersPerPage)
+            .map((val, index) => {
+              return (
+                <tbody>
+                  <tr className="tbody">
+                    <td>{index + 1}</td>
+                    <td>
+                      <div>
+                        <Image
+                          style={{
+                            height: 80,
+                            width: 80,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt="file"
+                          src={val.act_image}
+                        />
+                      </div>
+                    </td>
+                    <td>{val.act_name}</td>
+                    <td>{val.act_desc}</td>
+                    <td>
                       <Image
                         style={{
                           height: 30,
@@ -142,25 +146,37 @@ function AdminActivity() {
                           margin: "5px",
                         }}
                         alt=""
-                        src={images1}
+                        src={images2}
+                        onClick={() => activitybyid(val.act_id)}
                       />
-                    </Link>
-                    <Image
-                      style={{
-                        height: 30,
-                        width: 30,
-                        objectFit: "cover",
-                        margin: "5px",
-                      }}
-                      alt=""
-                      src={images3}
-                      onClick={() => deleteActivity(val.act_id)}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            );
-          })}
+                      <Link to={`/activitymanagement/${val.act_id}`}>
+                        <Image
+                          style={{
+                            height: 30,
+                            width: 30,
+                            objectFit: "cover",
+                            margin: "5px",
+                          }}
+                          alt=""
+                          src={images1}
+                        />
+                      </Link>
+                      <Image
+                        style={{
+                          height: 30,
+                          width: 30,
+                          objectFit: "cover",
+                          margin: "5px",
+                        }}
+                        alt=""
+                        src={images3}
+                        onClick={() => deleteActivity(val.act_id)}
+                      />
+                    </td>
+                  </tr>
+                </tbody>
+              );
+            })}
           <Modal show={modalShow} centered>
             <Modal.Body className="show-grid">
               <Container>
@@ -279,6 +295,19 @@ function AdminActivity() {
             </Modal.Body>
           </Modal>
         </Table>
+        <div style={{ display: "flex", justifyContent: "right" }}>
+          <ReactPaginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"paginationBttns"}
+            previousLinkClassName={"previousBttn"}
+            nextLinkClassName={"nextBttn"}
+            disabledClassName={"paginationDisabled"}
+            activeClassName={"paginationActive"}
+          />
+        </div>
       </Row>
     </Container>
   );
