@@ -3,17 +3,16 @@ import Axios from "axios";
 import { Chart } from "react-google-charts";
 
 function LineChart() {
-  const [employeeList, setEmployeeList] = useState([]);
+  const [leaveList, setLeaveList] = useState([]);
 
   const empList = () => {
-    Axios.get("http://localhost:3333/employeescount").then((response) => {
-      setEmployeeList(response.data);
-      console.log(response.data);
+    Axios.get("http://localhost:3333/leavecountbyname").then((response) => {
+      setLeaveList(response.data);
     });
   };
 
   const options = {
-    title: "จำนวนพนักงาน",
+    title: "จำนวนการลางานต่อประเภทการลา",
     curveType: "function",
     legend: { position: "bottom" },
   };
@@ -26,9 +25,9 @@ function LineChart() {
     <Chart
       chartType="LineChart"
       data={[
-        ["ชื่อแผนก", "จำนวนพนักงาน", { role: "style" }],
-        ...employeeList.map((d) => [
-          d.department_name,
+        ["ประเภทการลา", "จำนวนการลา", { role: "style" }],
+        ...leaveList.map((d) => [
+          d.leavetype_name,
           d.no_emp,
           "color: #000000",
         ]),

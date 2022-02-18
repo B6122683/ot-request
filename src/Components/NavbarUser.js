@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import * as FaIcons from "react-icons/fa";
 import * as AiIcons from "react-icons/ai";
-import { Button } from "react-bootstrap";
+import { Button, Image } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { SidebarData } from "./SidebarData";
 import { SidebarAdminData } from "./SidebarDataAdmin";
 import "./Navbar.css";
 import { IconContext } from "react-icons";
 import Axios from "axios";
+import logopic from "../images/otlogo.png";
 
 function NavbarUser() {
   const [sidebar, setSidebar] = useState(false);
@@ -50,13 +51,30 @@ function NavbarUser() {
   return (
     <>
       <IconContext.Provider value={{ color: "#fff" }}>
-        <div className="navbar" style={{ justifyContent: "space-between" }}>
-          <div style={{ justifyContent: "space-between" }}>
+        <div
+          className="navbar col-md-12 col-12"
+          style={{ justifyContent: "space-between" }}
+        >
+          <div
+            className="col-md-4 col-3"
+            style={{ justifyContent: "space-between" }}
+          >
             <Link to="#" className="menu-bars">
               <FaIcons.FaBars onClick={showSidebar} />
             </Link>
           </div>
-          <div className="d-flex" style={{ justifyContent: "flex-end" }}>
+          <div
+            className="d-flex col-md-4 col-6"
+            style={{ justifyContent: "center" }}
+          >
+            <Link to="/" className="menu-bars">
+              <Image src={logopic} style={{ top: 0, height: "60px" }} />
+            </Link>
+          </div>
+          <div
+            className="d-flex col-md-4 col-3"
+            style={{ justifyContent: "flex-end" }}
+          >
             {emp_id != "" ? (
               <>
                 <p

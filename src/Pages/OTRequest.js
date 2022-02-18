@@ -17,7 +17,6 @@ function OTRequest() {
   const { ot_id } = useParams();
   const [role_id, setRole] = useState("");
   const [emp_id, setEmpId] = useState("");
-  const [emp_iid, setEmpIId] = useState("");
   const [emp_depname, setEmpDepName] = useState("");
   const [emp_posname, setEmpPosName] = useState("");
   const [waiting, setWaiting] = useState(0);
@@ -30,22 +29,10 @@ function OTRequest() {
   };
 
   const otrequestcount = () => {
-    Axios.get(`http://localhost:3333/otrequestcount`).then((response) => {
+    Axios.post("http://localhost:3333/otrequestcount").then((response) => {
       setOtrequestcountList(response.data);
     });
   };
-
-  // const otrequestcount = () => {
-  //   Axios.get(`http://localhost:3333/otrequestcount/${emp_id}`).then((response) => {
-  //     for (let i = 0; i < response.length; i++) {
-  //       if (response.data[i].emp_id == emp_id) {
-  //         setOtrequestcountList(response.data[i]);
-  //         setWaiting(response.data[i].waiting);
-  //         setAccept(response.data[i].accept);
-  //       }
-  //     }
-  //   });
-  // };
 
   const getAuth = () => {
     const token = localStorage.getItem("token");
@@ -137,6 +124,8 @@ function OTRequest() {
           {otassignList.map((val) => {
             return (
               <tbody>
+                {val.dep_id == dep_id && (
+                <>
                 <tr className="tbody">
                   <td>
                     <Link to={`/otrequestdesc/${val.ot_id}`}>
@@ -162,13 +151,15 @@ function OTRequest() {
                   </td>
                   <td>{val.ot_apply}</td>
                   <td>
-                    {val.ot_status == 1 ? (
+                    {val.ot_stump != 0 ? (
                       <p style={{ color: "#1FB640" }}>เปิดรับ</p>
                     ) : (
                       <p style={{ color: "#FB3131" }}>ปิด</p>
                     )}
                   </td>
                 </tr>
+                </>
+                )}
               </tbody>
             );
           })}

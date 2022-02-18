@@ -50,6 +50,7 @@ function AdminOTManagement() {
         ot_starttime: ot_starttime,
         ot_finishtime: ot_finishtime,
         ot_apply: ot_apply,
+        ot_stump: ot_apply,
       }).then(() => {
         setOTAssignmentList({
           ...OTAssignmentList,
@@ -61,6 +62,7 @@ function AdminOTManagement() {
           ot_starttime: ot_starttime,
           ot_finishtime: ot_finishtime,
           ot_apply: ot_apply,
+          ot_stump: ot_apply,
         });
         window.location = "/adminot";
       });

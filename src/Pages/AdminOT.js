@@ -22,6 +22,7 @@ function AdminOT() {
   const otassign = () => {
     Axios.get("http://localhost:3333/otassignview").then((response) => {
       setOtassignList(response.data);
+      console.log(response.data);
     });
   };
 

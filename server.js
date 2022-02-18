@@ -52,6 +52,7 @@ const db = mysql.createConnection({
   host: "localhost",
   password: "",
   database: "ot_request",
+  dateStrings: true,
 });
 
 //--------------------------EMPLOYEE API------------------------------
@@ -462,6 +463,17 @@ app.get("/employees/:emp_id", jsonParser, function (req, res) {
 });
 
 //SELECT DATA IN EMPLOYEES
+app.get("/allemployeescount", jsonParser, function (req, res) {
+  db.execute("SELECT COUNT(*) AS no_emp FROM employees", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//SELECT DATA IN EMPLOYEES
 app.get("/employeescount", jsonParser, function (req, res) {
   db.execute(
     "SELECT department.dep_name AS department_name, COUNT(*) AS no_emp FROM department INNER JOIN employees ON employees.dep_id = department.dep_id GROUP BY department.dep_id, dep_name ORDER BY dep_name",
@@ -549,7 +561,7 @@ app.get("/otassignment/:ot_id", jsonParser, function (req, res) {
 //ADD OT_ASSIGNMENT
 app.post("/otassignment", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO ot_assignment ( ot_name, ot_rate, dep_id, ot_desc, ot_starttime, ot_finishtime, ot_apply, ot_request, ot_stump, ot_status, create_at, update_at, record_status) VALUES ( ?, ?, ?, ?, ?, ?, ?, 0, 0, 1, NOW(), NOW(), 1)",
+    "INSERT INTO ot_assignment ( ot_name, ot_rate, dep_id, ot_desc, ot_starttime, ot_finishtime, ot_apply, ot_request, ot_stump, ot_status, create_at, update_at, record_status) VALUES ( ?, ?, ?, ?, ?, ?, ?, 0, ?, 1, NOW(), NOW(), 1)",
     [
       req.body.ot_name,
       req.body.ot_rate,
@@ -558,6 +570,7 @@ app.post("/otassignment", jsonParser, function (req, res) {
       req.body.ot_starttime,
       req.body.ot_finishtime,
       req.body.ot_apply,
+      req.body.ot_stump,
     ],
     function (err, results, fields) {
       if (err) {
@@ -607,8 +620,8 @@ app.put("/otassignment", jsonParser, function (req, res) {
   );
 });
 
-//UPDATE OT_ASSIGNMENT DATA FORM DB
-app.put("/otrequestcountbystatus", jsonParser, function (req, res) {
+//UPDATE OT_REQUEST DATA FORM DB
+app.put("/otrequestsetbystatus", jsonParser, function (req, res) {
   db.execute(
     "UPDATE ot_assignment SET ot_request = ot_request + 1, ot_stump = ot_stump - 1 , update_at = NOW() WHERE ot_id = ?",
     [req.body.ot_id],
@@ -642,8 +655,70 @@ app.delete("/otassignment/:ot_id", jsonParser, function (req, res) {
 //POST OT_REQUEST DATA FORM DB
 app.post("/otrequest", jsonParser, function (req, res) {
   db.execute(
-    "INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",
-    [req.body.emp_id, req.body.dep_id, req.body.ot_id],
+    "SELECT * FROM ot_request WHERE emp_id = ? AND ot_id = ?",
+    [req.body.emp_id, req.body.ot_id],
+    (err, otdata) => {
+      if (err) {
+        console.log(err);
+      } else {
+        if (otdata.length > 0) {
+          res.send({
+            status: "exist",
+            message: "Employee has send OT Already",
+          });
+        } else {
+          db.execute(
+            "INSERT INTO ot_request (emp_id, dep_id, ot_id, otr_status, otr_date) VALUES (?, ?, ?, 0,NOW())",
+            [req.body.emp_id, req.body.dep_id, req.body.ot_id],
+            (err, result) => {
+              if (err) {
+                console.log(err);
+              } else {
+                db.execute(
+                  "UPDATE ot_assignment SET ot_request = ot_request + 1, ot_stump = ot_stump - 1 , update_at = NOW() WHERE ot_id = ?",
+                  [req.body.ot_id],
+                  (err, result) => {
+                    if (err) {
+                      console.log(err);
+                    }
+                  }
+                );
+                res.send(result);
+              }
+            }
+          );
+        }
+      }
+    }
+  );
+  // db.execute(
+  //   "update ot_assignment SET ot_request =ot_request +1 where ot_id=?",
+  //   [req.body.ot_id],
+  //   (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       res.send(result);
+  //     }
+  //   }
+  // );
+  // db.execute(
+  //   "update ot_assignment SET ot_stump =ot_stump -1 where ot_id=?",
+  //   [req.body.ot_id],
+  //   (err, result) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       res.send(result);
+  //     }
+  //   }
+  // );
+});
+
+//SELECT DATA IN OT_REQUEST
+app.get("/otrequestcountperweek", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT COUNT(*) AS no_otrequest FROM ot_request WHERE otr_status = 0 AND DATE(otr_date) > NOW() - interval 7 day",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -697,9 +772,9 @@ app.get("/otrequest/:otr_id", jsonParser, function (req, res) {
   );
 });
 //COUNT
-app.get("/otrequestcount", jsonParser, function (req, res) {
+app.post("/otrequestcount", jsonParser, function (req, res) {
   db.execute(
-    "SELECT emp_id, COUNT( CASE WHEN otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN otr_status = 2 THEN 1 END ) AS reject FROM ot_request GROUP BY emp_id",
+    "SELECT e.emp_id, COUNT( CASE WHEN r.otr_status = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN r.otr_status = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN r.otr_status = 2 THEN 1 END ) AS reject FROM ot_request AS r RIGHT JOIN employees AS e ON r.emp_id = e.emp_id GROUP BY e.emp_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -910,7 +985,7 @@ app.post("/leavework", jsonParser, function (req, res) {
 //SELECT DATA IN LEAVE WORK
 app.get("/leaveworkview", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_date, leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
+    "SELECT leavework.leave_id,leavework.emp_id,employees.emp_firstname, employees.emp_surname ,department.dep_name,leave_type.ltype_name, leavework.leave_desc,leavework.leave_date, leavework.start_leave, leavework.end_leave,leavework.leave_accept	 FROM leavework LEFT JOIN leave_type ON leavework.leave_type = leave_type.ltype_id LEFT JOIN employees ON leavework.emp_id = employees.emp_id LEFT JOIN department ON leavework.dep_id = department.dep_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -921,10 +996,24 @@ app.get("/leaveworkview", jsonParser, function (req, res) {
   );
 });
 
-//SELECT DATA IN EMPLOYEES
+//SELECT DATA IN OT_REQUEST
+app.get("/leaveworkcountperweek", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT COUNT(*) AS no_leavework FROM leavework WHERE leave_accept = 0 AND DATE(leave_date) > NOW() - interval 7 day",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//SELECT DATA IN LEAVEWORK
 app.get("/leavecountbyname", jsonParser, function (req, res) {
   db.execute(
-    "SELECT leave_type.ltype_name AS leavetype_name, COUNT(*) AS no_emp FROM leavework INNER JOIN leave_type ON leavework.leave_type = leave_type.ltype_id GROUP BY leave_type.ltype_id",
+    "SELECT leave_type.ltype_name AS leavetype_name, COUNT(*) AS no_emp FROM leavework INNER JOIN leave_type ON leavework.leave_type = leave_type.ltype_id WHERE leavework.leave_accept = 0 GROUP BY leave_type.ltype_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -993,7 +1082,7 @@ app.get("/leaveworkId/:leave_id", jsonParser, function (req, res) {
 //LEAVE WORK COUNT
 app.post("/leaveworkcount", jsonParser, function (req, res) {
   db.execute(
-    "SELECT emp_id, COUNT( CASE WHEN leave_accept = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN leave_accept = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN leave_accept = 2 THEN 1 END ) AS reject FROM leavework GROUP BY emp_id",
+    "SELECT e.emp_id, COUNT( CASE WHEN l.leave_accept = 0 THEN 1 END ) AS waiting, COUNT( CASE WHEN l.leave_accept = 1 THEN 1 END ) AS accept, COUNT( CASE WHEN l.leave_accept = 2 THEN 1 END ) AS reject FROM leavework AS l RIGHT JOIN employees AS e ON l.emp_id = e.emp_id GROUP BY e.emp_id",
     (err, result) => {
       if (err) {
         console.log(err);
@@ -1038,10 +1127,38 @@ app.get("/attendance", jsonParser, function (req, res) {
   });
 });
 
-//LEAVE WORK COUNT
+//ATTENDANCE WORK COUNT
 app.post("/attendancecount", jsonParser, function (req, res) {
   db.execute(
     "SELECT emp_id, CONVERT(DATE(work_date), CHAR) AS working, MIN(CASE WHEN work_status = 0 THEN TIME(work_date) END) AS checkin, MAX(CASE WHEN work_status = 1 THEN TIME(work_date) END) AS checkout FROM attendance GROUP BY emp_id, DATE(work_date)",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//ATTENDANCE WORK COUNT
+app.post("/attendancecountperweek", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT emp_id, COUNT( CASE WHEN work_status = 0 THEN 1 END ) AS checkin, COUNT( CASE WHEN work_status = 1 THEN 1 END ) AS checkout FROM attendance WHERE DATE(work_date) > NOW() - interval 7 day",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
+//ATTENDANCE WORK COUNT
+app.post("/attendancecount2", jsonParser, function (req, res) {
+  db.execute(
+    "SELECT e.emp_id, COUNT( CASE WHEN a.work_status = 0 THEN 1 END ) AS checkin, COUNT( CASE WHEN a.work_status = 1 THEN 1 END ) AS checkout FROM attendance AS a RIGHT JOIN employees AS e ON a.emp_id = e.emp_id GROUP BY e.emp_id",
     (err, result) => {
       if (err) {
         console.log(err);

@@ -6,14 +6,14 @@ function PieChart() {
   const [employeeList, setEmployeeList] = useState([]);
 
   const empList = () => {
-    Axios.get("http://localhost:3333/employeescount").then((response) => {
+    Axios.get("http://localhost:3333/employeescountbyrole").then((response) => {
       setEmployeeList(response.data);
       console.log(response.data);
     });
   };
 
   const options = {
-    title: "จำนวนพนักงาน",
+    title: "จำนวนพนักงานตามบทบาท",
   };
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function PieChart() {
       chartType="PieChart"
       data={[
         ['ชื่อแผนก', 'จำนวนพนักงาน'],
-        ...employeeList.map(d => [ d.department_name, d.no_emp ])
+        ...employeeList.map(d => [ d.role_name, d.no_role ])
       ]}
       options={options}
       width={"100%"}

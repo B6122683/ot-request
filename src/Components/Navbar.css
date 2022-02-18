@@ -5,6 +5,7 @@
     justify-content: start;
     align-items: center;
     position: sticky;
+    flex-wrap: unset !important;
     position: -webkit-sticky;
     top: 0;
     z-index: 2;

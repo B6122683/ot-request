@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Table from "react-bootstrap/Table";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import moment from "moment/min/moment-with-locales";
 import "./Leave.css";
 import Button from "react-bootstrap/Button";
 import FullCal from "../Components/FullCalendar";
@@ -13,18 +15,18 @@ import { useHistory, useParams } from "react-router-dom";
 function Leave() {
   const [modalShow, setModalShow] = useState(false);
   const [leaveworkcountList, setLeaveWorkcountList] = useState([]);
-  const [waiting, setWaiting] = useState(0);
-  const [accept, setAccept] = useState(0);
+  const [leaveworkList, setLeaveWorkList] = useState([]);
   const [emp_id, setEmpId] = useState("");
 
   const leaveworkcount = (e) => {
-    Axios.post("http://localhost:3333/leaveworkcount", {
-      emp_id: emp_id,
-    }).then((response) => {
+    Axios.post("http://localhost:3333/leaveworkcount").then((response) => {
       setLeaveWorkcountList(response.data);
-      setWaiting(response.data[0].waiting);
-      setAccept(response.data[0].accept);
-      console.log("count", response.data);
+    });
+  };
+
+  const leavelist = () => {
+    Axios.get("http://localhost:3333/leaveworkview").then((response) => {
+      setLeaveWorkList(response.data);
     });
   };
 
@@ -48,6 +50,7 @@ function Leave() {
   useEffect(() => {
     getAuth();
     leaveworkcount();
+    leavelist();
   }, []);
   return (
     <>
@@ -56,35 +59,43 @@ function Leave() {
           <h1 className="leave">แจ้งลา</h1>
         </Row>
         <Row>
-          <Col className="request">
-            <Col>
-              <p style={{ display: "flex", fontSize: "1.5rem" }}>รออนุมัติ</p>
-              <Col
-                className="col"
-                style={{ display: "flex", justifyContent: "center" }}
-              >
-                <h1>{waiting + " รายการ"}</h1>
-              </Col>
-            </Col>
-          </Col>
-          {emp_id}
-          <Col sm className="request">
-            <Col>
-              <p style={{ display: "flex", fontSize: "1.5rem" }}>อนุมัติแล้ว</p>
-              <Col
-                className="col"
-                style={{ display: "flex", justifyContent: "center" }}
-              >
-                <h1>{accept + " รายการ"}</h1>
-              </Col>
-            </Col>
-          </Col>
+          {leaveworkcountList.map((val, index) => {
+            return (
+              <>
+                {val.emp_id == emp_id && (
+                  <>
+                    <Col className="request">
+                      <Col>
+                        <p style={{ display: "flex", fontSize: "1.5rem" }}>
+                          รออนุมัติ
+                        </p>
+                        <Col
+                          className="col"
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <h1>{val.waiting + " รายการ"}</h1>
+                        </Col>
+                      </Col>
+                    </Col>
+                    <Col sm className="request">
+                      <Col>
+                        <p style={{ display: "flex", fontSize: "1.5rem" }}>
+                          อนุมัติแล้ว
+                        </p>
+                        <Col
+                          className="col"
+                          style={{ display: "flex", justifyContent: "center" }}
+                        >
+                          <h1>{val.accept + " รายการ"}</h1>
+                        </Col>
+                      </Col>
+                    </Col>
+                  </>
+                )}
+              </>
+            );
+          })}
         </Row>
-        {/* <Row>
-
-          <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
-          <Col className="leavedash" sm>ร้องขอการแจ้งลางาน</Col>
-        </Row> */}
         <Row>
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button variant="primary" onClick={() => setModalShow(true)}>
@@ -97,6 +108,46 @@ function Leave() {
           </div>
         </Row>
         <Row>
+          <Table striped bordered hover>
+            <thead>
+              <tr className="tr">
+                <th>ประเภทการลา</th>
+                <th>เหตุผล</th>
+                <th>วัน/เวลา เริ่ม</th>
+                <th>วัน/เวลา สิ้นสุด</th>
+                <th>วันที่ยื่น</th>
+                <th>สถานะ</th>
+              </tr>
+            </thead>
+            {leaveworkList.map((val) => {
+              return (
+                <tbody>
+                  {val.emp_id == emp_id && (
+                    <tr className="tbody">
+                      <td>{val.ltype_name}</td>
+                      <td>{val.leave_desc}</td>
+                      <td>
+                        {moment(val.start_leave).locale("th").format("L")}
+                      </td>
+                      <td>{moment(val.end_leave).locale("th").format("L")}</td>
+                      <td>{moment(val.leave_date).locale("th").format("L")}</td>
+                      <td>
+                        {val.leave_accept == 0 ? (
+                          <p style={{ color: "#FB3131" }}>รออนุมัติ</p>
+                        ) : val.leave_accept == 1 ? (
+                          <p style={{ color: "#1FB640" }}>อนุมัติ</p>
+                        ) : (
+                          <p style={{ color: "#FB3131" }}>ไม่อนุมัติ</p>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              );
+            })}
+          </Table>
+        </Row>
+        {/* <Row>
           <div
             style={{
               marginBottom: "50px",
@@ -111,7 +162,7 @@ function Leave() {
               <FullCal />
             </Col>
           </div>
-        </Row>
+        </Row> */}
       </Container>
     </>
   );

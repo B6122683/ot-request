@@ -30,7 +30,7 @@ function OTRequestDesc() {
   const getAuth = () => {
     const token = localStorage.getItem("token");
 
-    Axios.get("/authen", {
+    Axios.get("http://localhost:3333/authen", {
       headers: {
         Authorization: "Bearer " + token,
       },
@@ -58,13 +58,17 @@ function OTRequestDesc() {
       emp_id: emp_id,
       dep_id: dep_id,
       ot_id: ot_id,
-    }).then(() => {
-      setOtRequestList({
-        ...otrequestList,
-        emp_id: emp_id,
-        dep_id: dep_id,
-        ot_id: ot_id,
-      });
+    }).then((response) => {
+      if (response.data.status == "exist") {
+        alert("เคยส่งละสู");
+      } else {
+        setOtRequestList({
+          ...otrequestList,
+          emp_id: emp_id,
+          dep_id: dep_id,
+          ot_id: ot_id,
+        });
+      }
       window.location = "/otrequest";
     });
   };
@@ -90,217 +94,227 @@ function OTRequestDesc() {
           <Card.Text>
             {otassignList.map((val) => {
               return (
-                <Row className="col-md-12" style={{ marginTop: "30px" }}>
-                  <Col className="col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>ชื่องาน : </Form.Label>
-                      {val.ot_name}
-                    </Form.Group>
-                  </Col>
+                <>
+                  <Row className="col-md-12" style={{ marginTop: "30px" }}>
+                    <Col className="col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>ชื่องาน : </Form.Label>
+                        {val.ot_name}
+                      </Form.Group>
+                    </Col>
 
-                  <Col className="col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>แผนก : </Form.Label>
-                      {val.dep_name}
-                    </Form.Group>
-                  </Col>
+                    <Col className="col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>แผนก : </Form.Label>
+                        {val.dep_name}
+                      </Form.Group>
+                    </Col>
 
-                  <Col className="col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>รายละเอียด : </Form.Label>
-                      {val.ot_desc}
-                    </Form.Group>
-                  </Col>
+                    <Col className="col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>รายละเอียด : </Form.Label>
+                        {val.ot_desc}
+                      </Form.Group>
+                    </Col>
 
-                  <Col className="col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>วัน/เวลา เริ่ม : </Form.Label>
-                      {moment(val.ot_starttime).locale("th").format("LLLL")} น.
-                    </Form.Group>
-                  </Col>
+                    <Col className="col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>วัน/เวลา เริ่ม : </Form.Label>
+                        {moment(val.ot_starttime)
+                          .locale("th")
+                          .format("LLLL")}{" "}
+                        น.
+                      </Form.Group>
+                    </Col>
 
-                  <Col className="col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>วัน/เวลา เสร็จสิ้น : </Form.Label>
-                      {moment(val.ot_finishtime).locale("th").format("LLLL")} น.
-                    </Form.Group>
-                  </Col>
+                    <Col className="col-12">
+                      <Form.Group controlId="formBasicTextInput">
+                        <Form.Label>วัน/เวลา เสร็จสิ้น : </Form.Label>
+                        {moment(val.ot_finishtime)
+                          .locale("th")
+                          .format("LLLL")}{" "}
+                        น.
+                      </Form.Group>
+                    </Col>
 
-                  <Row className="col-md-12 ">
-                  <Col className="col-md-4 col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>รวมเวลา OT : </Form.Label>
-                      {val.summary}
-                    </Form.Group>
-                  </Col>
-                  <Col className="col-md-4 col-12">
-                    <Form.Group controlId="formBasicTextInput">
-                      <Form.Label>ค่าตอบแทน : </Form.Label>
-                      {val.ot_rate}
-                    </Form.Group>
-                  </Col>
+                    <Row className="col-md-12 ">
+                      <Col className="col-md-4 col-12">
+                        <Form.Group controlId="formBasicTextInput">
+                          <Form.Label>รวมเวลา OT : </Form.Label>
+                          {val.summary}
+                        </Form.Group>
+                      </Col>
+                      <Col className="col-md-4 col-12">
+                        <Form.Group controlId="formBasicTextInput">
+                          <Form.Label>ค่าตอบแทน : </Form.Label>
+                          {val.ot_rate}
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Row className="col-md-12 ">
+                      <Col className="col-md-4 col-12">
+                        <Form.Group controlId="formBasicTextInput">
+                          <Form.Label>จำนวนที่รับ :</Form.Label>
+                          {val.ot_apply} คน
+                        </Form.Group>
+                      </Col>
+
+                      <Col className="col-md-4 col-12">
+                        <Form.Group controlId="formBasicTextInput">
+                          <Form.Label>ยื่นคำขอ :</Form.Label>
+                          {val.ot_request} คน
+                        </Form.Group>
+                      </Col>
+
+                      <Col className="col-md-4 col-12">
+                        <Form.Group controlId="formBasicTextInput">
+                          <Form.Label>เหลือ :</Form.Label>
+                          {val.ot_stump} คน
+                        </Form.Group>
+                      </Col>
+                    </Row>
                   </Row>
-
-                  <Row className="col-md-12 ">
-                    <Col className="col-md-4 col-12">
-                      <Form.Group controlId="formBasicTextInput">
-                        <Form.Label>จำนวนที่รับ :</Form.Label>
-                        {val.ot_apply} คน
-                      </Form.Group>
-                    </Col>
-
-                    <Col className="col-md-4 col-12">
-                      <Form.Group controlId="formBasicTextInput">
-                        <Form.Label>ยื่นคำขอ :</Form.Label>
-                        {val.ot_request} คน
-                      </Form.Group>
-                    </Col>
-
-                    <Col className="col-md-4 col-12">
-                      <Form.Group controlId="formBasicTextInput">
-                        <Form.Label>เหลือ :</Form.Label>
-                        {val.ot_stump} คน
-                      </Form.Group>
-                    </Col>
-                  </Row>
-                </Row>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      variant="danger"
+                      onClick={() => (window.location.href = "/otrequest")}
+                      style={{ margin: "10px" }}
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    {val.ot_stump != 0 && (
+                      <Button
+                        variant="primary"
+                        onClick={() => setModalShow(true)}
+                        style={{ margin: "10px" }}
+                      >
+                        ยื่นคำขอ
+                      </Button>
+                    )}
+                  </div>
+                </>
               );
             })}
           </Card.Text>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button
-              variant="danger"
-              onClick={() => (window.location.href = "/otrequest")}
-              style={{ margin: "10px" }}
-            >
-              ย้อนกลับ
-            </Button>
-            <Button
-              variant="primary"
-              onClick={() => setModalShow(true)}
-              style={{ margin: "10px" }}
-            >
-              ยื่นคำขอ
-            </Button>
 
-            <Modal show={modalShow} centered>
-              <Modal.Body className="show-grid">
-                <Container>
-                  <Row>
-                    <h2 className="leaveform" style={{ textAlign: "center" }}>
-                      แบบฟอร์มคำขอทำงานล่วงเวลา
-                    </h2>
-                  </Row>
-                  {otassignList.map((val) => {
-                    return (
-                      <Row>
-                        <Form>
-                          <Form.Group
-                            className="mb-3 col-12"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>ชื่อ-สกุล</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกชื่อ-สกุล"
-                              value={emp_name}
-                              disabled
-                            />
-                          </Form.Group>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>ตำแหน่ง</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกตำแหน่ง"
-                              value={emp_posname}
-                              disabled
-                            />
-                          </Form.Group>
-                          <Form.Group
-                            className="mb-3"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>แผนก</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกแผนก"
-                              value={emp_depname}
-                              disabled
-                            />
-                          </Form.Group>
+          <Modal show={modalShow} centered>
+            <Modal.Body className="show-grid">
+              <Container>
+                <Row>
+                  <h2 className="leaveform" style={{ textAlign: "center" }}>
+                    แบบฟอร์มคำขอทำงานล่วงเวลา
+                  </h2>
+                </Row>
+                {otassignList.map((val) => {
+                  return (
+                    <Row>
+                      <Form>
+                        <Form.Group
+                          className="mb-3 col-12"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>ชื่อ-สกุล</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกชื่อ-สกุล"
+                            value={emp_name}
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>ตำแหน่ง</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกตำแหน่ง"
+                            value={emp_posname}
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>แผนก</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกแผนก"
+                            value={emp_depname}
+                            disabled
+                          />
+                        </Form.Group>
 
-                          <Form.Group
-                            className="mb-3"
-                            controlId="formBasicTextInput"
-                          >
-                            <Form.Label>ชื่องาน</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกชื่องาน"
-                              value={val.ot_name}
-                              disabled
-                            />
-                          </Form.Group>
-                          <Form.Group className="mb-3">
-                            <Form.Label>วัน/เวลา เริ่ม</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกวัน/เวลา เริ่ม"
-                              value={
-                                moment(val.ot_starttime)
-                                  .locale("th")
-                                  .format("LLLL") + " น."
-                              }
-                              disabled
-                            />
-                          </Form.Group>
-                          <Form.Group className="mb-3">
-                            <Form.Label>วัน/เวลา เสร็จสิ้น</Form.Label>
-                            <Form.Control
-                              type="text"
-                              placeholder="กรอกวัน/เวลา เสร็จสิ้น"
-                              value={
-                                moment(val.ot_finishtime)
-                                  .locale("th")
-                                  .format("LLLL") + " น."
-                              }
-                              disabled
-                            />
-                          </Form.Group>
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicTextInput"
+                        >
+                          <Form.Label>ชื่องาน</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกชื่องาน"
+                            value={val.ot_name}
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>วัน/เวลา เริ่ม</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกวัน/เวลา เริ่ม"
+                            value={
+                              moment(val.ot_starttime)
+                                .locale("th")
+                                .format("LLLL") + " น."
+                            }
+                            disabled
+                          />
+                        </Form.Group>
+                        <Form.Group className="mb-3">
+                          <Form.Label>วัน/เวลา เสร็จสิ้น</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="กรอกวัน/เวลา เสร็จสิ้น"
+                            value={
+                              moment(val.ot_finishtime)
+                                .locale("th")
+                                .format("LLLL") + " น."
+                            }
+                            disabled
+                          />
+                        </Form.Group>
 
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Button
+                            variant="danger"
+                            onClick={hideModal}
+                            style={{ margin: "10px" }}
                           >
-                            <Button
-                              variant="danger"
-                              onClick={hideModal}
-                              style={{ margin: "10px" }}
-                            >
-                              ยกเลิก
-                            </Button>
-                            <Button
-                              variant="primary"
-                              type="submit"
-                              style={{ margin: "10px" }}
-                              onClick={sendOTRequest}
-                            >
-                              ยืนยัน
-                            </Button>
-                          </div>
-                        </Form>
-                      </Row>
-                    );
-                  })}
-                </Container>
-              </Modal.Body>
-            </Modal>
-          </div>
+                            ยกเลิก
+                          </Button>
+                          <Button
+                            variant="primary"
+                            type="submit"
+                            style={{ margin: "10px" }}
+                            onClick={sendOTRequest}
+                          >
+                            ยืนยัน
+                          </Button>
+                        </div>
+                      </Form>
+                    </Row>
+                  );
+                })}
+              </Container>
+            </Modal.Body>
+          </Modal>
         </Card.Body>
       </Card>
     </Container>
